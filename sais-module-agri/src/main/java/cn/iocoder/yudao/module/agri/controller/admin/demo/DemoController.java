@@ -1,12 +1,23 @@
 package cn.iocoder.yudao.module.agri.controller.admin.demo;
 
 import cn.iocoder.yudao.framework.common.pojo.CommonResult;
+import cn.iocoder.yudao.framework.mybatis.core.query.LambdaQueryWrapperX;
+import cn.iocoder.yudao.module.agri.dal.dataobject.farm.FarmDO;
+import cn.iocoder.yudao.module.agri.dal.dataobject.field.FieldDO;
+import cn.iocoder.yudao.module.agri.dal.dataobject.sensor.SensorDO;
+import cn.iocoder.yudao.module.agri.dal.dataobject.sensordata.SensorDataDO;
+import cn.iocoder.yudao.module.agri.dal.dataobject.weather.WeatherDataDO;
+import cn.iocoder.yudao.module.agri.dal.mysql.farm.FarmMapper;
+import cn.iocoder.yudao.module.agri.dal.mysql.field.FieldMapper;
+import cn.iocoder.yudao.module.agri.dal.mysql.sensor.SensorMapper;
+import cn.iocoder.yudao.module.agri.dal.mysql.weather.WeatherDataMapper;
 import cn.iocoder.yudao.module.agri.job.IrrigationDecisionJob;
 import cn.iocoder.yudao.module.agri.job.IrrigationPlanExecutionJob;
 import cn.iocoder.yudao.module.agri.job.MockSensorDataJob;
 import cn.iocoder.yudao.module.agri.job.WeatherFetchJob;
 import cn.iocoder.yudao.module.agri.service.alert.AlertCheckService;
 import cn.iocoder.yudao.module.agri.service.alert.AlertService;
+import cn.iocoder.yudao.module.agri.service.sensordata.SensorDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +30,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.annotation.Resource;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 
@@ -46,6 +65,21 @@ public class DemoController {
 
     @Resource
     private AlertService alertService;
+
+    @Resource
+    private FieldMapper fieldMapper;
+
+    @Resource
+    private SensorMapper sensorMapper;
+
+    @Resource
+    private FarmMapper farmMapper;
+
+    @Resource
+    private WeatherDataMapper weatherDataMapper;
+
+    @Resource
+    private SensorDataService sensorDataService;
 
     @PostMapping("/trigger-sensor-report")
     @Operation(summary = "Manually trigger sensor data report")
@@ -104,5 +138,91 @@ public class DemoController {
         log.info("[Demo] Triggering test alert type={} farmId={}", type, farmId);
         alertService.triggerTestAlert(type, farmId);
         return success("Test alert '" + type + "' triggered successfully.");
+    }
+
+    @PostMapping("/inject-sensor-data")
+    @Operation(summary = "Inject a sensor reading into all sensors of all ONGOING fields (for evaluation)")
+    @PreAuthorize("@ss.hasPermission('agri:sensor:create')")
+    public CommonResult<String> injectSensorData(
+            @RequestParam @NotBlank String dataType,
+            @RequestParam @NotNull BigDecimal value) {
+        List<FieldDO> ongoingFields = fieldMapper.selectList(
+                new LambdaQueryWrapperX<FieldDO>().eq(FieldDO::getGrowStatus, "ONGOING"));
+        if (ongoingFields.isEmpty()) {
+            return success("SKIP: no ONGOING fields found.");
+        }
+        Set<Long> fieldIds = ongoingFields.stream().map(FieldDO::getId).collect(Collectors.toSet());
+        List<SensorDO> sensors = sensorMapper.selectList(
+                new LambdaQueryWrapperX<SensorDO>().in(SensorDO::getFieldId, fieldIds));
+        if (sensors.isEmpty()) {
+            return success("SKIP: no sensors bound to ONGOING fields.");
+        }
+        LocalDateTime now = LocalDateTime.now();
+        for (SensorDO sensor : sensors) {
+            SensorDataDO data = new SensorDataDO();
+            data.setSensorId(sensor.getId());
+            data.setFarmId(sensor.getFarmId());
+            data.setFieldId(sensor.getFieldId());
+            data.setDataType(dataType);
+            data.setValue(value);
+            data.setCollectedAt(now);
+            sensorDataService.recordSensorData(data);
+        }
+        log.info("[Demo] Injected {}={} into {} sensors across {} ONGOING fields",
+                dataType, value, sensors.size(), ongoingFields.size());
+        return success("Injected " + dataType + "=" + value + " into " + sensors.size() + " sensor(s).");
+    }
+
+    @PostMapping("/inject-weather-forecast")
+    @Operation(summary = "Upsert tomorrow's weather forecast for all farms (for evaluation)")
+    @PreAuthorize("@ss.hasPermission('agri:sensor:create')")
+    public CommonResult<String> injectWeatherForecast(
+            @RequestParam @NotBlank String field,
+            @RequestParam @NotNull BigDecimal value) {
+        List<FarmDO> farms = farmMapper.selectList(new LambdaQueryWrapperX<>());
+        if (farms.isEmpty()) {
+            return success("SKIP: no farms found.");
+        }
+        LocalDate tomorrow = LocalDate.now().plusDays(1);
+        int upserted = 0;
+        for (FarmDO farm : farms) {
+            WeatherDataDO existing = weatherDataMapper.selectByFarmIdAndDate(farm.getId(), tomorrow);
+            WeatherDataDO record = existing != null ? existing : new WeatherDataDO();
+            if (existing == null) {
+                record.setFarmId(farm.getId());
+                record.setForecastDate(tomorrow);
+                record.setRecordTime(LocalDateTime.now());
+                record.setSource("demo-inject");
+            }
+            switch (field) {
+                case "rainfall":
+                    record.setRainfall(value);
+                    break;
+                case "tempMin":
+                    record.setTempMin(value);
+                    break;
+                case "tempMax":
+                    record.setTempMax(value);
+                    break;
+                case "temperature":
+                    record.setTemperature(value);
+                    break;
+                case "humidity":
+                    record.setHumidity(value);
+                    break;
+                default:
+                    return success("SKIP: unsupported field '" + field
+                            + "'. Allowed: rainfall / tempMin / tempMax / temperature / humidity.");
+            }
+            if (existing == null) {
+                weatherDataMapper.insert(record);
+            } else {
+                weatherDataMapper.updateById(record);
+            }
+            upserted++;
+        }
+        log.info("[Demo] Upserted weather forecast {}={} for {} farms (tomorrow={})",
+                field, value, upserted, tomorrow);
+        return success("Upserted " + field + "=" + value + " for " + upserted + " farm(s) (tomorrow).");
     }
 }
