@@ -1,0 +1,3 @@
+com.xkcoding.justauth.autoconfigure.JustAuthAutoConfiguration
+com.anji.captcha.config.AjCaptchaAutoConfiguration
+org.redisson.spring.cache.RedissonCacheStatisticsAutoConfiguration
