@@ -13,9 +13,6 @@ import cn.iocoder.yudao.module.agri.dal.dataobject.alert.AlertDO;
 import cn.iocoder.yudao.module.agri.dal.dataobject.field.FieldDO;
 import cn.iocoder.yudao.module.agri.dal.mysql.field.FieldMapper;
 import cn.iocoder.yudao.module.agri.service.alert.AlertService;
-import cn.iocoder.yudao.module.system.api.notify.NotifyMessageSendApi;
-import cn.iocoder.yudao.module.system.api.notify.dto.NotifySendSingleToUserReqDTO;
-import static cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils.getLoginUserId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -45,8 +41,6 @@ public class AlertController {
     private AlertService alertService;
     @Resource
     private FieldMapper fieldMapper;
-    @Resource
-    private NotifyMessageSendApi notifyMessageSendApi;
 
     @PostMapping("/create")
     @Operation(summary = "Create alert")
@@ -106,50 +100,6 @@ public class AlertController {
             }
         });
         return success(voPage);
-    }
-
-    @PostMapping("/trigger-test")
-    @Operation(summary = "Trigger test alert (for demo)")
-    @PreAuthorize("@ss.hasPermission('agri:alert:create')")
-    public CommonResult<Boolean> triggerTestAlert(
-            @RequestParam @NotBlank String type,
-            @RequestParam(required = false) Long farmId) {
-        alertService.triggerTestAlert(type, farmId);
-        return success(true);
-    }
-
-    @PostMapping("/inject-weather")
-    @Operation(summary = "Send extreme weather notification (for demo)")
-    @PreAuthorize("@ss.hasPermission('agri:alert:create')")
-    public CommonResult<Boolean> injectWeatherAlert(@RequestParam String scenario) {
-        String level;
-        String context;
-        switch (scenario) {
-            case "HEAVY_RAIN":
-                level = "CRITICAL";
-                context = "Extreme rainfall of 60.0mm forecast for tomorrow. High risk of flooding and crop waterlogging.";
-                break;
-            case "FROST":
-                level = "CRITICAL";
-                context = "Frost risk tomorrow: minimum temperature forecast -3.0°C. Protect crops immediately.";
-                break;
-            case "HEATWAVE":
-                level = "CRITICAL";
-                context = "Extreme heat tomorrow: maximum temperature forecast 40.0°C. Crops at high risk of heat stress.";
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown scenario: " + scenario);
-        }
-        Map<String, Object> params = new HashMap<>();
-        params.put("level", level);
-        params.put("alertType", "Extreme Weather");
-        params.put("context", context);
-        NotifySendSingleToUserReqDTO req = new NotifySendSingleToUserReqDTO();
-        req.setUserId(getLoginUserId());
-        req.setTemplateCode("agri_alert_raised");
-        req.setTemplateParams(params);
-        notifyMessageSendApi.sendSingleMessageToAdmin(req);
-        return success(true);
     }
 
     @GetMapping("/export-excel")
