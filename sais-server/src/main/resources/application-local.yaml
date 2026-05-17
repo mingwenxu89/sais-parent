@@ -48,7 +48,7 @@ spring:
       primary: master
       datasource:
         master:
-          url: jdbc:postgresql://127.0.0.1:5432/irrigation # PostgreSQL connection
+          url: jdbc:postgresql://127.0.0.1:5432/postgres # PostgreSQL connection
           username: postgres
           password: Xmw2026Xqz
         slave: # Simulated slave, modify as needed

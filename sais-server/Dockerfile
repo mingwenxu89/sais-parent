@@ -6,10 +6,10 @@ FROM eclipse-temurin:8-jre
 RUN mkdir -p /sais-server
 WORKDIR /sais-server
 ## Copy the backend project's jar file into the image
-COPY ./target/sais-server.jar app.jar
+COPY ./target/sais-server.jar sais-server.jar
 
 ## Set the TZ timezone
-ENV TZ=Asia/Shanghai
+ENV TZ=Pacific/Auckland
 ## Set the JAVA_OPTS environment variable, which can be overridden by docker run -e "JAVA_OPTS="
 ENV JAVA_OPTS="-Xms512m -Xmx512m -Djava.security.egd=file:/dev/./urandom"
 
@@ -20,4 +20,4 @@ ENV ARGS=""
 EXPOSE 48080
 
 ## Start the backend project
-CMD java ${JAVA_OPTS} -jar app.jar $ARGS
+CMD java ${JAVA_OPTS} -jar sais-server.jar $ARGS

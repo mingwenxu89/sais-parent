@@ -1,0 +1,37 @@
+version: 0.2
+
+env:
+  variables:
+    BACKEND_DIR: "sais-parent"
+    AWS_REGION: "ap-southeast-2"
+    ECR_REPO: "sais-backend"
+    EC2_INSTANCE_ID: "i-0751f1f4a51d3cbb4"
+
+phases:
+  install:
+    runtime-versions:
+      java: corretto21
+    commands:
+      - echo "Using Java 21"
+  pre_build:
+    commands:
+      - AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+      - ECR_URI="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO"
+      - aws ecr get-login-password --region "$AWS_REGION" | docker login --username AWS --password-stdin "$ECR_URI"
+build:
+  commands:
+    - cd "$BACKEND_DIR"
+    - mvn -pl sais-server -am clean package -DskipTests
+    - cd sais-server
+    - docker build -t "$ECR_REPO:latest" .
+    - docker tag "$ECR_REPO:latest" "$ECR_URI:latest"
+post_build:
+  commands:
+    - docker push "$ECR_URI:latest"
+    - |
+      aws ssm send-command \
+        --instance-ids "$EC2_INSTANCE_ID" \
+        --document-name "AWS-RunShellScript" \
+        --comment "Deploy latest SAIS backend image" \
+        --parameters commands="sudo /opt/sais/deploy-backend.sh" \
+        --region "$AWS_REGION"
