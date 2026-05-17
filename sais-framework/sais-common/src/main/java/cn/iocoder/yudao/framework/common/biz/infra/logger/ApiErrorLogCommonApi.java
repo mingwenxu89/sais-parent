@@ -6,27 +6,27 @@ import org.springframework.scheduling.annotation.Async;
 import jakarta.validation.Valid;
 
 /**
- * API 错误日志的 API 接口
+ * API interface for API error log
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface ApiErrorLogCommonApi {
 
-    /**
-     * 创建 API 错误日志
-     *
-     * @param createDTO 创建信息
-     */
-    void createApiErrorLog(@Valid ApiErrorLogCreateReqDTO createDTO);
+ /**
+     * Create API error log
+ *
+     * @param createDTO Create information
+ */
+ void createApiErrorLog(@Valid ApiErrorLogCreateReqDTO createDTO);
 
-    /**
-     * 【异步】创建 API 异常日志
-     *
-     * @param createDTO 异常日志 DTO
-     */
-    @Async
-    default void createApiErrorLogAsync(ApiErrorLogCreateReqDTO createDTO) {
-        createApiErrorLog(createDTO);
-    }
+ /**
+     * [Asynchronous] Create API exception log
+ *
+     * @param createDTO Exception log DTO
+ */
+ @Async
+ default void createApiErrorLogAsync(ApiErrorLogCreateReqDTO createDTO) {
+ createApiErrorLog(createDTO);
+ }
 
 }

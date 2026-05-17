@@ -13,29 +13,29 @@ import java.time.Duration;
 public class SmsCodeProperties {
 
     /**
-     * 过期时间
+     * Expiration time
      */
-    @NotNull(message = "过期时间不能为空")
+    @NotNull(message = "Expiration time cannot be empty")
     private Duration expireTimes;
     /**
-     * 短信发送频率
+     * SMS sending frequency
      */
-    @NotNull(message = "短信发送频率不能为空")
+    @NotNull(message = "SMS sending frequency cannot be empty")
     private Duration sendFrequency;
     /**
-     * 每日发送最大数量
+     * Maximum quantity sent per day
      */
-    @NotNull(message = "每日发送最大数量不能为空")
+    @NotNull(message = "The maximum quantity sent per day cannot be empty")
     private Integer sendMaximumQuantityPerDay;
     /**
-     * 验证码最小值
+     * Captcha minimum value
      */
-    @NotNull(message = "验证码最小值不能为空")
+    @NotNull(message = "The minimum captcha value cannot be empty")
     private Integer beginCode;
     /**
-     * 验证码最大值
+     * Captcha maximum value
      */
-    @NotNull(message = "验证码最大值不能为空")
+    @NotNull(message = "The maximum value of the captcha cannot be empty")
     private Integer endCode;
 
 }

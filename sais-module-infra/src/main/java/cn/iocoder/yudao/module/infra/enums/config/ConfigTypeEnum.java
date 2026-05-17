@@ -8,11 +8,11 @@ import lombok.Getter;
 public enum ConfigTypeEnum {
 
     /**
-     * 系统配置
+     * System configuration
      */
     SYSTEM(1),
     /**
-     * 自定义配置
+     * Custom configuration
      */
     CUSTOM(2);
 

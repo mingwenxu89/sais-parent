@@ -6,49 +6,49 @@ import cn.iocoder.yudao.module.infra.controller.admin.logger.vo.apierrorlog.ApiE
 import cn.iocoder.yudao.module.infra.dal.dataobject.logger.ApiErrorLogDO;
 
 /**
- * API 错误日志 Service 接口
+ * API Error Log Service API
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface ApiErrorLogService {
 
     /**
-     * 创建 API 错误日志
+     * Create API error log
      *
-     * @param createReqDTO API 错误日志
+     * @param createReqDTO API error log
      */
     void createApiErrorLog(ApiErrorLogCreateReqDTO createReqDTO);
 
     /**
-     * 获得 API 错误日志
+     * Get API error log
      *
-     * @param id 编号
-     * @return API 错误日志
+     * @param id ID
+     * @return API error log
      */
     ApiErrorLogDO getApiErrorLog(Long id);
 
     /**
-     * 获得 API 错误日志分页
+     * Get API error log pagination
      *
-     * @param pageReqVO 分页查询
-     * @return API 错误日志分页
+     * @param pageReqVO Page query
+     * @return API error log pagination
      */
     PageResult<ApiErrorLogDO> getApiErrorLogPage(ApiErrorLogPageReqVO pageReqVO);
 
     /**
-     * 更新 API 错误日志已处理
+     * Update API error log handled
      *
-     * @param id            API 日志编号
-     * @param processStatus 处理结果
-     * @param processUserId 处理人
+     * @param id            API log ID
+     * @param processStatus Processing results
+     * @param processUserId Processor
      */
     void updateApiErrorLogProcess(Long id, Integer processStatus, Long processUserId);
 
     /**
-     * 清理 exceedDay 天前的错误日志
+     * Clear error logs from exceedDay days ago
      *
-     * @param exceedDay   超过多少天就进行清理
-     * @param deleteLimit 清理的间隔条数
+     * @param exceedDay   How many days will it take to clean up?
+     * @param deleteLimit ID of intervals to clear
      */
     Integer cleanErrorLog(Integer exceedDay, Integer deleteLimit);
 

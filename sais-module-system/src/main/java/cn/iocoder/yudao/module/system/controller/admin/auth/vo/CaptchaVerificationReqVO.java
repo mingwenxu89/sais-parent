@@ -5,18 +5,18 @@ import lombok.Data;
 
 import jakarta.validation.constraints.NotEmpty;
 
-@Schema(description = "管理后台 - 验证码 Request VO")
+@Schema(description = "Management backend - Captcha Request VO")
 @Data
 public class CaptchaVerificationReqVO {
 
-    // ========== 图片验证码相关 ==========
-    @Schema(description = "验证码，验证码开启时，需要传递", requiredMode = Schema.RequiredMode.REQUIRED,
+    // ========== Image captcha related ==========
+    @Schema(description = "Captcha, when the captcha is turned on, it needs to be passed", requiredMode = Schema.RequiredMode.REQUIRED,
             example = "PfcH6mgr8tpXuMWFjvW6YVaqrswIuwmWI5dsVZSg7sGpWtDCUbHuDEXl3cFB1+VvCC/rAkSwK8Fad52FSuncVg==")
-    @NotEmpty(message = "验证码不能为空", groups = CodeEnableGroup.class)
+    @NotEmpty(message = "Captcha cannot be empty", groups = CodeEnableGroup.class)
     private String captchaVerification;
 
     /**
-     * 开启验证码的 Group
+     * Group that enables captcha
      */
     public interface CodeEnableGroup {
     }

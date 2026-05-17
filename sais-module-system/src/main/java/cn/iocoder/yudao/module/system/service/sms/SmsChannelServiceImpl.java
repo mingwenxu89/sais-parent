@@ -20,7 +20,7 @@ import static cn.iocoder.yudao.module.system.enums.ErrorCodeConstants.SMS_CHANNE
 import static cn.iocoder.yudao.module.system.enums.ErrorCodeConstants.SMS_CHANNEL_NOT_EXISTS;
 
 /**
- * 短信渠道 Service 实现类
+ * SMS channel Service implementation class
  *
  * @author zzf
  */
@@ -46,35 +46,35 @@ public class SmsChannelServiceImpl implements SmsChannelService {
 
     @Override
     public void updateSmsChannel(SmsChannelSaveReqVO updateReqVO) {
-        // 校验存在
+        // Check existence
         validateSmsChannelExists(updateReqVO.getId());
-        // 更新
+        // Update
         SmsChannelDO updateObj = BeanUtils.toBean(updateReqVO, SmsChannelDO.class);
         smsChannelMapper.updateById(updateObj);
     }
 
     @Override
     public void deleteSmsChannel(Long id) {
-        // 校验存在
+        // Check existence
         validateSmsChannelExists(id);
-        // 校验是否有在使用该账号的模版
+        // Verify whether there is a template using this account
         if (smsTemplateService.getSmsTemplateCountByChannelId(id) > 0) {
             throw exception(SMS_CHANNEL_HAS_CHILDREN);
         }
-        // 删除
+        // Delete
         smsChannelMapper.deleteById(id);
     }
 
     @Override
     public void deleteSmsChannelList(List<Long> ids) {
-        // 1. 校验是否有在使用该账号的模版
+        // 1. Verify whether there is a template using the account
         ids.forEach(id -> {
             if (smsTemplateService.getSmsTemplateCountByChannelId(id) > 0) {
                 throw exception(SMS_CHANNEL_HAS_CHILDREN);
             }
         });
 
-        // 2. 批量删除
+        // 2. Batch deletion
         smsChannelMapper.deleteByIds(ids);
     }
 

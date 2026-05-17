@@ -8,94 +8,94 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * 菜单 Service 接口
+ * Menu Service API
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface MenuService {
 
     /**
-     * 创建菜单
+     * Create menu
      *
-     * @param createReqVO 菜单信息
-     * @return 创建出来的菜单编号
+     * @param createReqVO Menu information
+     * @return Created menu ID
      */
     Long createMenu(MenuSaveVO createReqVO);
 
     /**
-     * 更新菜单
+     * Update menu
      *
-     * @param updateReqVO 菜单信息
+     * @param updateReqVO Menu information
      */
     void updateMenu(MenuSaveVO updateReqVO);
 
     /**
-     * 删除菜单
+     * delete menu
      *
-     * @param id 菜单编号
+     * @param id menu ID
      */
     void deleteMenu(Long id);
 
     /**
-     * 批量删除菜单
+     * Batch delete menu
      *
-     * @param ids 菜单编号数组
+     * @param ids menu ID array
      */
     void deleteMenuList(List<Long> ids);
 
     /**
-     * 获得所有菜单列表
+     * Get a list of all menus
      *
-     * @return 菜单列表
+     * @return Menu list
      */
     List<MenuDO> getMenuList();
 
     /**
-     * 基于租户，筛选菜单列表
-     * 注意，如果是系统租户，返回的还是全菜单
+     * Filter menu list based on tenant
+     * Note that if it is a system tenant, the full menu will still be returned.
      *
-     * @param reqVO 筛选条件请求 VO
-     * @return 菜单列表
+     * @param reqVO Filter Request VO
+     * @return Menu list
      */
     List<MenuDO> getMenuListByTenant(MenuListReqVO reqVO);
 
     /**
-     * 过滤掉关闭的菜单及其子菜单
+     * Filter out closed menus and their submenus
      *
-     * @param list 菜单列表
-     * @return 过滤后的菜单列表
+     * @param list Menu list
+     * @return Filtered menu list
      */
     List<MenuDO> filterDisableMenus(List<MenuDO> list);
 
     /**
-     * 筛选菜单列表
+     * Filter menu list
      *
-     * @param reqVO 筛选条件请求 VO
-     * @return 菜单列表
+     * @param reqVO Filter Request VO
+     * @return Menu list
      */
     List<MenuDO> getMenuList(MenuListReqVO reqVO);
 
     /**
-     * 获得权限对应的菜单编号数组
+     * Get the menu ID array corresponding to the permission
      *
-     * @param permission 权限标识
-     * @return 数组
+     * @param permission Permission ID
+     * @return array
      */
     List<Long> getMenuIdListByPermissionFromCache(String permission);
 
     /**
-     * 获得菜单
+     * get menu
      *
-     * @param id 菜单编号
-     * @return 菜单
+     * @param id menu ID
+     * @return Menu
      */
     MenuDO getMenu(Long id);
 
     /**
-     * 获得菜单数组
+     * getmenu array
      *
-     * @param ids 菜单编号数组
-     * @return 菜单数组
+     * @param ids menu ID array
+     * @return menu array
      */
     List<MenuDO> getMenuList(Collection<Long> ids);
 

@@ -8,59 +8,59 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 限流 Redis DAO
+ * Current limiting Redis DAO
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @AllArgsConstructor
 public class RateLimiterRedisDAO {
 
-    /**
-     * 限流操作
-     *
-     * KEY 格式：rate_limiter:%s // 参数为 uuid
-     * VALUE 格式：String
-     * 过期时间：不固定
-     */
-    private static final String RATE_LIMITER = "rate_limiter:%s";
+ /**
+     * Current limiting operation
+ *
+     * KEY format: rate_limiter:%s // The parameter is uuid
+     * VALUE format: String
+     * Expiration time: not fixed
+ */
+ private static final String RATE_LIMITER = "rate_limiter:%s";
 
-    private final RedissonClient redissonClient;
+ private final RedissonClient redissonClient;
 
-    public Boolean tryAcquire(String key, int count, int time, TimeUnit timeUnit) {
-        // 1. 获得 RRateLimiter，并设置 rate 速率
-        RRateLimiter rateLimiter = getRRateLimiter(key, count, time, timeUnit);
-        // 2. 尝试获取 1 个
-        return rateLimiter.tryAcquire();
-    }
+ public Boolean tryAcquire(String key, int count, int time, TimeUnit timeUnit) {
+        // 1. Obtain RRateLimiter and set the rate rate
+ RRateLimiter rateLimiter = getRRateLimiter(key, count, time, timeUnit);
+        // 2. Try to get 1
+ return rateLimiter.tryAcquire();
+ }
 
-    private static String formatKey(String key) {
-        return String.format(RATE_LIMITER, key);
-    }
+ private static String formatKey(String key) {
+ return String.format(RATE_LIMITER, key);
+ }
 
-    private RRateLimiter getRRateLimiter(String key, long count, int time, TimeUnit timeUnit) {
-        String redisKey = formatKey(key);
-        RRateLimiter rateLimiter = redissonClient.getRateLimiter(redisKey);
-        long rateInterval = timeUnit.toSeconds(time);
-        Duration duration = Duration.ofSeconds(rateInterval);
-        // 1. 如果不存在，设置 rate 速率
-        RateLimiterConfig config = rateLimiter.getConfig();
-        if (config == null) {
-            rateLimiter.trySetRate(RateType.OVERALL, count, duration);
-            // 原因参见 https://t.zsxq.com/lcR0W
-            rateLimiter.expire(duration);
-            return rateLimiter;
-        }
-        // 2. 如果存在，并且配置相同，则直接返回
-        if (config.getRateType() == RateType.OVERALL
-                && Objects.equals(config.getRate(), count)
-                && Objects.equals(config.getRateInterval(), TimeUnit.SECONDS.toMillis(rateInterval))) {
-            return rateLimiter;
-        }
-        // 3. 如果存在，并且配置不同，则进行新建
-        rateLimiter.setRate(RateType.OVERALL, count, duration);
-        // 原因参见 https://t.zsxq.com/lcR0W
-        rateLimiter.expire(duration);
-        return rateLimiter;
-    }
+ private RRateLimiter getRRateLimiter(String key, long count, int time, TimeUnit timeUnit) {
+ String redisKey = formatKey(key);
+ RRateLimiter rateLimiter = redissonClient.getRateLimiter(redisKey);
+ long rateInterval = timeUnit.toSeconds(time);
+ Duration duration = Duration.ofSeconds(rateInterval);
+        // 1. If it does not exist, set the rate rate
+ RateLimiterConfig config = rateLimiter.getConfig();
+ if (config == null) {
+ rateLimiter.trySetRate(RateType.OVERALL, count, duration);
+            // For the reasons, see https://t.zsxq.com/lcR0W
+ rateLimiter.expire(duration);
+ return rateLimiter;
+ }
+        // 2. If it exists and the configuration is the same, return directly
+ if (config.getRateType() == RateType.OVERALL
+ && Objects.equals(config.getRate(), count)
+ && Objects.equals(config.getRateInterval(), TimeUnit.SECONDS.toMillis(rateInterval))) {
+ return rateLimiter;
+ }
+        // 3. If it exists and the configuration is different, create a new one
+ rateLimiter.setRate(RateType.OVERALL, count, duration);
+        // For the reasons, see https://t.zsxq.com/lcR0W
+ rateLimiter.expire(duration);
+ return rateLimiter;
+ }
 
 }

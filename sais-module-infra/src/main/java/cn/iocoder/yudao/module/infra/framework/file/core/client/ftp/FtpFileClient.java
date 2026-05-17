@@ -13,18 +13,18 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
 /**
- * Ftp 文件客户端
+ * FTP file client
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public class FtpFileClient extends AbstractFileClient<FtpFileClientConfig> {
 
     /**
-     * 连接超时时间，单位：毫秒
+     * Connection timeout, unit: milliseconds
      */
     private static final Long CONNECTION_TIMEOUT = 3000L;
     /**
-     * 读写超时时间，单位：毫秒
+     * Read and write timeout, unit: milliseconds
      */
     private static final Long SO_TIMEOUT = 10000L;
 
@@ -36,7 +36,7 @@ public class FtpFileClient extends AbstractFileClient<FtpFileClientConfig> {
 
     @Override
     protected void doInit() {
-        // 初始化 Ftp 对象：https://gitee.com/zhijiantianya/sar-cloud/pulls/207/
+        // Initialize FTP object: https://gitee.com/zhijiantianya/sar-cloud/pulls/207/
         FtpConfig ftpConfig = new FtpConfig(config.getHost(), config.getPort(), config.getUsername(), config.getPassword(),
                 CharsetUtil.CHARSET_UTF_8, null, null);
         ftpConfig.setConnectionTimeout(CONNECTION_TIMEOUT);
@@ -46,16 +46,16 @@ public class FtpFileClient extends AbstractFileClient<FtpFileClientConfig> {
 
     @Override
     public String upload(byte[] content, String path, String type) {
-        // 执行写入
+        // perform write
         String filePath = getFilePath(path);
         String fileName = FileUtil.getName(filePath);
         String dir = StrUtil.removeSuffix(filePath, fileName);
         reconnectIfTimeout();
-        boolean success = ftp.upload(dir, fileName, new ByteArrayInputStream(content)); // 不需要主动创建目录，ftp 内部已经处理（见源码）
+        boolean success = ftp.upload(dir, fileName, new ByteArrayInputStream(content)); // There is no need to actively create a directory, FTP has already processed it internally (see source code)
         if (!success) {
-            throw new FtpException(StrUtil.format("上传文件到目标目录 ({}) 失败", filePath));
+            throw new FtpException(StrUtil.format("Failed to upload file to target directory ({})", filePath));
         }
-        // 拼接返回路径
+        // splice return path
         return super.formatFileUrl(config.getDomain(), path);
     }
 

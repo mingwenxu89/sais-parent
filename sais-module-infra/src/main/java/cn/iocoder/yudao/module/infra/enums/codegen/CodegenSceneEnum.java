@@ -6,31 +6,31 @@ import lombok.Getter;
 import static cn.hutool.core.util.ArrayUtil.*;
 
 /**
- * 代码生成的场景枚举
+ * Code-generated scenario enumeration
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @AllArgsConstructor
 @Getter
 public enum CodegenSceneEnum {
 
-    ADMIN(1, "管理后台", "admin", ""),
-    APP(2, "用户 APP", "app", "App");
+    ADMIN(1, "Admin Backend", "admin", ""),
+    APP(2, "User App", "app", "App");
 
     /**
-     * 场景
+     * scene
      */
     private final Integer scene;
     /**
-     * 场景名
+     * scene name
      */
     private final String name;
     /**
-     * 基础包名
+     * Basic package name
      */
     private final String basePackage;
     /**
-     * Controller 和 VO 类的前缀
+     * Prefixes for Controller and VO classes
      */
     private final String prefixClass;
 

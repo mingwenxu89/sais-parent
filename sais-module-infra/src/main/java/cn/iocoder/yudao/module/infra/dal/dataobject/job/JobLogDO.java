@@ -11,12 +11,12 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 /**
- * 定时任务的执行日志
+ * Execution log of scheduled tasks
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @TableName("infra_job_log")
-@KeySequence("infra_job_log_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
+@KeySequence("infra_job_log_seq") // Primary key auto-increment for Oracle, PostgreSQL, Kingbase, DB2, H2 databases. If it is a database such as MySQL, you DO not need to write it.
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
@@ -27,57 +27,57 @@ import java.time.LocalDateTime;
 public class JobLogDO extends BaseDO {
 
     /**
-     * 日志编号
+     * Log ID
      */
     private Long id;
     /**
-     * 任务编号
+     * Task ID
      *
-     * 关联 {@link JobDO#getId()}
+     * Association {@link JobDO#getId()}
      */
     private Long jobId;
     /**
-     * 处理器的名字
+     * processor name
      *
-     * 冗余字段 {@link JobDO#getHandlerName()}
+     * Redundant fields {@link JobDO#getHandlerName()}
      */
     private String handlerName;
     /**
-     * 处理器的参数
+     * Processor parameters
      *
-     * 冗余字段 {@link JobDO#getHandlerParam()}
+     * Redundant fields {@link JobDO#getHandlerParam()}
      */
     private String handlerParam;
     /**
-     * 第几次执行
+     * How many times to execute
      *
-     * 用于区分是不是重试执行。如果是重试执行，则 index 大于 1
+     * Used to distinguish whether to retry execution. If the execution is retried, the index is greater than 1
      */
     private Integer executeIndex;
 
     /**
-     * 开始执行时间
+     * Start execution time
      */
     private LocalDateTime beginTime;
     /**
-     * 结束执行时间
+     * end execution time
      */
     private LocalDateTime endTime;
     /**
-     * 执行时长，单位：毫秒
+     * Execution time, unit: milliseconds
      */
     private Integer duration;
     /**
-     * 状态
+     * Status
      *
-     * 枚举 {@link JobLogStatusEnum}
+     * Enumeration {@link JobLogStatusEnum}
      */
     private Integer status;
     /**
-     * 结果数据
+     * Result data
      *
-     * 成功时，使用 {@link JobHandler#execute(String)} 的结果
-     * 失败时，使用 {@link JobHandler#execute(String)} 的异常堆栈
+     * On success, use the result of {@link JobHandler#execute(String)}
+     * On failure, use the exception stack of {@link JobHandler#execute(String)}
      */
     private String result;
 

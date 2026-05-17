@@ -1,6 +1,6 @@
 /**
- * 提供 POJO 类的实体转换
+ * Provides entity conversion for POJO classes
  *
- * 目前使用 MapStruct 框架
+ * Currently using MapStruct framework
  */
 package cn.iocoder.yudao.module.infra.convert;

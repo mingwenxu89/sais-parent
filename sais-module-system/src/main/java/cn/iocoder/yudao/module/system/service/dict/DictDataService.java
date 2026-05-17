@@ -10,107 +10,107 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * 字典数据 Service 接口
+ * Dict data Service API
  *
  * @author ruoyi
  */
 public interface DictDataService {
 
     /**
-     * 创建字典数据
+     * Create dict data
      *
-     * @param createReqVO 字典数据信息
-     * @return 字典数据编号
+     * @param createReqVO Dict data information
+     * @return Dict data ID
      */
     Long createDictData(DictDataSaveReqVO createReqVO);
 
     /**
-     * 更新字典数据
+     * Update dict data
      *
-     * @param updateReqVO 字典数据信息
+     * @param updateReqVO Dict data information
      */
     void updateDictData(DictDataSaveReqVO updateReqVO);
 
     /**
-     * 删除字典数据
+     * Delete dict data
      *
-     * @param id 字典数据编号
+     * @param id Dict data ID
      */
     void deleteDictData(Long id);
 
     /**
-     * 批量删除字典数据
+     * Delete dict data in batches
      *
-     * @param ids 字典数据编号列表
+     * @param ids Dict data ID list
      */
     void deleteDictDataList(List<Long> ids);
 
     /**
-     * 获得字典数据列表
+     * Get dict data list
      *
-     * @param status   状态
-     * @param dictType 字典类型
-     * @return 字典数据全列表
+     * @param status   Status
+     * @param dictType Dict Type
+     * @return Full list of dict data
      */
     List<DictDataDO> getDictDataList(@Nullable Integer status, @Nullable String dictType);
 
     /**
-     * 获得字典数据分页列表
+     * Get a paginated list of dict data
      *
-     * @param pageReqVO 分页请求
-     * @return 字典数据分页列表
+     * @param pageReqVO Pagination request
+     * @return Dict data paginated list
      */
     PageResult<DictDataDO> getDictDataPage(DictDataPageReqVO pageReqVO);
 
     /**
-     * 获得字典数据详情
+     * Get dict data details
      *
-     * @param id 字典数据编号
-     * @return 字典数据
+     * @param id Dict data ID
+     * @return Dict Data
      */
     DictDataDO getDictData(Long id);
 
     /**
-     * 获得指定字典类型的数据数量
+     * Get the ID of data of the specified dict type
      *
-     * @param dictType 字典类型
-     * @return 数据数量
+     * @param dictType Dict Type
+     * @return Data quantity
      */
     long getDictDataCountByDictType(String dictType);
 
     /**
-     * 校验字典数据们是否有效。如下情况，视为无效：
-     * 1. 字典数据不存在
-     * 2. 字典数据被禁用
+     * Verify that the dict data are valid. The following situations will be deemed invalid:
+     * 1. Dict data does not exist
+     * 2. Dict data is disabled
      *
-     * @param dictType 字典类型
-     * @param values   字典数据值的数组
+     * @param dictType Dict Type
+     * @param values   array of dict data values
      */
     void validateDictDataList(String dictType, Collection<String> values);
 
     /**
-     * 获得指定的字典数据
+     * Get the specified dict data
      *
-     * @param dictType 字典类型
-     * @param value    字典数据值
-     * @return 字典数据
+     * @param dictType Dict Type
+     * @param value    dict data value
+     * @return Dict Data
      */
     DictDataDO getDictData(String dictType, String value);
 
     /**
-     * 解析获得指定的字典数据，从缓存中
+     * Parse to obtain the specified dict data from the cache
      *
-     * @param dictType 字典类型
-     * @param label    字典数据标签
-     * @return 字典数据
+     * @param dictType Dict Type
+     * @param label    dict data tags
+     * @return Dict Data
      */
     DictDataDO parseDictData(String dictType, String label);
 
     /**
-     * 获得指定数据类型的字典数据列表
+     * Get a dict data list of the specified data type
      *
-     * @param dictType 字典类型
-     * @return 字典数据列表
+     * @param dictType Dict Type
+     * @return Dict data list
      */
     List<DictDataDO> getDictDataListByDictType(String dictType);
 

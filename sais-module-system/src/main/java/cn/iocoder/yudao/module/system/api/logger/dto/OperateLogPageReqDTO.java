@@ -4,7 +4,7 @@ import cn.iocoder.yudao.framework.common.pojo.PageParam;
 import lombok.Data;
 
 /**
- * 操作日志分页 Request DTO
+ * Operation log paging Request DTO
  *
  * @author HUIHUI
  */
@@ -12,16 +12,16 @@ import lombok.Data;
 public class OperateLogPageReqDTO extends PageParam {
 
     /**
-     * 模块类型
+     * module type
      */
     private String type;
     /**
-     * 模块数据编号
+     * Module data ID
      */
     private Long bizId;
 
     /**
-     * 用户编号
+     * User ID
      */
     private Long userId;
 

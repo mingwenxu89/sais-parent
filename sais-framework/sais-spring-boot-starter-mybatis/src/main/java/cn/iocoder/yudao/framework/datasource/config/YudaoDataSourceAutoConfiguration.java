@@ -10,31 +10,31 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
- * 数据库配置类
+ * Database configuration class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @AutoConfiguration
-@EnableTransactionManagement(proxyTargetClass = true) // 启动事务管理
+@EnableTransactionManagement(proxyTargetClass = true) // Start transaction management
 @EnableConfigurationProperties(DruidStatProperties.class)
 public class YudaoDataSourceAutoConfiguration {
 
-    /**
-     * 创建 DruidAdRemoveFilter 过滤器，过滤 common.js 的广告
-     */
-    @Bean
-    @ConditionalOnProperty(name = "spring.datasource.druid.stat-view-servlet.enabled", havingValue = "true")
-    public FilterRegistrationBean<DruidAdRemoveFilter> druidAdRemoveFilterFilter(DruidStatProperties properties) {
-        // 获取 druid web 监控页面的参数
-        DruidStatProperties.StatViewServlet config = properties.getStatViewServlet();
-        // 提取 common.js 的配置路径
-        String pattern = config.getUrlPattern() != null ? config.getUrlPattern() : "/druid/*";
-        String commonJsPattern = pattern.replaceAll("\\*", "js/common.js");
-        // 创建 DruidAdRemoveFilter Bean
-        FilterRegistrationBean<DruidAdRemoveFilter> registrationBean = new FilterRegistrationBean<>();
-        registrationBean.setFilter(new DruidAdRemoveFilter());
-        registrationBean.addUrlPatterns(commonJsPattern);
-        return registrationBean;
-    }
+ /**
+     * Create a DruidAdRemoveFilter filter to filter common.js ads
+ */
+ @Bean
+ @ConditionalOnProperty(name = "spring.datasource.druid.stat-view-servlet.enabled", havingValue = "true")
+ public FilterRegistrationBean<DruidAdRemoveFilter> druidAdRemoveFilterFilter(DruidStatProperties properties) {
+        // Get parameters of druID web monitoring page
+ DruidStatProperties.StatViewServlet config = properties.getStatViewServlet();
+        // Extract the configuration path of common.js
+ String pattern = config.getUrlPattern() != null ? config.getUrlPattern(): "/druid/*";
+ String commonJsPattern = pattern.replaceAll("\\*", "js/common.js");
+        // Create a DruidAdRemoveFilter bean
+ FilterRegistrationBean<DruidAdRemoveFilter> registrationBean = new FilterRegistrationBean<>();
+ registrationBean.setFilter(new DruidAdRemoveFilter());
+ registrationBean.addUrlPatterns(commonJsPattern);
+ return registrationBean;
+ }
 
 }

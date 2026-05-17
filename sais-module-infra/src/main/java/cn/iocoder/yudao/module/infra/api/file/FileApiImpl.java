@@ -7,9 +7,9 @@ import org.springframework.validation.annotation.Validated;
 import jakarta.annotation.Resource;
 
 /**
- * 文件 API 实现类
+ * File API implementation class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Service
 @Validated

@@ -10,9 +10,9 @@ import org.springframework.validation.annotation.Validated;
 import jakarta.annotation.Resource;
 
 /**
- * 短信验证码 API 实现类
+ * SMS captcha API implementation class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Service
 @Validated

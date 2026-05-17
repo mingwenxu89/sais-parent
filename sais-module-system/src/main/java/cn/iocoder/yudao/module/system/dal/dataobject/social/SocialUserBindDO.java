@@ -8,13 +8,13 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
 /**
- * 社交用户的绑定
- * 即 {@link SocialUserDO} 与 UserDO 的关联表
+ * Social user binding
+ * That is, the association table between {@link SocialUserDO} and UserDO
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @TableName(value = "system_social_user_bind", autoResultMap = true)
-@KeySequence("system_social_user_bind_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
+@KeySequence("system_social_user_bind_seq") // Primary key auto-increment for Oracle, PostgreSQL, Kingbase, DB2, H2 databases. If it is a database such as MySQL, you DO not need to write it.
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Builder
@@ -23,33 +23,33 @@ import lombok.*;
 public class SocialUserBindDO extends BaseDO {
 
     /**
-     * 编号
+     * ID
      */
     @TableId
     private Long id;
     /**
-     * 关联的用户编号
+     * Associated user ID
      *
-     * 关联 UserDO 的编号
+     * ID associated with UserDO
      */
     private Long userId;
     /**
-     * 用户类型
+     * User type
      *
-     * 枚举 {@link UserTypeEnum}
+     * Enumeration {@link UserTypeEnum}
      */
     private Integer userType;
 
     /**
-     * 社交平台的用户编号
+     * Social platform user ID
      *
-     * 关联 {@link SocialUserDO#getId()}
+     * Link {@link SocialUserDO#getId()}
      */
     private Long socialUserId;
     /**
-     * 社交平台的类型
+     * Types of social platforms
      *
-     * 冗余 {@link SocialUserDO#getType()}
+     * Redundant {@link SocialUserDO#getType()}
      */
     private Integer socialType;
 

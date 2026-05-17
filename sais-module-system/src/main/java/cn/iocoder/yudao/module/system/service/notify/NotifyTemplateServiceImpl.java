@@ -26,7 +26,7 @@ import static cn.iocoder.yudao.module.system.enums.ErrorCodeConstants.NOTIFY_TEM
 import static cn.iocoder.yudao.module.system.enums.ErrorCodeConstants.NOTIFY_TEMPLATE_NOT_EXISTS;
 
 /**
- * 站内信模版 Service 实现类
+ * Site message template Service implementation class
  *
  * @author xrcoder
  */
@@ -36,7 +36,7 @@ import static cn.iocoder.yudao.module.system.enums.ErrorCodeConstants.NOTIFY_TEM
 public class NotifyTemplateServiceImpl implements NotifyTemplateService {
 
     /**
-     * 正则表达式，匹配 {} 中的变量
+     * Regular expression to match variables in {}
      */
     private static final Pattern PATTERN_PARAMS = Pattern.compile("\\{(.*?)}");
 
@@ -45,10 +45,10 @@ public class NotifyTemplateServiceImpl implements NotifyTemplateService {
 
     @Override
     public Long createNotifyTemplate(NotifyTemplateSaveReqVO createReqVO) {
-        // 校验站内信编码是否重复
+        // Verify whether the message code in the site is repeated
         validateNotifyTemplateCodeDuplicate(null, createReqVO.getCode());
 
-        // 插入
+        // Insert
         NotifyTemplateDO notifyTemplate = BeanUtils.toBean(createReqVO, NotifyTemplateDO.class);
         notifyTemplate.setParams(parseTemplateContentParams(notifyTemplate.getContent()));
         notifyTemplateMapper.insert(notifyTemplate);
@@ -57,14 +57,14 @@ public class NotifyTemplateServiceImpl implements NotifyTemplateService {
 
     @Override
     @CacheEvict(cacheNames = RedisKeyConstants.NOTIFY_TEMPLATE,
-            allEntries = true) // allEntries 清空所有缓存，因为可能修改到 code 字段，不好清理
+            allEntries = true) // allEntries Clear all caches, because the code field may be modified and it is difficult to clean.
     public void updateNotifyTemplate(NotifyTemplateSaveReqVO updateReqVO) {
-        // 校验存在
+        // Check existence
         validateNotifyTemplateExists(updateReqVO.getId());
-        // 校验站内信编码是否重复
+        // Verify whether the message code in the site is repeated
         validateNotifyTemplateCodeDuplicate(updateReqVO.getId(), updateReqVO.getCode());
 
-        // 更新
+        // Update
         NotifyTemplateDO updateObj = BeanUtils.toBean(updateReqVO, NotifyTemplateDO.class);
         updateObj.setParams(parseTemplateContentParams(updateObj.getContent()));
         notifyTemplateMapper.updateById(updateObj);
@@ -77,17 +77,17 @@ public class NotifyTemplateServiceImpl implements NotifyTemplateService {
 
     @Override
     @CacheEvict(cacheNames = RedisKeyConstants.NOTIFY_TEMPLATE,
-            allEntries = true) // allEntries 清空所有缓存，因为 id 不是直接的缓存 code，不好清理
+            allEntries = true) // allEntries Clear all caches, because the id is not a direct cache code and is not easy to clean.
     public void deleteNotifyTemplate(Long id) {
-        // 校验存在
+        // Check existence
         validateNotifyTemplateExists(id);
-        // 删除
+        // Delete
         notifyTemplateMapper.deleteById(id);
     }
 
     @Override
     @CacheEvict(cacheNames = RedisKeyConstants.NOTIFY_TEMPLATE,
-            allEntries = true) // allEntries 清空所有缓存，因为 id 不是直接的缓存 code，不好清理
+            allEntries = true) // allEntries Clear all caches, because the id is not a direct cache code and is not easy to clean.
     public void deleteNotifyTemplateList(List<Long> ids) {
         notifyTemplateMapper.deleteByIds(ids);
     }
@@ -121,7 +121,7 @@ public class NotifyTemplateServiceImpl implements NotifyTemplateService {
         if (template == null) {
             return;
         }
-        // 如果 id 为空，说明不用比较是否为相同 id 的字典类型
+        // If id is empty, it means that there is no need to compare whether it is a dict type with the same id.
         if (id == null) {
             throw exception(NOTIFY_TEMPLATE_CODE_DUPLICATE, code);
         }
@@ -131,11 +131,11 @@ public class NotifyTemplateServiceImpl implements NotifyTemplateService {
     }
 
     /**
-     * 格式化站内信内容
+     * Format content of in-site messages
      *
-     * @param content 站内信模板的内容
-     * @param params  站内信内容的参数
-     * @return 格式化后的内容
+     * @param content Contents of site letter template
+     * @param params  Parameters of site message content
+     * @return Formatted content
      */
     @Override
     public String formatNotifyTemplateContent(String content, Map<String, Object> params) {

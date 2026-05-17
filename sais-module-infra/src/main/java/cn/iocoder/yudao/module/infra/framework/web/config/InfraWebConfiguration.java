@@ -6,15 +6,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * infra 模块的 web 组件的 Configuration
+ * Configuration of the web component of the infra module
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Configuration(proxyBeanMethods = false)
 public class InfraWebConfiguration {
 
     /**
-     * infra 模块的 API 分组
+     * API grouping for infra module
      */
     @Bean
     public GroupedOpenApi infraGroupedOpenApi() {

@@ -22,33 +22,33 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * 基于钉钉 WebHook 实现的调试的短信客户端实现类
+ * SMS client implementation class for debugging based on DingTalk WebHook
  *
- * 考虑到省钱，我们使用钉钉 WebHook 模拟发送短信，方便调试。
+ * Considering saving money, we use DingTalk WebHook to simulate sending text messages to facilitate debugging.
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public class DebugDingTalkSmsClient extends AbstractSmsClient {
 
     public DebugDingTalkSmsClient(SmsChannelProperties properties) {
         super(properties);
-        Assert.notEmpty(properties.getApiKey(), "apiKey 不能为空");
-        Assert.notEmpty(properties.getApiSecret(), "apiSecret 不能为空");
+        Assert.notEmpty(properties.getApiKey(), "apiKey cannot be empty");
+        Assert.notEmpty(properties.getApiSecret(), "apiSecret cannot be empty");
     }
 
     @Override
     public SmsSendRespDTO sendSms(Long sendLogId, String mobile,
                                   String apiTemplateId, List<KeyValue<String, Object>> templateParams) throws Throwable {
-        // 构建请求
+        // Build request
         String url = buildUrl("robot/send");
         Map<String, Object> params = new HashMap<>();
         params.put("msgtype", "text");
-        String content = String.format("【模拟短信】\n手机号：%s\n短信日志编号：%d\n模板参数：%s",
+        String content = String.format("[Simulated SMS]\nMobile phone ID: %s\nSMS log ID: %d\nTemplate parameters: %s",
                 mobile, sendLogId, MapUtils.convertMap(templateParams));
         params.put("text", MapUtil.builder().put("content", content).build());
-        // 执行请求
+        // Execute request
         String responseText = HttpUtil.post(url, JsonUtils.toJsonString(params));
-        // 解析结果
+        // Parse results
         Map<?, ?> responseObj = JsonUtils.parseObject(responseText, Map.class);
         String errorCode = MapUtil.getStr(responseObj, "errcode");
         return new SmsSendRespDTO().setSuccess(Objects.equals(errorCode, "0")).setSerialNo(StrUtil.uuid())
@@ -56,30 +56,30 @@ public class DebugDingTalkSmsClient extends AbstractSmsClient {
     }
 
     /**
-     * 构建请求地址
+     * Build request address
      *
-     * 参见 <a href="https://developers.dingtalk.com/document/app/custom-robot-access/title-nfv-794-g71">文档</a>
+     * See <a href="https://developers.dingtalk.com/document/app/custom-robot-access/title-nfv-794-g71">Documentation</a>
      *
-     * @param path 请求路径
-     * @return 请求地址
+     * @param path Request path
+     * @return Request address
      */
     @SuppressWarnings("SameParameterValue")
     private String buildUrl(String path) {
-        // 生成 timestamp
+        // Generate timestamp
         long timestamp = System.currentTimeMillis();
-        // 生成 sign
+        // Generate sign
         String secret = properties.getApiSecret();
         String stringToSign = timestamp + "\n" + secret;
         byte[] signData = DigestUtil.hmac(HmacAlgorithm.HmacSHA256, StrUtil.bytes(secret)).digest(stringToSign);
         String sign = Base64.encode(signData);
-        // 构建最终 URL
+        // Build the final URL
         return String.format("https://oapi.dingtalk.com/%s?access_token=%s&timestamp=%d&sign=%s",
                 path, properties.getApiKey(), timestamp, sign);
     }
 
     @Override
     public List<SmsReceiveRespDTO> parseSmsReceiveStatus(String text) {
-        throw new UnsupportedOperationException("模拟短信客户端，暂时无需解析回调");
+        throw new UnsupportedOperationException("Simulate SMS client, no need to parse callback for now");
     }
 
     @Override

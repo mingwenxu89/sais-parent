@@ -23,9 +23,9 @@ import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionU
 import static cn.iocoder.yudao.module.system.enums.ErrorCodeConstants.*;
 
 /**
- * 租户套餐 Service 实现类
+ * Tenant package Service implementation class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Service
 @Validated
@@ -35,31 +35,31 @@ public class TenantPackageServiceImpl implements TenantPackageService {
     private TenantPackageMapper tenantPackageMapper;
 
     @Resource
-    @Lazy // 避免循环依赖的报错
+    @Lazy // Avoid circular dependency errors
     private TenantService tenantService;
 
     @Override
     public Long createTenantPackage(TenantPackageSaveReqVO createReqVO) {
-        // 校验套餐名是否重复
+        // Verify whether the package name is duplicated
         validateTenantPackageNameUnique(null, createReqVO.getName());
-        // 插入
+        // Insert
         TenantPackageDO tenantPackage = BeanUtils.toBean(createReqVO, TenantPackageDO.class);
         tenantPackageMapper.insert(tenantPackage);
-        // 返回
+        // Return
         return tenantPackage.getId();
     }
 
     @Override
-    @DSTransactional // 多数据源，使用 @DSTransactional 保证本地事务，以及数据源的切换
+    @DSTransactional // Multiple data sources, using @DSTransactional Ensure local transactions and data source switching
     public void updateTenantPackage(TenantPackageSaveReqVO updateReqVO) {
-        // 校验存在
+        // Check existence
         TenantPackageDO tenantPackage = validateTenantPackageExists(updateReqVO.getId());
-        // 校验套餐名是否重复
+        // Verify whether the package name is duplicated
         validateTenantPackageNameUnique(updateReqVO.getId(), updateReqVO.getName());
-        // 更新
+        // Update
         TenantPackageDO updateObj = BeanUtils.toBean(updateReqVO, TenantPackageDO.class);
         tenantPackageMapper.updateById(updateObj);
-        // 如果菜单发生变化，则修改每个租户的菜单
+        // Modify the menu for each tenant if the menu changes
         if (!CollUtil.isEqualList(tenantPackage.getMenuIds(), updateReqVO.getMenuIds())) {
             List<TenantDO> tenants = tenantService.getTenantListByPackageId(tenantPackage.getId());
             tenants.forEach(tenant -> tenantService.updateTenantRoleMenu(tenant.getId(), updateReqVO.getMenuIds()));
@@ -68,24 +68,24 @@ public class TenantPackageServiceImpl implements TenantPackageService {
 
     @Override
     public void deleteTenantPackage(Long id) {
-        // 校验存在
+        // Check existence
         validateTenantPackageExists(id);
-        // 校验正在使用
+        // Check is in use
         validateTenantUsed(id);
-        // 删除
+        // Delete
         tenantPackageMapper.deleteById(id);
     }
 
     @Override
     public void deleteTenantPackageList(List<Long> ids) {
-        // 1. 校验是否有租户正在使用该套餐
+        // 1. Verify whether any tenant is using the package
         for (Long id : ids) {
             if (tenantService.getTenantCountByPackageId(id) > 0) {
                 throw exception(TENANT_PACKAGE_USED);
             }
         }
 
-        // 2. 批量删除
+        // 2. Batch deletion
         tenantPackageMapper.deleteByIds(ids);
     }
 
@@ -140,7 +140,7 @@ public class TenantPackageServiceImpl implements TenantPackageService {
         if (tenantPackage == null) {
             return;
         }
-        // 如果 id 为空，说明不用比较是否为相同 id 的用户
+        // If the id is empty, it means there is no need to compare whether they are users with the same id.
         if (id == null) {
             throw exception(TENANT_PACKAGE_NAME_DUPLICATE);
         }

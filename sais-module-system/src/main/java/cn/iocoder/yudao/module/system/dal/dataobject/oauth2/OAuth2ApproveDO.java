@@ -11,52 +11,52 @@ import lombok.EqualsAndHashCode;
 import java.time.LocalDateTime;
 
 /**
- * OAuth2 批准 DO
+ * OAuth2 approve DO
  *
- * 用户在 sso.vue 界面时，记录接受的 scope 列表
+ * When the user is in the sso.vue API, record the accepted scope list
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @TableName(value = "system_oauth2_approve", autoResultMap = true)
-@KeySequence("system_oauth2_approve_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
+@KeySequence("system_oauth2_approve_seq") // Primary key auto-increment for Oracle, PostgreSQL, Kingbase, DB2, H2 databases. If it is a database such as MySQL, you DO not need to write it.
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class OAuth2ApproveDO extends BaseDO {
 
     /**
-     * 编号，数据库自增
+     * ID, automatically incremented by the database
      */
     @TableId
     private Long id;
     /**
-     * 用户编号
+     * User ID
      */
     private Long userId;
     /**
-     * 用户类型
+     * User type
      *
-     * 枚举 {@link UserTypeEnum}
+     * Enumeration {@link UserTypeEnum}
      */
     private Integer userType;
     /**
-     * 客户端编号
+     * client ID
      *
-     * 关联 {@link OAuth2ClientDO#getId()}
+     * Association {@link OAuth2ClientDO#getId()}
      */
     private String clientId;
     /**
-     * 授权范围
+     * Authorization scope
      */
     private String scope;
     /**
-     * 是否接受
+     * DO you accept
      *
-     * true - 接受
-     * false - 拒绝
+     * true - accept
+     * false - reject
      */
     private Boolean approved;
     /**
-     * 过期时间
+     * Expiration time
      */
     private LocalDateTime expiresTime;
 

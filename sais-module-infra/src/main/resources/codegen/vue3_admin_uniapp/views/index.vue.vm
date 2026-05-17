@@ -1,16 +1,16 @@
 <template>
   <view class="yd-page-container">
-    <!-- 顶部导航栏 -->
+    <!-- Top navigation bar -->
     <wd-navbar
-      title="${table.classComment}管理"
+      title="${table.classComment} management"
       left-arrow placeholder safe-area-inset-top fixed
       @click-left="handleBack"
     />
 
-    <!-- 搜索组件 -->
+    <!-- Search component -->
     <SearchForm @search="handleQuery" @reset="handleReset" />
 
-    <!-- ${table.classComment}列表 -->
+    <!-- ${table.classComment} list -->
     <view class="p-24rpx">
       <view
         v-for="item in list"
@@ -70,9 +70,9 @@
         </view>
       </view>
 
-      <!-- 加载更多 -->
+      <!-- Load more -->
       <view v-if="loadMoreState !== 'loading' && list.length === 0" class="py-100rpx text-center">
-        <wd-status-tip image="content" tip="暂无${table.classComment}数据" />
+        <wd-status-tip image="content" tip="No ${table.classComment} data yet" />
       </view>
       <wd-loadmore
         v-if="list.length > 0"
@@ -81,7 +81,7 @@
       />
     </view>
 
-    <!-- 新增按钮 -->
+    <!-- Add button -->
     <wd-fab
       v-if="hasAccessByCodes(['${permissionPrefix}:create'])"
       position="right-bottom"
@@ -138,12 +138,12 @@ const queryParams = ref({
   pageSize: 10,
 })
 
-/** 返回上一页 */
+/** Return to previous page */
 function handleBack() {
   navigateBackPlus()
 }
 
-/** 查询${table.classComment}列表 */
+/** Query ${table.classComment} list */
 async function getList() {
   loadMoreState.value = 'loading'
   try {
@@ -157,7 +157,7 @@ async function getList() {
   }
 }
 
-/** 搜索按钮操作 */
+/** Search button action */
 function handleQuery(data?: Record<string, any>) {
   queryParams.value = {
     ...data,
@@ -168,12 +168,12 @@ function handleQuery(data?: Record<string, any>) {
   getList()
 }
 
-/** 重置按钮操作 */
+/** reset button action */
 function handleReset() {
   handleQuery()
 }
 
-/** 加载更多 */
+/** load more */
 function loadMore() {
   if (loadMoreState.value === 'finished') {
     return
@@ -182,26 +182,26 @@ function loadMore() {
   getList()
 }
 
-/** 新增${table.classComment} */
+/** Added ${table.classComment} */
 function handleAdd() {
   uni.navigateTo({
     url: '/pages-${table.moduleName}/${table.businessName}/form/index',
   })
 }
 
-/** 查看详情 */
+/** View details */
 function handleDetail(item: ${simpleClassName}) {
   uni.navigateTo({
     url: `/pages-${table.moduleName}/${table.businessName}/detail/index?id=#[[${]]#item.${primaryColumn.javaField}#[[}]]#`,
   })
 }
 
-/** 触底加载更多 */
+/** Bottoming Loading More */
 onReachBottom(() => {
   loadMore()
 })
 
-/** 初始化 */
+/** initialization */
 onMounted(() => {
   getList()
 })

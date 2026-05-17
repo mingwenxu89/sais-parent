@@ -1,4 +1,4 @@
 /**
- * infra 模块的 web 配置
+ * web configuration for infra module
  */
 package cn.iocoder.yudao.module.infra.framework.web;

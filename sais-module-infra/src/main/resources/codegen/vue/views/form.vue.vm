@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <!-- 对话框(添加 / 修改) -->
+    <!-- Dialog (Add/Modify) -->
     <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="45%" v-dialogDrag append-to-body>
       <el-form ref="formRef" :model="formData" :rules="formRules" v-loading="formLoading" label-width="100px">
           #foreach($column in $columns)
@@ -15,77 +15,77 @@
                         v-model="formData.${javaField}"
                         :options="${classNameVar}Tree"
                         :normalizer="normalizer"
-                        placeholder="请选择${comment}"
+                        placeholder="Please select ${comment}"
                       />
                     </el-form-item>
-                  #elseif ($column.htmlType == "input" && !$column.primaryKey)## 忽略主键，不用在表单里
+                  #elseif ($column.htmlType == "input" && !$column.primaryKey)## Ignore the primary key, DO not use it in the form
                     <el-form-item label="${comment}" prop="${javaField}">
-                      <el-input v-model="formData.${javaField}" placeholder="请输入${comment}" />
+                      <el-input v-model="formData.${javaField}" placeholder="Please enter ${comment}" />
                     </el-form-item>
-                  #elseif($column.htmlType == "imageUpload")## 图片上传
+                  #elseif($column.htmlType == "imageUpload")## Image upload
                       #set ($hasImageUploadColumn = true)
                     <el-form-item label="${comment}">
                       <ImageUpload v-model="formData.${javaField}"/>
                     </el-form-item>
-                  #elseif($column.htmlType == "fileUpload")## 文件上传
+                  #elseif($column.htmlType == "fileUpload")## File upload
                       #set ($hasFileUploadColumn = true)
                     <el-form-item label="${comment}">
                       <FileUpload v-model="formData.${javaField}"/>
                     </el-form-item>
-                  #elseif($column.htmlType == "editor")## 文本编辑器
+                  #elseif($column.htmlType == "editor")## text editor
                       #set ($hasEditorColumn = true)
                     <el-form-item label="${comment}">
                       <Editor v-model="formData.${javaField}" :min-height="192"/>
                     </el-form-item>
-                  #elseif($column.htmlType == "select")## 下拉框
+                  #elseif($column.htmlType == "select")## Select box
                     <el-form-item label="${comment}" prop="${javaField}">
-                      <el-select v-model="formData.${javaField}" placeholder="请选择${comment}">
-                          #if ("" != $dictType)## 有数据字典
+                      <el-select v-model="formData.${javaField}" placeholder="Please select ${comment}">
+                          #if ("" != $dictType)## There is a data dict
                             <el-option v-for="dict in this.getDictDatas(DICT_TYPE.$dictType.toUpperCase())"
                                        :key="dict.value" :label="dict.label" #if ($column.javaType == "Integer" || $column.javaType == "Long"):value="parseInt(dict.value)"#else:value="dict.value"#end />
-                          #else##没数据字典
-                            <el-option label="请选择字典生成" value="" />
+                          #else##No data dict
+                            <el-option label="Please select dict generation" value="" />
                           #end
                       </el-select>
                     </el-form-item>
-                  #elseif($column.htmlType == "checkbox")## 多选框
+                  #elseif($column.htmlType == "checkbox")## checkbox
                     <el-form-item label="${comment}" prop="${javaField}">
                       <el-checkbox-group v-model="formData.${javaField}">
-                          #if ("" != $dictType)## 有数据字典
+                          #if ("" != $dictType)## There is a data dict
                             <el-checkbox v-for="dict in this.getDictDatas(DICT_TYPE.$dictType.toUpperCase())"
                                          :key="dict.value" #if($column.javaType == "Integer" || $column.javaType == "Long"):label="parseInt(dict.value)"#else:label="dict.value"#end>{{dict.label}}</el-checkbox>
-                          #else##没数据字典
-                            <el-checkbox>请选择字典生成</el-checkbox>
+                          #else##No data dict
+                            <el-checkbox>Please select dict generation</el-checkbox>
                           #end
                       </el-checkbox-group>
                     </el-form-item>
-                  #elseif($column.htmlType == "radio")## 单选框
+                  #elseif($column.htmlType == "radio")## Radio button
                     <el-form-item label="${comment}" prop="${javaField}">
                       <el-radio-group v-model="formData.${javaField}">
-                          #if ("" != $dictType)## 有数据字典
+                          #if ("" != $dictType)## There is a data dict
                             <el-radio v-for="dict in this.getDictDatas(DICT_TYPE.$dictType.toUpperCase())"
                                       :key="dict.value" #if($column.javaType == "Integer" || $column.javaType == "Long"):label="parseInt(dict.value)"
                                       #else:label="dict.value"#end>{{dict.label}}</el-radio>
-                          #else##没数据字典
-                            <el-radio label="1">请选择字典生成</el-radio>
+                          #else##No data dict
+                            <el-radio label="1">Please select dict generation</el-radio>
                           #end
                       </el-radio-group>
                     </el-form-item>
-                  #elseif($column.htmlType == "datetime")## 时间框
+                  #elseif($column.htmlType == "datetime")## time box
                     <el-form-item label="${comment}" prop="${javaField}">
-                      <el-date-picker clearable v-model="formData.${javaField}" type="date" value-format="timestamp" placeholder="选择${comment}" />
+                      <el-date-picker clearable v-model="formData.${javaField}" type="date" value-format="timestamp" placeholder="Select ${comment}" />
                     </el-form-item>
-                  #elseif($column.htmlType == "textarea")## 文本框
+                  #elseif($column.htmlType == "textarea")## Text input
                     <el-form-item label="${comment}" prop="${javaField}">
-                      <el-input v-model="formData.${javaField}" type="textarea" placeholder="请输入内容" />
+                      <el-input v-model="formData.${javaField}" type="textarea" placeholder="Please enter content" />
                     </el-form-item>
                   #end
               #end
           #end
       </el-form>
-        ## 特殊：主子表专属逻辑
+        ## Special: Exclusive logic for master and sub-tables
         #if ( $table.templateType == 10 || $table.templateType == 12 )
-          <!-- 子表的表单 -->
+          <!-- Form of subtable -->
           <el-tabs v-model="subTabsName">
               #foreach ($subTable in $subTables)
                   #set ($index = $foreach.count - 1)
@@ -99,8 +99,8 @@
           </el-tabs>
         #end
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm" :disabled="formLoading">确 定</el-button>
-        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="submitForm" :disabled="formLoading">OK</el-button>
+        <el-button @click="dialogVisible = false">Cancel</el-button>
       </div>
     </el-dialog>
   </div>
@@ -117,12 +117,12 @@
   #if ($hasEditorColumn)
   import Editor from '@/components/Editor';
   #end
-  ## 特殊：树表专属逻辑
+  ## Special: tree table exclusive logic
   #if ( $table.templateType == 2 )
   import TreeSelect from "@riophae/vue-treeselect";
   import "@riophae/vue-treeselect/dist/vue-treeselect.css";
   #end
-  ## 特殊：主子表专属逻辑
+  ## Special: Exclusive logic for master and sub-tables
   #if ( $table.templateType == 10 || $table.templateType == 12 )
       #foreach ($subSimpleClassName in $subSimpleClassNames)
       import ${subSimpleClassName}Form from './components/${subSimpleClassName}Form.vue'
@@ -140,11 +140,11 @@
         #if ($hasEditorColumn)
           Editor,
         #end
-        ## 特殊：树表专属逻辑
+        ## Special: tree table exclusive logic
         #if ( $table.templateType == 2 )
           TreeSelect,
         #end
-        ## 特殊：主子表专属逻辑
+        ## Special: Exclusive logic for master and sub-tables
         #if ( $table.templateType == 10 || $table.templateType == 12 )
             #foreach ($subSimpleClassName in $subSimpleClassNames)
                ${subSimpleClassName}Form,
@@ -153,13 +153,13 @@
     },
     data() {
       return {
-        // 弹出层标题
+        // Popup layer title
         dialogTitle: "",
-        // 是否显示弹出层
+        // Whether to display popup layer
         dialogVisible: false,
-        // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
+        // The form is loading: 1) Data loading during modification; 2) Submit button disabled
         formLoading: false,
-        // 表单参数
+        // form parameters
         formData: {
             #foreach ($column in $columns)
                 #if ($column.createOperation || $column.updateOperation)
@@ -171,63 +171,63 @@
                 #end
             #end
         },
-        // 表单校验
+        // form validation
         formRules: {
             #foreach ($column in $columns)
-                #if (($column.createOperation || $column.updateOperation) && !$column.nullable && !${column.primaryKey})## 创建或者更新操作 && 要求非空 && 非主键
+                #if (($column.createOperation || $column.updateOperation) && !$column.nullable && !${column.primaryKey})## Create or update operations && Requires non-empty && non-primary key
                     #set($comment=$column.columnComment)
-                        $column.javaField: [{ required: true, message: '${comment}不能为空', trigger: #if($column.htmlType == 'select')'change'#else'blur'#end }],
+                        $column.javaField: [{ required: true, message: '${comment} cannot be empty', trigger: #if($column.htmlType == 'select')'change'#else'blur'#end }],
                 #end
             #end
         },
-          ## 特殊：树表专属逻辑
+          ## Special: tree table exclusive logic
           #if ( $table.templateType == 2 )
-             ${classNameVar}Tree: [], // 树形结构
+             ${classNameVar}Tree: [], // tree structure
           #end
-        ## 特殊：主子表专属逻辑
+        ## Special: Exclusive logic for master and sub-tables
         #if ( $table.templateType == 10 || $table.templateType == 12 )
         #if ( $subTables && $subTables.size() > 0 )
-            /** 子表的表单 */
+            /** subtable form */
              subTabsName: '$subClassNameVars.get(0)'
         #end
         #end
       };
     },
     methods: {
-      /** 打开弹窗 */
+      /** Open pop-up window */
      async open(id) {
         this.dialogVisible = true;
         this.reset();
-        // 修改时，设置数据
+        // When modifying, set data
         if (id) {
           this.formLoading = true;
           try {
             const res = await ${simpleClassName}Api.get${simpleClassName}(id);
             this.formData = res.data;
-            this.title = "修改${table.classComment}";
+            this.title = "Modify ${table.classComment}";
           } finally {
             this.formLoading = false;
           }
         }
-        this.title = "新增${table.classComment}";
-        ## 特殊：树表专属逻辑
+        this.title = "Added ${table.classComment}";
+        ## Special: tree table exclusive logic
         #if ( $table.templateType == 2 )
         await this.get${simpleClassName}Tree();
         #end
       },
-      /** 提交按钮 */
+      /** submit button */
       async submitForm() {
-        // 校验主表
+        // Verify main table
         await this.$refs["formRef"].validate();
-          ## 特殊：主子表专属逻辑
+          ## Special: Exclusive logic for master and sub-tables
           #if ( $table.templateType == 10 || $table.templateType == 12 )
               #if ( $subTables && $subTables.size() > 0 )
-                // 校验子表
+                // syndrome table
                   #foreach ($subTable in $subTables)
                       #set ($index = $foreach.count - 1)
                       #set ($subClassNameVar = $subClassNameVars.get($index))
                     try {
-                      ## 代码生成后会替换为正确的 refs
+                      ## Code generation will replace it with the correct refs
                       await this.refs['${subClassNameVar}FormRef'].validate();
                     } catch (e) {
                       this.subTabsName = '${subClassNameVar}';
@@ -239,10 +239,10 @@
         this.formLoading = true;
         try {
           const data = this.formData;
-        ## 特殊：主子表专属逻辑
+        ## Special: Exclusive logic for master and sub-tables
         #if ( $table.templateType == 10 || $table.templateType == 12 )
         #if ( $subTables && $subTables.size() > 0 )
-            // 拼接子表的数据
+            // Splicing data from subtables
             #foreach ($subTable in $subTables)
                 #set ($index = $foreach.count - 1)
                 #set ($subClassNameVar = $subClassNameVars.get($index))
@@ -250,37 +250,37 @@
             #end
         #end
         #end
-          // 修改的提交
+          // modified commit
           if (data.${primaryColumn.javaField}) {
             await ${simpleClassName}Api.update${simpleClassName}(data);
-            this.#[[$modal]]#.msgSuccess("修改成功");
+            this.#[[$modal]]#.msgSuccess("Modification successful");
             this.dialogVisible = false;
             this.#[[$]]#emit('success');
             return;
           }
-          // 添加的提交
+          // Added commit
           await ${simpleClassName}Api.create${simpleClassName}(data);
-          this.#[[$modal]]#.msgSuccess("新增成功");
+          this.#[[$modal]]#.msgSuccess("Added successfully");
           this.dialogVisible = false;
           this.#[[$]]#emit('success');
         } finally {
           this.formLoading = false;
         }
       },
-        ## 特殊：树表专属逻辑
+        ## Special: tree table exclusive logic
         #if ( $table.templateType == 2 )
-          /** 获得${table.classComment}树 */
+          /** Get ${table.classComment} tree */
          async get${simpleClassName}Tree() {
             this.${classNameVar}Tree = [];
             const res = await ${simpleClassName}Api.get${simpleClassName}List();
-            const root = { id: 0, name: '顶级${table.classComment}', children: [] };
+            const root = { id: 0, name: 'Top ${table.classComment}', children: [] };
             root.children = this.handleTree(res.data, 'id', '${treeParentColumn.javaField}')
             this.${classNameVar}Tree.push(root)
           },
         #end
-        ## 特殊：树表专属逻辑
+        ## Special: tree table exclusive logic
         #if ( $table.templateType == 2 )
-          /** 转换${table.classComment}数据结构 */
+          /** Convert ${table.classComment} data structure */
           normalizer(node) {
             if (node.children && !node.children.length) {
               delete node.children;
@@ -300,7 +300,7 @@
               #end
           },
         #end
-      /** 表单重置 */
+      /** form reset */
       reset() {
         this.formData = {
             #foreach ($column in $columns)

@@ -8,54 +8,54 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 /**
- * 登录日志创建 Request DTO
+ * Login log creation Request DTO
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Data
 public class LoginLogCreateReqDTO {
 
     /**
-     * 日志类型
+     * Log type
      */
-    @NotNull(message = "日志类型不能为空")
+    @NotNull(message = "Log type cannot be empty")
     private Integer logType;
     /**
-     * 链路追踪编号
+     * link tracking ID
      */
     private String traceId;
 
     /**
-     * 用户编号
+     * User ID
      */
     private Long userId;
     /**
-     * 用户类型
+     * User type
      */
-    @NotNull(message = "用户类型不能为空")
+    @NotNull(message = "User type cannot be empty")
     private Integer userType;
     /**
-     * 用户账号
+     * User account
      *
-     * 不再强制校验 username 非空，因为 Member 社交登录时，此时暂时没有 username(mobile）！
+     * It is no longer mandatory to verify that username is not empty, because when Member social login, there is currently no username (mobile)!
      */
     private String username;
 
     /**
-     * 登录结果
+     * Login results
      */
-    @NotNull(message = "登录结果不能为空")
+    @NotNull(message = "Login result cannot be empty")
     private Integer result;
 
     /**
-     * 用户 IP
+     * User IP
      */
-    @NotEmpty(message = "用户 IP 不能为空")
+    @NotEmpty(message = "User IP cannot be empty")
     private String userIp;
     /**
-     * 浏览器 UserAgent
+     * Browser UserAgent
      *
-     * 允许空，原因：Job 过期登出时，是无法传递 UserAgent 的
+     * Allow empty, reason: When the job expires and logs out, the UserAgent cannot be passed
      */
     private String userAgent;
 

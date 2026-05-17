@@ -8,52 +8,52 @@ import cn.iocoder.yudao.module.system.dal.dataobject.notice.NoticeDO;
 import java.util.List;
 
 /**
- * 通知公告 Service 接口
+ * Notification Announcement Service API
  */
 public interface NoticeService {
 
     /**
-     * 创建通知公告
+     * Create notification announcement
      *
-     * @param createReqVO 通知公告
-     * @return 编号
+     * @param createReqVO Notices and Announcements
+     * @return ID
      */
     Long createNotice(NoticeSaveReqVO createReqVO);
 
     /**
-     * 更新通知公告
+     * Update notification announcement
      *
-     * @param reqVO 通知公告
+     * @param reqVO Notices and Announcements
      */
     void updateNotice(NoticeSaveReqVO reqVO);
 
     /**
-     * 删除通知公告
+     * Delete notification announcement
      *
-     * @param id 编号
+     * @param id ID
      */
     void deleteNotice(Long id);
 
     /**
-     * 批量删除通知公告
+     * Bulk deletion notification announcement
      *
-     * @param ids 编号列表
+     * @param ids ID list
      */
     void deleteNoticeList(List<Long> ids);
 
     /**
-     * 获得通知公告分页列表
+     * Get a paginated list of notifications and announcements
      *
-     * @param reqVO 分页条件
-     * @return 部门分页列表
+     * @param reqVO Paging conditions
+     * @return Department paging list
      */
     PageResult<NoticeDO> getNoticePage(NoticePageReqVO reqVO);
 
     /**
-     * 获得通知公告
+     * Get notification announcements
      *
-     * @param id 编号
-     * @return 通知公告
+     * @param id ID
+     * @return Notices and Announcements
      */
     NoticeDO getNotice(Long id);
 

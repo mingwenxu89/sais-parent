@@ -7,19 +7,19 @@ import cn.iocoder.yudao.framework.idempotent.core.keyresolver.IdempotentKeyResol
 import org.aspectj.lang.JoinPoint;
 
 /**
- * 默认（全局级别）幂等 Key 解析器，使用方法名 + 方法参数，组装成一个 Key
+ * The default (global level) idempotent Key parser uses method name + method parameters to assemble a Key
  *
- * 为了避免 Key 过长，使用 MD5 进行“压缩”
+ * In order to avoID the Key being too long, use MD5 for "compression"
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public class DefaultIdempotentKeyResolver implements IdempotentKeyResolver {
 
-    @Override
-    public String resolver(JoinPoint joinPoint, Idempotent idempotent) {
-        String methodName = joinPoint.getSignature().toString();
-        String argsStr = StrUtils.joinMethodArgs(joinPoint);
-        return SecureUtil.md5(methodName + argsStr);
-    }
+ @Override
+ public String resolver(JoinPoint joinPoint, Idempotent idempotent) {
+ String methodName = joinPoint.getSignature().toString();
+ String argsStr = StrUtils.joinMethodArgs(joinPoint);
+ return SecureUtil.md5(methodName + argsStr);
+ }
 
 }

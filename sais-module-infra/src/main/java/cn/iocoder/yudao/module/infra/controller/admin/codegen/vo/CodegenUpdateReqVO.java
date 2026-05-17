@@ -9,16 +9,16 @@ import lombok.Data;
 
 import java.util.List;
 
-@Schema(description = "管理后台 - 代码生成表和字段的修改 Request VO")
+@Schema(description = "Management background - modification of code generation tables and fields Request VO")
 @Data
 public class CodegenUpdateReqVO {
 
-    @Valid // 校验内嵌的字段
-    @NotNull(message = "表定义不能为空")
+    @Valid // Validate embedded fields
+    @NotNull(message = "Table definition cannot be empty")
     private CodegenTableSaveReqVO table;
 
-    @Valid // 校验内嵌的字段
-    @NotNull(message = "字段定义不能为空")
+    @Valid // Validate embedded fields
+    @NotNull(message = "Field definition cannot be empty")
     private List<CodegenColumnSaveReqVO> columns;
 
 }

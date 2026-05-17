@@ -10,87 +10,87 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * OAuth2.0 Client Service 接口
+ * OAuth2.0 Client Service API
  *
- * 从功能上，和 JdbcClientDetailsService 的功能，提供客户端的操作
+ * Functionally, and the function of JdbcClientDetailsService, it provides client operations
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface OAuth2ClientService {
 
     /**
-     * 创建 OAuth2 客户端
+     * Create an OAuth2 client
      *
-     * @param createReqVO 创建信息
-     * @return 编号
+     * @param createReqVO Create information
+     * @return ID
      */
     Long createOAuth2Client(@Valid OAuth2ClientSaveReqVO createReqVO);
 
     /**
-     * 更新 OAuth2 客户端
+     * Update OAuth2 client
      *
-     * @param updateReqVO 更新信息
+     * @param updateReqVO Update information
      */
     void updateOAuth2Client(@Valid OAuth2ClientSaveReqVO updateReqVO);
 
     /**
-     * 删除 OAuth2 客户端
+     * Remove OAuth2 client
      *
-     * @param id 编号
+     * @param id ID
      */
     void deleteOAuth2Client(Long id);
 
     /**
-     * 批量删除 OAuth2 客户端
+     * Batch deletion of OAuth2 clients
      *
-     * @param ids 编号数组
+     * @param ids IDed array
      */
     void deleteOAuth2ClientList(List<Long> ids);
 
     /**
-     * 获得 OAuth2 客户端
+     * Get the OAuth2 client
      *
-     * @param id 编号
-     * @return OAuth2 客户端
+     * @param id ID
+     * @return OAuth2 client
      */
     OAuth2ClientDO getOAuth2Client(Long id);
 
     /**
-     * 获得 OAuth2 客户端，从缓存中
+     * Get the OAuth2 client from cache
      *
-     * @param clientId 客户端编号
-     * @return OAuth2 客户端
+     * @param clientId client ID
+     * @return OAuth2 client
      */
     OAuth2ClientDO getOAuth2ClientFromCache(String clientId);
 
     /**
-     * 获得 OAuth2 客户端分页
+     * Get OAuth2 client pagination
      *
-     * @param pageReqVO 分页查询
-     * @return OAuth2 客户端分页
+     * @param pageReqVO Page query
+     * @return OAuth2 client pagination
      */
     PageResult<OAuth2ClientDO> getOAuth2ClientPage(OAuth2ClientPageReqVO pageReqVO);
 
     /**
-     * 从缓存中，校验客户端是否合法
+     * From the cache, verify whether the client is legitimate
      *
-     * @return 客户端
+     * @return Client
      */
     default OAuth2ClientDO validOAuthClientFromCache(String clientId) {
         return validOAuthClientFromCache(clientId, null, null, null, null);
     }
 
     /**
-     * 从缓存中，校验客户端是否合法
+     * From the cache, verify whether the client is legitimate
      *
-     * 非空时，进行校验
+     * When it is not empty, perform verification
      *
-     * @param clientId 客户端编号
-     * @param clientSecret 客户端密钥
-     * @param authorizedGrantType 授权方式
-     * @param scopes 授权范围
-     * @param redirectUri 重定向地址
-     * @return 客户端
+     * @param clientId client ID
+     * @param clientSecret client key
+     * @param authorizedGrantType Authorization method
+     * @param scopes Authorization scope
+     * @param redirectUri redirect address
+     * @return Client
      */
     OAuth2ClientDO validOAuthClientFromCache(String clientId, String clientSecret, String authorizedGrantType,
                                              Collection<String> scopes, String redirectUri);

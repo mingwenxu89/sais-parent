@@ -19,9 +19,9 @@ import static cn.iocoder.yudao.module.infra.enums.ErrorCodeConstants.DATA_SOURCE
 import static cn.iocoder.yudao.module.infra.enums.ErrorCodeConstants.DATA_SOURCE_CONFIG_NOT_OK;
 
 /**
- * 数据源配置 Service 实现类
+ * Data source configuration Service implementation class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Service
 @Validated
@@ -38,28 +38,28 @@ public class DataSourceConfigServiceImpl implements DataSourceConfigService {
         DataSourceConfigDO config = BeanUtils.toBean(createReqVO, DataSourceConfigDO.class);
         validateConnectionOK(config);
 
-        // 插入
+        // Insert
         dataSourceConfigMapper.insert(config);
-        // 返回
+        // Return
         return config.getId();
     }
 
     @Override
     public void updateDataSourceConfig(DataSourceConfigSaveReqVO updateReqVO) {
-        // 校验存在
+        // Check existence
         validateDataSourceConfigExists(updateReqVO.getId());
         DataSourceConfigDO updateObj = BeanUtils.toBean(updateReqVO, DataSourceConfigDO.class);
         validateConnectionOK(updateObj);
 
-        // 更新
+        // Update
         dataSourceConfigMapper.updateById(updateObj);
     }
 
     @Override
     public void deleteDataSourceConfig(Long id) {
-        // 校验存在
+        // Check existence
         validateDataSourceConfigExists(id);
-        // 删除
+        // Delete
         dataSourceConfigMapper.deleteById(id);
     }
 
@@ -76,18 +76,18 @@ public class DataSourceConfigServiceImpl implements DataSourceConfigService {
 
     @Override
     public DataSourceConfigDO getDataSourceConfig(Long id) {
-        // 如果 id 为 0，默认为 master 的数据源
+        // If id is 0, it defaults to the data source of master
         if (Objects.equals(id, DataSourceConfigDO.ID_MASTER)) {
             return buildMasterDataSourceConfig();
         }
-        // 从 DB 中读取
+        // Read from DB
         return dataSourceConfigMapper.selectById(id);
     }
 
     @Override
     public List<DataSourceConfigDO> getDataSourceConfigList() {
         List<DataSourceConfigDO> result = dataSourceConfigMapper.selectList();
-        // 补充 master 数据源
+        // Supplement master data source
         result.add(0, buildMasterDataSourceConfig());
         return result;
     }

@@ -37,30 +37,30 @@ import java.util.Optional;
 import static cn.iocoder.yudao.framework.web.core.util.WebFrameworkUtils.HEADER_TENANT_ID;
 
 /**
- * Swagger 自动配置类，基于 OpenAPI + Springdoc 实现。
+ * Swagger auto-configuration class, implemented based on OpenAPI + Springdoc.
  *
- * 友情提示：
- * 1. Springdoc 文档地址：<a href="https://github.com/springdoc/springdoc-openapi">仓库</a>
- * 2. Swagger 规范，于 2015 更名为 OpenAPI 规范，本质是一个东西
+ * Friendly reminders:
+ * 1. Springdoc documentation: <a href="https://github.com/springdoc/springdoc-openapi">repository</a>
+ * 2. Swagger specification was renamed to OpenAPI specification in 2015; they are essentially the same thing
  *
- * @author 芋道源码
+ * @author yudao source code
  */
-@AutoConfiguration(before = Knife4jAutoConfiguration.class) // before 原因，保证覆写的 Knife4jOpenApiCustomizer 先生效！相关 https://github.com/YunaiV/ruoyi-vue-pro/issues/954 讨论
+@AutoConfiguration(before = Knife4jAutoConfiguration.class) // reason for before: ensure the overridden Knife4jOpenApiCustomizer takes effect first! See https://github.com/YunaiV/ruoyi-vue-pro/issues/954
 @ConditionalOnClass({OpenAPI.class})
 @EnableConfigurationProperties(SwaggerProperties.class)
-@ConditionalOnProperty(prefix = "springdoc.api-docs", name = "enabled", havingValue = "true", matchIfMissing = true) // 设置为 false 时，禁用
+@ConditionalOnProperty(prefix = "springdoc.api-docs", name = "enabled", havingValue = "true", matchIfMissing = true) // disabled when set to false
 @Import(Knife4jOpenApiCustomizer.class)
 public class YudaoSwaggerAutoConfiguration {
 
-    // ========== 全局 OpenAPI 配置 ==========
+    // ========== Global OpenAPI Configuration ==========
 
     @Bean
     public OpenAPI createApi(SwaggerProperties properties) {
         Map<String, SecurityScheme> securitySchemas = buildSecuritySchemes();
         OpenAPI openAPI = new OpenAPI()
-                // 接口信息
+                // API information
                 .info(buildInfo(properties))
-                // 接口安全配置
+                // API security configuration
                 .components(new Components().securitySchemes(securitySchemas))
                 .addSecurityItem(new SecurityRequirement().addList(HttpHeaders.AUTHORIZATION));
         securitySchemas.keySet().forEach(key -> openAPI.addSecurityItem(new SecurityRequirement().addList(key)));
@@ -68,7 +68,7 @@ public class YudaoSwaggerAutoConfiguration {
     }
 
     /**
-     * API 摘要信息
+     * API summary information
      */
     private Info buildInfo(SwaggerProperties properties) {
         return new Info()
@@ -80,23 +80,23 @@ public class YudaoSwaggerAutoConfiguration {
     }
 
     /**
-     * 安全模式，这里配置通过请求头 Authorization 传递 token 参数
+     * Security scheme: configured to pass the token parameter via the Authorization request header
      */
     private Map<String, SecurityScheme> buildSecuritySchemes() {
         Map<String, SecurityScheme> securitySchemes = new HashMap<>();
         SecurityScheme securityScheme = new SecurityScheme()
-                .type(SecurityScheme.Type.APIKEY) // 类型
-                .name(HttpHeaders.AUTHORIZATION) // 请求头的 name
-                .in(SecurityScheme.In.HEADER); // token 所在位置
+                .type(SecurityScheme.Type.APIKEY) // type
+                .name(HttpHeaders.AUTHORIZATION) // request header name
+                .in(SecurityScheme.In.HEADER); // token location
         securitySchemes.put(HttpHeaders.AUTHORIZATION, securityScheme);
         return securitySchemes;
     }
 
     /**
-     * 自定义 OpenAPI 处理器
+     * Custom OpenAPI processor
      */
     @Bean
-    @Primary // 目的：以我们创建的 OpenAPIService Bean 为主，避免一键改包后，启动报错！
+    @Primary // purpose: use the OpenAPIService Bean we created as the primary one, to avoid startup errors after package renaming!
     public OpenAPIService openApiBuilder(Optional<OpenAPI> openAPI,
                                          SecurityService securityParser,
                                          SpringDocConfigProperties springDocConfigProperties,
@@ -108,10 +108,10 @@ public class YudaoSwaggerAutoConfiguration {
                 propertyResolverUtils, openApiBuilderCustomizers, serverBaseUrlCustomizers, javadocProvider);
     }
 
-    // ========== 分组 OpenAPI 配置 ==========
+    // ========== Grouped OpenAPI Configuration ==========
 
     /**
-     * 所有模块的 API 分组
+     * API group for all modules
      */
     @Bean
     public GroupedOpenApi allGroupedOpenApi() {
@@ -134,53 +134,52 @@ public class YudaoSwaggerAutoConfiguration {
     }
 
     /**
-     * 构建 Tenant 租户编号请求头参数
+     * Build the Tenant ID request header parameter
      *
-     * @return 多租户参数
+     * @return multi-tenant parameter
      */
     private static Parameter buildTenantHeaderParameter() {
         return new Parameter()
-                .name(HEADER_TENANT_ID) // header 名
-                .description("租户编号") // 描述
-                .in(String.valueOf(SecurityScheme.In.HEADER)) // 请求 header
-                .schema(new IntegerSchema()._default(1L).name(HEADER_TENANT_ID).description("租户编号")); // 默认：使用租户编号为 1
+                .name(HEADER_TENANT_ID) // header name
+                .description("Tenant ID") // description
+                .in(String.valueOf(SecurityScheme.In.HEADER)) // request header
+                .schema(new IntegerSchema()._default(1L).name(HEADER_TENANT_ID).description("Tenant ID")); // default: use tenant ID 1
     }
 
     /**
-     * 构建 Authorization 认证请求头参数
+     * Build the Authorization authentication request header parameter
      *
-     * 解决 Knife4j <a href="https://gitee.com/xiaoym/knife4j/issues/I69QBU">Authorize 未生效，请求header里未包含参数</a>
+     * Resolves Knife4j <a href="https://gitee.com/xiaoym/knife4j/issues/I69QBU">Authorize not taking effect, parameter not included in request header</a>
      *
-     * @return 认证参数
+     * @return authentication parameter
      */
     private static Parameter buildSecurityHeaderParameter() {
         return new Parameter()
-                .name(HttpHeaders.AUTHORIZATION) // header 名
-                .description("认证 Token") // 描述
-                .in(String.valueOf(SecurityScheme.In.HEADER)) // 请求 header
-                .schema(new StringSchema()._default("Bearer test1").name(HEADER_TENANT_ID).description("认证 Token")); // 默认：使用用户编号为 1
+                .name(HttpHeaders.AUTHORIZATION) // header name
+                .description("Authentication Token") // description
+                .in(String.valueOf(SecurityScheme.In.HEADER)) // request header
+                .schema(new StringSchema()._default("Bearer test1").name(HEADER_TENANT_ID).description("Authentication Token")); // default: use user ID 1
     }
 
     /**
-     * 核心：自定义OperationId生成规则，组合「类名前缀 + 方法名」
+     * Core: custom OperationId generation rule, combining "class name prefix + method name"
      *
-     * @see <a href="https://github.com/YunaiV/ruoyi-vue-pro/issues/957">app-api 前缀不生效，都是使用 admin-api</a>
+     * @see <a href="https://github.com/YunaiV/ruoyi-vue-pro/issues/957">app-api prefix not taking effect, admin-api is used for all</a>
      */
     private static OperationCustomizer buildOperationIdCustomizer() {
         return (operation, handlerMethod) -> {
-            // 1. 获取控制器类名（如 UserController）
+            // 1. Get the controller class name (e.g. UserController)
             String className = handlerMethod.getBeanType().getSimpleName();
-            // 2. 提取类名前缀（去除 Controller 后缀，如 UserController -> User）
+            // 2. Extract the class name prefix (remove the Controller suffix, e.g. UserController -> User)
             String classPrefix = className.replaceAll("Controller$", "");
-            // 3. 获取方法名（如 list）
+            // 3. Get the method name (e.g. list)
             String methodName = handlerMethod.getMethod().getName();
-            // 4. 组合生成 operationId（如 User_list）
+            // 4. Combine to generate operationId (e.g. User_list)
             String operationId = classPrefix + "_" + methodName;
-            // 5. 设置自定义 operationId
+            // 5. Set the custom operationId
             operation.setOperationId(operationId);
             return operation;
         };
     }
 
 }
-

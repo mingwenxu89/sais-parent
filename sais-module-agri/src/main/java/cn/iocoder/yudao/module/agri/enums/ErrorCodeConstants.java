@@ -23,6 +23,10 @@ public interface ErrorCodeConstants {
 
     // ========== Sensor Data 1-005-004-000 ==========
     ErrorCode SENSOR_DATA_NOT_EXISTS = new ErrorCode(1_005_004_000, "Sensor data does not exist");
+    ErrorCode SENSOR_REPORTING_INTERVAL_INVALID = new ErrorCode(1_005_004_001, "Reporting interval must be at least 5 seconds");
+    ErrorCode SENSOR_REPORTING_FIELD_MISMATCH = new ErrorCode(1_005_004_002, "Sensor does not belong to the selected field");
+    ErrorCode SENSOR_REPORTING_SENSOR_INACTIVE = new ErrorCode(1_005_004_003, "Sensor is not active");
+    ErrorCode SENSOR_REPORTING_MQTT_UNAVAILABLE = new ErrorCode(1_005_004_004, "MQTT client is unavailable");
 
     // ========== Irrigation Plan 1-005-011-000 ==========
     ErrorCode IRRIGATION_PLAN_NOT_EXISTS = new ErrorCode(1_005_011_000, "Irrigation plan does not exist");

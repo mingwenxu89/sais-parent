@@ -5,30 +5,30 @@ import lombok.Data;
 
 import jakarta.validation.constraints.NotNull;
 
-@Schema(description = "管理后台 - 文件创建 Request VO")
+@Schema(description = "Management backend - file creation Request VO")
 @Data
 public class FileCreateReqVO {
 
-    @NotNull(message = "文件配置编号不能为空")
-    @Schema(description = "文件配置编号", requiredMode = Schema.RequiredMode.REQUIRED, example = "11")
+    @NotNull(message = "The file configuration ID cannot be empty")
+    @Schema(description = "File configuration ID", requiredMode = Schema.RequiredMode.REQUIRED, example = "11")
     private Long configId;
 
-    @NotNull(message = "文件路径不能为空")
-    @Schema(description = "文件路径", requiredMode = Schema.RequiredMode.REQUIRED, example = "yudao.jpg")
+    @NotNull(message = "File path cannot be empty")
+    @Schema(description = "file path", requiredMode = Schema.RequiredMode.REQUIRED, example = "yudao.jpg")
     private String path;
 
-    @NotNull(message = "原文件名不能为空")
-    @Schema(description = "原文件名", requiredMode = Schema.RequiredMode.REQUIRED, example = "yudao.jpg")
+    @NotNull(message = "The original file name cannot be empty")
+    @Schema(description = "Original file name", requiredMode = Schema.RequiredMode.REQUIRED, example = "yudao.jpg")
     private String name;
 
-    @NotNull(message = "文件 URL不能为空")
-    @Schema(description = "文件 URL", requiredMode = Schema.RequiredMode.REQUIRED, example = "https://www.iocoder.cn/yudao.jpg")
+    @NotNull(message = "File URL cannot be empty")
+    @Schema(description = "File URL", requiredMode = Schema.RequiredMode.REQUIRED, example = "https://www.iocoder.cn/yudao.jpg")
     private String url;
 
-    @Schema(description = "文件 MIME 类型", example = "application/octet-stream")
+    @Schema(description = "File MIME type", example = "application/octet-stream")
     private String type;
 
-    @Schema(description = "文件大小", example = "2048", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "file size", example = "2048", requiredMode = Schema.RequiredMode.REQUIRED)
     private Long size;
 
 }

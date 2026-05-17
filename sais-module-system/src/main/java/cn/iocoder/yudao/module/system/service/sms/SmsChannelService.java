@@ -10,7 +10,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 /**
- * 短信渠道 Service 接口
+ * SMS channel Service API
  *
  * @author zzf
  * @since 2021/1/25 9:24
@@ -18,70 +18,70 @@ import java.util.List;
 public interface SmsChannelService {
 
     /**
-     * 创建短信渠道
+     * Create SMS channel
      *
-     * @param createReqVO 创建信息
-     * @return 编号
+     * @param createReqVO Create information
+     * @return ID
      */
     Long createSmsChannel(@Valid SmsChannelSaveReqVO createReqVO);
 
     /**
-     * 更新短信渠道
+     * Update SMS channel
      *
-     * @param updateReqVO 更新信息
+     * @param updateReqVO Update information
      */
     void updateSmsChannel(@Valid SmsChannelSaveReqVO updateReqVO);
 
     /**
-     * 删除短信渠道
+     * Delete SMS channel
      *
-     * @param id 编号
+     * @param id ID
      */
     void deleteSmsChannel(Long id);
 
     /**
-     * 批量删除短信渠道
+     * Delete SMS channels in batches
      *
-     * @param ids 编号数组
+     * @param ids IDed array
      */
     void deleteSmsChannelList(List<Long> ids);
 
     /**
-     * 获得短信渠道
+     * Get SMS channel
      *
-     * @param id 编号
-     * @return 短信渠道
+     * @param id ID
+     * @return SMS channel
      */
     SmsChannelDO getSmsChannel(Long id);
 
     /**
-     * 获得所有短信渠道列表
+     * Get a list of all SMS channels
      *
-     * @return 短信渠道列表
+     * @return SMS channel list
      */
     List<SmsChannelDO> getSmsChannelList();
 
     /**
-     * 获得短信渠道分页
+     * Get SMS channel pagination
      *
-     * @param pageReqVO 分页查询
-     * @return 短信渠道分页
+     * @param pageReqVO Page query
+     * @return SMS channel paging
      */
     PageResult<SmsChannelDO> getSmsChannelPage(SmsChannelPageReqVO pageReqVO);
 
     /**
-     * 获得短信客户端
+     * Get SMS client
      *
-     * @param id 编号
-     * @return 短信客户端
+     * @param id ID
+     * @return SMS client
      */
     SmsClient getSmsClient(Long id);
 
     /**
-     * 获得短信客户端
+     * Get SMS client
      *
-     * @param code 编码
-     * @return 短信客户端
+     * @param code encoding
+     * @return SMS client
      */
     SmsClient getSmsClient(String code);
 

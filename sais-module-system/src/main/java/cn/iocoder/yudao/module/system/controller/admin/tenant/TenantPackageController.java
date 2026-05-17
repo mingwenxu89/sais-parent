@@ -23,7 +23,7 @@ import java.util.List;
 
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 
-@Tag(name = "管理后台 - 租户套餐")
+@Tag(name = "Management Backend - Tenant Package")
 @RestController
 @RequestMapping("/system/tenant-package")
 @Validated
@@ -33,14 +33,14 @@ public class TenantPackageController {
     private TenantPackageService tenantPackageService;
 
     @PostMapping("/create")
-    @Operation(summary = "创建租户套餐")
+    @Operation(summary = "Create a tenant package")
     @PreAuthorize("@ss.hasPermission('system:tenant-package:create')")
     public CommonResult<Long> createTenantPackage(@Valid @RequestBody TenantPackageSaveReqVO createReqVO) {
         return success(tenantPackageService.createTenantPackage(createReqVO));
     }
 
     @PutMapping("/update")
-    @Operation(summary = "更新租户套餐")
+    @Operation(summary = "Update tenant package")
     @PreAuthorize("@ss.hasPermission('system:tenant-package:update')")
     public CommonResult<Boolean> updateTenantPackage(@Valid @RequestBody TenantPackageSaveReqVO updateReqVO) {
         tenantPackageService.updateTenantPackage(updateReqVO);
@@ -48,8 +48,8 @@ public class TenantPackageController {
     }
 
     @DeleteMapping("/delete")
-    @Operation(summary = "删除租户套餐")
-    @Parameter(name = "id", description = "编号", required = true)
+    @Operation(summary = "Delete tenant package")
+    @Parameter(name = "id", description = "ID", required = true)
     @PreAuthorize("@ss.hasPermission('system:tenant-package:delete')")
     public CommonResult<Boolean> deleteTenantPackage(@RequestParam("id") Long id) {
         tenantPackageService.deleteTenantPackage(id);
@@ -57,8 +57,8 @@ public class TenantPackageController {
     }
 
     @DeleteMapping("/delete-list")
-    @Parameter(name = "ids", description = "编号列表", required = true)
-    @Operation(summary = "批量删除租户套餐")
+    @Parameter(name = "ids", description = "ID list", required = true)
+    @Operation(summary = "Delete tenant packages in batches")
     @PreAuthorize("@ss.hasPermission('system:tenant-package:delete')")
     public CommonResult<Boolean> deleteTenantPackageList(@RequestParam("ids") List<Long> ids) {
         tenantPackageService.deleteTenantPackageList(ids);
@@ -66,8 +66,8 @@ public class TenantPackageController {
     }
 
     @GetMapping("/get")
-    @Operation(summary = "获得租户套餐")
-    @Parameter(name = "id", description = "编号", required = true, example = "1024")
+    @Operation(summary = "Get a tenant package")
+    @Parameter(name = "id", description = "ID", required = true, example = "1024")
     @PreAuthorize("@ss.hasPermission('system:tenant-package:query')")
     public CommonResult<TenantPackageRespVO> getTenantPackage(@RequestParam("id") Long id) {
         TenantPackageDO tenantPackage = tenantPackageService.getTenantPackage(id);
@@ -75,7 +75,7 @@ public class TenantPackageController {
     }
 
     @GetMapping("/page")
-    @Operation(summary = "获得租户套餐分页")
+    @Operation(summary = "Get Tenant Packages Pagination")
     @PreAuthorize("@ss.hasPermission('system:tenant-package:query')")
     public CommonResult<PageResult<TenantPackageRespVO>> getTenantPackagePage(@Valid TenantPackagePageReqVO pageVO) {
         PageResult<TenantPackageDO> pageResult = tenantPackageService.getTenantPackagePage(pageVO);
@@ -83,7 +83,7 @@ public class TenantPackageController {
     }
 
     @GetMapping({"/get-simple-list", "simple-list"})
-    @Operation(summary = "获取租户套餐精简信息列表", description = "只包含被开启的租户套餐，主要用于前端的下拉选项")
+    @Operation(summary = "Get a condensed list of tenant packages", description = "Only contains enabled tenant packages, mainly used for frontend drop-down options")
     public CommonResult<List<TenantPackageSimpleRespVO>> getTenantPackageList() {
         List<TenantPackageDO> list = tenantPackageService.getTenantPackageListByStatus(CommonStatusEnum.ENABLE.getStatus());
         return success(BeanUtils.toBean(list, TenantPackageSimpleRespVO.class));

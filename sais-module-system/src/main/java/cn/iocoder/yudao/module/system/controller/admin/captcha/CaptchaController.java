@@ -17,7 +17,7 @@ import jakarta.annotation.Resource;
 import jakarta.annotation.security.PermitAll;
 import jakarta.servlet.http.HttpServletRequest;
 
-@Tag(name = "管理后台 - 验证码")
+@Tag(name = "Management backend - captcha")
 @RestController("adminCaptchaController")
 @RequestMapping("/system/captcha")
 public class CaptchaController {
@@ -26,7 +26,7 @@ public class CaptchaController {
     private CaptchaService captchaService;
 
     @PostMapping({"/get"})
-    @Operation(summary = "获得验证码")
+    @Operation(summary = "Get captcha")
     @PermitAll
     @TenantIgnore
     public ResponseModel get(@RequestBody CaptchaVO data, HttpServletRequest request) {
@@ -36,7 +36,7 @@ public class CaptchaController {
     }
 
     @PostMapping("/check")
-    @Operation(summary = "校验验证码")
+    @Operation(summary = "Verify captcha")
     @PermitAll
     @TenantIgnore
     public ResponseModel check(@RequestBody CaptchaVO data, HttpServletRequest request) {

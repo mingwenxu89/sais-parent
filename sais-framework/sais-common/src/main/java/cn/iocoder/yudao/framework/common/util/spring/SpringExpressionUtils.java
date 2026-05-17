@@ -22,102 +22,102 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Spring EL 表达式的工具类
+ * Utility classes for Spring EL expressions
  *
  * @author mashu
  */
 public class SpringExpressionUtils {
 
-    /**
-     * Spring EL 表达式解析器
-     */
-    private static final ExpressionParser EXPRESSION_PARSER = new SpelExpressionParser();
-    /**
-     * 参数名发现器
-     */
-    private static final ParameterNameDiscoverer PARAMETER_NAME_DISCOVERER = new DefaultParameterNameDiscoverer();
+ /**
+     * Spring EL expression parser
+ */
+ private static final ExpressionParser EXPRESSION_PARSER = new SpelExpressionParser();
+ /**
+     * Parameter name finder
+ */
+ private static final ParameterNameDiscoverer PARAMETER_NAME_DISCOVERER = new DefaultParameterNameDiscoverer();
 
-    private SpringExpressionUtils() {
-    }
+ private SpringExpressionUtils() {
+ }
 
-    /**
-     * 从切面中，单个解析 EL 表达式的结果
-     *
-     * @param joinPoint        切面点
-     * @param expressionString EL 表达式数组
-     * @return 执行界面
-     */
-    public static Object parseExpression(JoinPoint joinPoint, String expressionString) {
-        Map<String, Object> result = parseExpressions(joinPoint, Collections.singletonList(expressionString));
-        return result.get(expressionString);
-    }
+ /**
+     * Result of a single parsed EL expression from an aspect
+ *
+     * @param joinPoint Cutting point
+     * @param expressionString EL expression array
+     * @return Execution interface
+ */
+ public static Object parseExpression(JoinPoint joinPoint, String expressionString) {
+ Map<String, Object> result = parseExpressions(joinPoint, Collections.singletonList(expressionString));
+ return result.get(expressionString);
+ }
 
-    /**
-     * 从切面中，批量解析 EL 表达式的结果
-     *
-     * @param joinPoint         切面点
-     * @param expressionStrings EL 表达式数组
-     * @return 结果，key 为表达式，value 为对应值
-     */
-    public static Map<String, Object> parseExpressions(JoinPoint joinPoint, List<String> expressionStrings) {
-        // 如果为空，则不进行解析
-        if (CollUtil.isEmpty(expressionStrings)) {
-            return MapUtil.newHashMap();
-        }
+ /**
+     * Batch parse the results of EL expressions from aspects
+ *
+     * @param joinPoint Cutting point
+     * @param expressionStrings EL expression array
+     * @return As a result, key is the expression and value is the corresponding value.
+ */
+ public static Map<String, Object> parseExpressions(JoinPoint joinPoint, List<String> expressionStrings) {
+        // If empty, no parsing is performed
+ if (CollUtil.isEmpty(expressionStrings)) {
+ return MapUtil.newHashMap();
+ }
 
-        // 第一步，构建解析的上下文 EvaluationContext
-        // 通过 joinPoint 获取被注解方法
-        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-        Method method = methodSignature.getMethod();
-        // 使用 spring 的 ParameterNameDiscoverer 获取方法形参名数组
-        String[] paramNames = PARAMETER_NAME_DISCOVERER.getParameterNames(method);
-        // Spring 的表达式上下文对象
-        EvaluationContext context = new StandardEvaluationContext();
-        // 给上下文赋值
-        if (ArrayUtil.isNotEmpty(paramNames)) {
-            Object[] args = joinPoint.getArgs();
-            for (int i = 0; i < paramNames.length; i++) {
-                context.setVariable(paramNames[i], args[i]);
-            }
-        }
+        // The first step is to build the parsed context EvaluationContext
+        // Get the annotated method through joinPoint
+ MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+ Method method = methodSignature.getMethod();
+        // Use spring's ParameterNameDiscoverer to obtain the method parameter name array
+ String[] paramNames = PARAMETER_NAME_DISCOVERER.getParameterNames(method);
+        // Spring’s expression context object
+ EvaluationContext context = new StandardEvaluationContext();
+        // Assign a value to the context
+ if (ArrayUtil.isNotEmpty(paramNames)) {
+ Object[] args = joinPoint.getArgs();
+ for (int i = 0; i < paramNames.length; i++) {
+ context.setVariable(paramNames[i], args[i]);
+ }
+ }
 
-        // 第二步，逐个参数解析
-        Map<String, Object> result = MapUtil.newHashMap(expressionStrings.size(), true);
-        expressionStrings.forEach(key -> {
-            Object value = EXPRESSION_PARSER.parseExpression(key).getValue(context);
-            result.put(key, value);
-        });
-        return result;
-    }
+        // The second step is to analyze parameters one by one.
+ Map<String, Object> result = MapUtil.newHashMap(expressionStrings.size(), true);
+ expressionStrings.forEach(key -> {
+ Object value = EXPRESSION_PARSER.parseExpression(key).getValue(context);
+ result.put(key, value);
+ });
+ return result;
+ }
 
-    /**
-     * 从 Bean 工厂，解析 EL 表达式的结果
-     *
-     * @param expressionString EL 表达式
-     * @return 执行界面
-     */
-    public static Object parseExpression(String expressionString) {
-        return parseExpression(expressionString, null);
-    }
+ /**
+     * From the bean factory, parse the result of the EL expression
+ *
+     * @param expressionString EL expression
+     * @return Execution interface
+ */
+ public static Object parseExpression(String expressionString) {
+ return parseExpression(expressionString, null);
+ }
 
-    /**
-     * 从 Bean 工厂，解析 EL 表达式的结果
-     *
-     * @param expressionString EL 表达式
-     * @param variables        变量
-     * @return 执行界面
-     */
-    public static Object parseExpression(String expressionString, Map<String, Object> variables) {
-        if (StrUtil.isBlank(expressionString)) {
-            return null;
-        }
-        Expression expression = EXPRESSION_PARSER.parseExpression(expressionString);
-        StandardEvaluationContext context = new StandardEvaluationContext();
-        context.setBeanResolver(new BeanFactoryResolver(SpringUtil.getApplicationContext()));
-        if (MapUtil.isNotEmpty(variables)) {
-            context.setVariables(variables);
-        }
-        return expression.getValue(context);
-    }
+ /**
+     * From the bean factory, parse the result of the EL expression
+ *
+     * @param expressionString EL expression
+     * @param variables variable
+     * @return Execution interface
+ */
+ public static Object parseExpression(String expressionString, Map<String, Object> variables) {
+ if (StrUtil.isBlank(expressionString)) {
+ return null;
+ }
+ Expression expression = EXPRESSION_PARSER.parseExpression(expressionString);
+ StandardEvaluationContext context = new StandardEvaluationContext();
+ context.setBeanResolver(new BeanFactoryResolver(SpringUtil.getApplicationContext()));
+ if (MapUtil.isNotEmpty(variables)) {
+ context.setVariables(variables);
+ }
+ return expression.getValue(context);
+ }
 
 }

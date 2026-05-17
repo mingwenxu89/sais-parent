@@ -6,82 +6,82 @@ import cn.iocoder.yudao.module.system.dal.dataobject.user.AdminUserDO;
 import jakarta.validation.Valid;
 
 /**
- * 管理后台的认证 Service 接口
+ * Management backend authentication service API
  *
- * 提供用户的登录、登出的能力
+ * Provide users with the ability to log in and log out
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface AdminAuthService {
 
     /**
-     * 验证账号 + 密码。如果通过，则返回用户
+     * Verify account + password. If passed, return the user
      *
-     * @param username 账号
-     * @param password 密码
-     * @return 用户
+     * @param username Account
+     * @param password Password
+     * @return User
      */
     AdminUserDO authenticate(String username, String password);
 
     /**
-     * 账号登录
+     * Account login
      *
-     * @param reqVO 登录信息
-     * @return 登录结果
+     * @param reqVO Login information
+     * @return Login results
      */
     AuthLoginRespVO login(@Valid AuthLoginReqVO reqVO);
 
     /**
-     * 基于 token 退出登录
+     * Log out based on token
      *
      * @param token token
-     * @param logType 登出类型
+     * @param logType Logout type
      */
     void logout(String token, Integer logType);
 
     /**
-     * 短信验证码发送
+     * Send SMS captcha
      *
-     * @param reqVO 发送请求
+     * @param reqVO Send request
      */
     void sendSmsCode(AuthSmsSendReqVO reqVO);
 
     /**
-     * 短信登录
+     * SMS login
      *
-     * @param reqVO 登录信息
-     * @return 登录结果
+     * @param reqVO Login information
+     * @return Login results
      */
     AuthLoginRespVO smsLogin(AuthSmsLoginReqVO reqVO);
 
     /**
-     * 社交快捷登录，使用 code 授权码
+     * Quick social login, use code authorization code
      *
-     * @param reqVO 登录信息
-     * @return 登录结果
+     * @param reqVO Login information
+     * @return Login results
      */
     AuthLoginRespVO socialLogin(@Valid AuthSocialLoginReqVO reqVO);
 
     /**
-     * 刷新访问令牌
+     * Refresh access token
      *
-     * @param refreshToken 刷新令牌
-     * @return 登录结果
+     * @param refreshToken Refresh Token
+     * @return Login results
      */
     AuthLoginRespVO refreshToken(String refreshToken);
 
     /**
-     * 用户注册
+     * User registration
      *
-     * @param createReqVO 注册用户
-     * @return 注册结果
+     * @param createReqVO Registered user
+     * @return Registration results
      */
     AuthLoginRespVO register(AuthRegisterReqVO createReqVO);
 
     /**
-     * 重置密码
+     * reset password
      *
-     * @param reqVO 验证码信息
+     * @param reqVO Captcha information
      */
     void resetPassword(AuthResetPasswordReqVO reqVO);
 

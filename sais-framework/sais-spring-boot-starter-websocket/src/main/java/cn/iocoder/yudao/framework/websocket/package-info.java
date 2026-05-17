@@ -1,4 +1,4 @@
 /**
- * WebSocket 框架，支持多节点的广播
+ * WebSocket framework, supports multi-node broadcast
  */
 package cn.iocoder.yudao.framework.websocket;

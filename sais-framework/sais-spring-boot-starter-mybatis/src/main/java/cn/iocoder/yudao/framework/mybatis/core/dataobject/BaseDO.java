@@ -12,55 +12,55 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 基础实体对象
+ * base entity object
  *
- * 为什么实现 {@link TransPojo} 接口？
- * 因为使用 Easy-Trans TransType.SIMPLE 模式，集成 MyBatis Plus 查询
+ * Why implement the {@link TransPojo} interface?
+ * Because Easy-Trans TransType.SIMPLE mode is used, MyBatis Plus query is integrated
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Data
-@JsonIgnoreProperties(value = "transMap") // 由于 Easy-Trans 会添加 transMap 属性，避免 Jackson 在 Spring Cache 反序列化报错
+@JsonIgnoreProperties(value = "transMap") // Easy-Trans will add the transMap attribute to avoID Jackson deserialization errors in Spring Cache
 public abstract class BaseDO implements Serializable, TransPojo {
 
-    /**
-     * 创建时间
-     */
-    @TableField(fill = FieldFill.INSERT)
-    private LocalDateTime createTime;
-    /**
-     * 最后更新时间
-     */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    private LocalDateTime updateTime;
-    /**
-     * 创建者，目前使用 SysUser 的 id 编号
-     *
-     * 使用 String 类型的原因是，未来可能会存在非数值的情况，留好拓展性。
-     */
-    @TableField(fill = FieldFill.INSERT, jdbcType = JdbcType.VARCHAR)
-    private String creator;
-    /**
-     * 更新者，目前使用 SysUser 的 id 编号
-     *
-     * 使用 String 类型的原因是，未来可能会存在非数值的情况，留好拓展性。
-     */
-    @TableField(fill = FieldFill.INSERT_UPDATE, jdbcType = JdbcType.VARCHAR)
-    private String updater;
-    /**
-     * 是否删除
-     */
-    @TableLogic
-    private Boolean deleted;
+ /**
+     * creation time
+ */
+ @TableField(fill = FieldFill.INSERT)
+ private LocalDateTime createTime;
+ /**
+     * Last updated
+ */
+ @TableField(fill = FieldFill.INSERT_UPDATE)
+ private LocalDateTime updateTime;
+ /**
+     * Creator, currently using SysUser's ID number
+ *
+     * The reason for using the String type is that there may be non-numeric values ​​in the future, so as to preserve scalability.
+ */
+ @TableField(fill = FieldFill.INSERT, jdbcType = JdbcType.VARCHAR)
+ private String creator;
+ /**
+     * Updated by, currently using SysUser's ID number
+ *
+     * The reason for using the String type is that there may be non-numeric values ​​in the future, so as to preserve scalability.
+ */
+ @TableField(fill = FieldFill.INSERT_UPDATE, jdbcType = JdbcType.VARCHAR)
+ private String updater;
+ /**
+     * Whether to delete
+ */
+ @TableLogic
+ private Boolean deleted;
 
-    /**
-     * 把 creator、createTime、updateTime、updater 都清空，避免前端直接传递 creator 之类的字段，直接就被更新了
-     */
-    public void clean(){
-        this.creator = null;
-        this.createTime = null;
-        this.updater = null;
-        this.updateTime = null;
-    }
+ /**
+     * Clear creator, createTime, updateTime, and updater to prevent the front end from directly passing fields such as creator and being updated directly.
+ */
+ public void clean(){
+ this.creator = null;
+ this.createTime = null;
+ this.updater = null;
+ this.updateTime = null;
+ }
 
 }

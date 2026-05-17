@@ -5,43 +5,43 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 /**
- * 消息接收 Response DTO
+ * Message receiving Response DTO
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Data
 public class SmsReceiveRespDTO {
 
     /**
-     * 是否接收成功
+     * Whether the reception is successful
      */
     private Boolean success;
     /**
-     * API 接收结果的编码
+     * Encoding of API received results
      */
     private String errorCode;
     /**
-     * API 接收结果的说明
+     * Description of API receiving results
      */
     private String errorMsg;
 
     /**
-     * 手机号
+     * Mobile phone ID
      */
     private String mobile;
     /**
-     * 用户接收时间
+     * User reception time
      */
     private LocalDateTime receiveTime;
 
     /**
-     * 短信 API 发送返回的序号
+     * Serial ID returned by SMS API sending
      */
     private String serialNo;
     /**
-     * 短信日志编号
+     * SMS log ID
      *
-     * 对应 SysSmsLogDO 的编号
+     * ID corresponding to SysSmsLogDO
      */
     private Long logId;
 

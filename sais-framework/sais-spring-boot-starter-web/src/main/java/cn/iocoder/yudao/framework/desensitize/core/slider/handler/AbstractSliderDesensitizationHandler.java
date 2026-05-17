@@ -1,13 +1,12 @@
 package cn.iocoder.yudao.framework.desensitize.core.slider.handler;
 
-import cn.hutool.core.util.StrUtil;
 import cn.iocoder.yudao.framework.common.util.spring.SpringExpressionUtils;
 import cn.iocoder.yudao.framework.desensitize.core.base.handler.DesensitizationHandler;
 
 import java.lang.annotation.Annotation;
 
 /**
- * 滑动脱敏处理器抽象类，已实现通用的方法
+ * Sliding desensitization processor abstract class, which has implemented common methods
  *
  * @author gaibu
  */
@@ -16,62 +15,62 @@ public abstract class AbstractSliderDesensitizationHandler<T extends Annotation>
 
     @Override
     public String desensitize(String origin, T annotation) {
-        // 1. 判断是否禁用脱敏
+        // 1. Determine whether to disable desensitization
         Object disable = SpringExpressionUtils.parseExpression(getDisable(annotation));
         if (Boolean.TRUE.equals(disable)) {
             return origin;
         }
 
-        // 2. 执行脱敏
+        // 2. Perform desensitization
         int prefixKeep = getPrefixKeep(annotation);
         int suffixKeep = getSuffixKeep(annotation);
         String replacer = getReplacer(annotation);
         int length = origin.length();
         int interval = length - prefixKeep - suffixKeep;
 
-        // 情况一：原始字符串长度小于等于前后缀保留字符串长度，则原始字符串全部替换
+        // Case 1: The length of the original string is less than or equal to the length of the prefix and suffix retained strings, then all the original strings are replaced
         if (interval <= 0) {
             return buildReplacerByLength(replacer, length);
         }
 
-        // 情况二：原始字符串长度大于前后缀保留字符串长度，则替换中间字符串
+        // Case 2: The length of the original string is greater than the length of the prefix and suffix reserved strings, and the middle string is replaced.
         return origin.substring(0, prefixKeep) +
                 buildReplacerByLength(replacer, interval) +
                 origin.substring(prefixKeep + interval);
     }
 
     /**
-     * 根据长度循环构建替换符
+     * Loop to construct replacement characters based on length
      *
-     * @param replacer 替换符
-     * @param length   长度
-     * @return 构建后的替换符
+     * @param replacer replacement character
+     * @param length length
+     * @return Replacement characters after construction
      */
     private String buildReplacerByLength(String replacer, int length) {
-        return StrUtil.repeat(replacer, length);
+        return replacer.repeat(length);
     }
 
     /**
-     * 前缀保留长度
+     * Prefix reserved length
      *
-     * @param annotation 注解信息
-     * @return 前缀保留长度
+     * @param annotation Annotation information
+     * @return Prefix reserved length
      */
     abstract Integer getPrefixKeep(T annotation);
 
     /**
-     * 后缀保留长度
+     * Suffix reserved length
      *
-     * @param annotation 注解信息
-     * @return 后缀保留长度
+     * @param annotation Annotation information
+     * @return Suffix reserved length
      */
     abstract Integer getSuffixKeep(T annotation);
 
     /**
-     * 替换符
+     * replacement character
      *
-     * @param annotation 注解信息
-     * @return 替换符
+     * @param annotation Annotation information
+     * @return replacement character
      */
     abstract String getReplacer(T annotation);
 

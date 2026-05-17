@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2029, xkcoding & Yangkai.Shen & 沈扬凯 (237497819@qq.com & xkcoding.com).
+ * Copyright (c) 2019-2029, xkcoding & Yangkai.Shen & Shenzhen Yang Kai (237497819@qq.com & xkcoding.com).
  * <p>
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE 3.0;
  * you may not use this file except in compliance with the License.
@@ -43,10 +43,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-// TODO @芋艿：等官方发布 1.4.1！！！
+// TODO @Taro: Waiting for the official release of 1.4.1! ! !
 /**
  * <p>
- * AuthRequest工厂类
+ * AuthRequest factory class
  * </p>
  *
  * @author yangkai.shen
@@ -59,21 +59,21 @@ public class AuthRequestFactory {
     private final AuthStateCache authStateCache;
 
     /**
-     * 返回当前Oauth列表
+     * Returns the current Oauth list
      *
-     * @return Oauth列表
+     * @return Oauth list
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
     public List<String> oauthList() {
-        // 默认列表
+        // default list
         List<String> defaultList = new ArrayList<>(properties.getType().keySet());
-        // 扩展列表
+        // Extended list
         List<String> extendList = new ArrayList<>();
         ExtendProperties extend = properties.getExtend();
         if (null != extend) {
             Class enumClass = extend.getEnumClass();
             List<String> names = EnumUtil.getNames(enumClass);
-            // 扩展列表
+            // Extended list
             extendList = extend.getConfig()
                     .keySet()
                     .stream()
@@ -81,12 +81,12 @@ public class AuthRequestFactory {
                     .collect(Collectors.toList());
         }
 
-        // 合并
+        // merge
         return (List<String>) CollUtil.addAll(defaultList, extendList);
     }
 
     /**
-     * 返回AuthRequest对象
+     * Returns the AuthRequest object
      *
      * @param source {@link AuthSource}
      * @return {@link AuthRequest}
@@ -96,10 +96,10 @@ public class AuthRequestFactory {
             throw new AuthException(AuthResponseStatus.NO_AUTH_SOURCE);
         }
 
-        // 获取 JustAuth 中已存在的
+        // Get existing in JustAuth
         AuthRequest authRequest = getDefaultRequest(source);
 
-        // 如果获取不到则尝试取自定义的
+        // If you can't get it, try to get a custom one.
         if (authRequest == null) {
             authRequest = getExtendRequest(properties.getExtend().getEnumClass(), source);
         }
@@ -112,9 +112,9 @@ public class AuthRequestFactory {
     }
 
     /**
-     * 获取自定义的 request
+     * Get custom request
      *
-     * @param clazz  枚举类 {@link AuthSource}
+     * @param clazz  Enum class {@link AuthSource}
      * @param source {@link AuthSource}
      * @return {@link AuthRequest}
      */
@@ -124,26 +124,26 @@ public class AuthRequestFactory {
         try {
             EnumUtil.fromString(clazz, upperSource);
         } catch (IllegalArgumentException e) {
-            // 无自定义匹配
+            // No custom matching
             return null;
         }
 
         Map<String, ExtendProperties.ExtendRequestConfig> extendConfig = properties.getExtend().getConfig();
 
-        // key 转大写
+        // key to uppercase
         Map<String, ExtendProperties.ExtendRequestConfig> upperConfig = new HashMap<>(6);
         extendConfig.forEach((k, v) -> upperConfig.put(k.toUpperCase(), v));
 
         ExtendProperties.ExtendRequestConfig extendRequestConfig = upperConfig.get(upperSource);
         if (extendRequestConfig != null) {
 
-            // 配置 http config
+            // configure http config
             configureHttpConfig(upperSource, extendRequestConfig, properties.getHttpConfig());
 
             Class<? extends AuthRequest> requestClass = extendRequestConfig.getRequestClass();
 
             if (requestClass != null) {
-                // 反射获取 Request 对象，所以必须实现 2 个参数的构造方法
+                // Reflection obtains the Request object, so the 2-parameter constructor must be implemented
                 return ReflectUtil.newInstance(requestClass, (AuthConfig) extendRequestConfig, authStateCache);
             }
         }
@@ -153,7 +153,7 @@ public class AuthRequestFactory {
 
 
     /**
-     * 获取默认的 Request
+     * Get the default Request
      *
      * @param source {@link AuthSource}
      * @return {@link AuthRequest}
@@ -164,17 +164,17 @@ public class AuthRequestFactory {
         try {
             authDefaultSource = EnumUtil.fromString(AuthDefaultSource.class, source.toUpperCase());
         } catch (IllegalArgumentException e) {
-            // 无自定义匹配
+            // No custom matching
             return null;
         }
 
         AuthConfig config = properties.getType().get(authDefaultSource.name());
-        // 找不到对应关系，直接返回空
+        // If no corresponding relationship is found, empty will be returned directly.
         if (config == null) {
             return null;
         }
 
-        // 配置 http config
+        // configure http config
         configureHttpConfig(authDefaultSource.name(), config, properties.getHttpConfig());
 
         switch (authDefaultSource) {
@@ -293,7 +293,7 @@ public class AuthRequestFactory {
     }
 
     /**
-     * 配置 http 相关的配置
+     * Configure http related configuration
      *
      * @param authSource {@link AuthSource}
      * @param authConfig {@link AuthConfig}

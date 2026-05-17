@@ -14,9 +14,9 @@ import org.springframework.validation.annotation.Validated;
 import java.time.LocalDateTime;
 
 /**
- * Job 日志 Service 实现类
+ * Job log service implementation class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Service
 @Validated
@@ -55,11 +55,11 @@ public class JobLogServiceImpl implements JobLogService {
     public Integer cleanJobLog(Integer exceedDay, Integer deleteLimit) {
         int count = 0;
         LocalDateTime expireDate = LocalDateTime.now().minusDays(exceedDay);
-        // 循环删除，直到没有满足条件的数据
+        // Delete in a loop until there is no data that meets the condition
         for (int i = 0; i < Short.MAX_VALUE; i++) {
             int deleteCount = jobLogMapper.deleteByCreateTimeLt(expireDate, deleteLimit);
             count += deleteCount;
-            // 达到删除预期条数，说明到底了
+            // Reaching the expected ID of deletions means it’s over
             if (deleteCount < deleteLimit) {
                 break;
             }

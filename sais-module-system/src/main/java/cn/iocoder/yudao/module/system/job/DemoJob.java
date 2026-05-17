@@ -17,11 +17,11 @@ public class DemoJob implements JobHandler {
     private AdminUserMapper adminUserMapper;
 
     @Override
-    @TenantJob // 标记多租户
+    @TenantJob // Mark multi-tenant
     public String execute(String param) {
-        System.out.println("当前租户：" + TenantContextHolder.getTenantId());
+        System.out.println("Current tenant: " + TenantContextHolder.getTenantId());
         List<AdminUserDO> users = adminUserMapper.selectList();
-        return "用户数量：" + users.size();
+        return "User count: " + users.size();
     }
 
 }

@@ -9,41 +9,41 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * 岗位表
+ * Job list
  *
  * @author ruoyi
  */
 @TableName("system_post")
-@KeySequence("system_post_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
+@KeySequence("system_post_seq") // Primary key auto-increment for Oracle, PostgreSQL, Kingbase, DB2, H2 databases. If it is a database such as MySQL, you DO not need to write it.
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class PostDO extends BaseDO {
 
     /**
-     * 岗位序号
+     * Position serial ID
      */
     @TableId
     private Long id;
     /**
-     * 岗位名称
+     * Job title
      */
     private String name;
     /**
-     * 岗位编码
+     * Position code
      */
     private String code;
     /**
-     * 岗位排序
+     * Position sorting
      */
     private Integer sort;
     /**
-     * 状态
+     * Status
      *
-     * 枚举 {@link CommonStatusEnum}
+     * Enum {@link CommonStatusEnum}
      */
     private Integer status;
     /**
-     * 备注
+     * Remark
      */
     private String remark;
 

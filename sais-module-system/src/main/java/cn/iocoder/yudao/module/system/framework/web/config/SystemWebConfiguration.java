@@ -6,15 +6,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * system 模块的 web 组件的 Configuration
+ * Configuration of the web component of the system module
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Configuration(proxyBeanMethods = false)
 public class SystemWebConfiguration {
 
     /**
-     * system 模块的 API 分组
+     * API grouping of system module
      */
     @Bean
     public GroupedOpenApi systemGroupedOpenApi() {

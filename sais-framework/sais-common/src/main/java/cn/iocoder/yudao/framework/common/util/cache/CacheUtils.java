@@ -8,54 +8,54 @@ import java.time.Duration;
 import java.util.concurrent.Executors;
 
 /**
- * Cache 工具类
+ * Cache tool class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public class CacheUtils {
 
-    /**
-     * 异步刷新的 LoadingCache 最大缓存数量
-     *
-     * @see <a href="">本地缓存 CacheUtils 工具类建议</a>
-     */
-    private static final Integer CACHE_MAX_SIZE = 10000;
+ /**
+     * Maximum number of LoadingCache caches refreshed asynchronously
+ *
+     * @see <a href="">Local cache CacheUtils tool class suggestions</a>
+ */
+ private static final Integer CACHE_MAX_SIZE = 10000;
 
-    /**
-     * 构建异步刷新的 LoadingCache 对象
-     *
-     * 注意：如果你的缓存和 ThreadLocal 有关系，要么自己处理 ThreadLocal 的传递，要么使用 {@link #buildCache(Duration, CacheLoader)} 方法
-     *
-     * 或者简单理解：
-     * 1、和“人”相关的，使用 {@link #buildCache(Duration, CacheLoader)} 方法
-     * 2、和“全局”、“系统”相关的，使用当前缓存方法
-     *
-     * @param duration 过期时间
-     * @param loader  CacheLoader 对象
-     * @return LoadingCache 对象
-     */
-    public static <K, V> LoadingCache<K, V> buildAsyncReloadingCache(Duration duration, CacheLoader<K, V> loader) {
-        return CacheBuilder.newBuilder()
-                .maximumSize(CACHE_MAX_SIZE)
-                // 只阻塞当前数据加载线程，其他线程返回旧值
-                .refreshAfterWrite(duration)
-                // 通过 asyncReloading 实现全异步加载，包括 refreshAfterWrite 被阻塞的加载线程
-                .build(CacheLoader.asyncReloading(loader, Executors.newCachedThreadPool())); // TODO 芋艿：可能要思考下，未来要不要做成可配置
-    }
+ /**
+     * Construct a LoadingCache object that refreshes asynchronously
+ *
+     * Note: If your cache is related to ThreadLocal, either handle the passing of ThreadLocal yourself, or use the {@link #buildCache(Duration, CacheLoader)} method
+ *
+     * Or simply understand:
+     * 1. For things related to "people", use the {@link #buildCache(Duration, CacheLoader)} method
+     * 2. For things related to "global" and "system", use the current cache method.
+ *
+     * @param duration Expiration time
+     * @param loader CacheLoader object
+     * @return LoadingCache object
+ */
+ public static <K, V> LoadingCache<K, V> buildAsyncReloadingCache(Duration duration, CacheLoader<K, V> loader) {
+ return CacheBuilder.newBuilder()
+.maximumSize(CACHE_MAX_SIZE)
+                // Only blocks the current data loading thread, other threads return the old value
+.refreshAfterWrite(duration)
+                // Fully asynchronous loading is achieved through asyncReloading, including loading threads blocked by refreshAfterWrite
+                .build(CacheLoader.asyncReloading(loader, Executors.newCachedThreadPool())); // TODO Taro: You may want to think about whether to make it configurable in the future.
+ }
 
-    /**
-     * 构建同步刷新的 LoadingCache 对象
-     *
-     * @param duration 过期时间
-     * @param loader  CacheLoader 对象
-     * @return LoadingCache 对象
-     */
-    public static <K, V> LoadingCache<K, V> buildCache(Duration duration, CacheLoader<K, V> loader) {
-        return CacheBuilder.newBuilder()
-                .maximumSize(CACHE_MAX_SIZE)
-                // 只阻塞当前数据加载线程，其他线程返回旧值
-                .refreshAfterWrite(duration)
-                .build(loader);
-    }
+ /**
+     * Construct a LoadingCache object that is refreshed synchronously
+ *
+     * @param duration Expiration time
+     * @param loader CacheLoader object
+     * @return LoadingCache object
+ */
+ public static <K, V> LoadingCache<K, V> buildCache(Duration duration, CacheLoader<K, V> loader) {
+ return CacheBuilder.newBuilder()
+.maximumSize(CACHE_MAX_SIZE)
+                // Only blocks the current data loading thread, other threads return the old value
+.refreshAfterWrite(duration)
+.build(loader);
+ }
 
 }

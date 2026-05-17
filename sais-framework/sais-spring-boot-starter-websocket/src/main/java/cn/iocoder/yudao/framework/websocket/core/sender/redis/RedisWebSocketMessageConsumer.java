@@ -4,20 +4,20 @@ import cn.iocoder.yudao.framework.mq.redis.core.pubsub.AbstractRedisChannelMessa
 import lombok.RequiredArgsConstructor;
 
 /**
- * {@link RedisWebSocketMessage} 广播消息的消费者，真正把消息发送出去
+ * {@link RedisWebSocketMessage} is the consumer of broadcast messages and actually sends the messages.
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @RequiredArgsConstructor
 public class RedisWebSocketMessageConsumer extends AbstractRedisChannelMessageListener<RedisWebSocketMessage> {
 
-    private final RedisWebSocketMessageSender redisWebSocketMessageSender;
+ private final RedisWebSocketMessageSender redisWebSocketMessageSender;
 
-    @Override
-    public void onMessage(RedisWebSocketMessage message) {
-        redisWebSocketMessageSender.send(message.getSessionId(),
-                message.getUserType(), message.getUserId(),
-                message.getMessageType(), message.getMessageContent());
-    }
+ @Override
+ public void onMessage(RedisWebSocketMessage message) {
+ redisWebSocketMessageSender.send(message.getSessionId(),
+ message.getUserType(), message.getUserId(),
+ message.getMessageType(), message.getMessageContent());
+ }
 
 }

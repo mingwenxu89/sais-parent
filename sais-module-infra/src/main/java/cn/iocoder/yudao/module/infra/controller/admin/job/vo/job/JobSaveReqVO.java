@@ -5,37 +5,37 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-@Schema(description = "管理后台 - 定时任务创建/修改 Request VO")
+@Schema(description = "Management background - scheduled task creation/modification Request VO")
 @Data
 public class JobSaveReqVO {
 
-    @Schema(description = "任务编号", example = "1024")
+    @Schema(description = "Task ID", example = "1024")
     private Long id;
 
-    @Schema(description = "任务名称", requiredMode = Schema.RequiredMode.REQUIRED, example = "测试任务")
-    @NotEmpty(message = "任务名称不能为空")
+    @Schema(description = "Task name", requiredMode = Schema.RequiredMode.REQUIRED, example = "Test tasks")
+    @NotEmpty(message = "Task name cannot be empty")
     private String name;
 
-    @Schema(description = "处理器的名字", requiredMode = Schema.RequiredMode.REQUIRED, example = "sysUserSessionTimeoutJob")
-    @NotEmpty(message = "处理器的名字不能为空")
+    @Schema(description = "processor name", requiredMode = Schema.RequiredMode.REQUIRED, example = "sysUserSessionTimeoutJob")
+    @NotEmpty(message = "Processor name cannot be empty")
     private String handlerName;
 
-    @Schema(description = "处理器的参数", example = "yudao")
+    @Schema(description = "Processor parameters", example = "yudao")
     private String handlerParam;
 
-    @Schema(description = "CRON 表达式", requiredMode = Schema.RequiredMode.REQUIRED, example = "0/10 * * * * ? *")
-    @NotEmpty(message = "CRON 表达式不能为空")
+    @Schema(description = "CRON expression", requiredMode = Schema.RequiredMode.REQUIRED, example = "0/10 * * * * ? *")
+    @NotEmpty(message = "CRON expression cannot be empty")
     private String cronExpression;
 
-    @Schema(description = "重试次数", requiredMode = Schema.RequiredMode.REQUIRED, example = "3")
-    @NotNull(message = "重试次数不能为空")
+    @Schema(description = "ID of retries", requiredMode = Schema.RequiredMode.REQUIRED, example = "3")
+    @NotNull(message = "The ID of retries cannot be empty")
     private Integer retryCount;
 
-    @Schema(description = "重试间隔", requiredMode = Schema.RequiredMode.REQUIRED, example = "1000")
-    @NotNull(message = "重试间隔不能为空")
+    @Schema(description = "Retry interval", requiredMode = Schema.RequiredMode.REQUIRED, example = "1000")
+    @NotNull(message = "Retry interval cannot be empty")
     private Integer retryInterval;
 
-    @Schema(description = "监控超时时间", example = "1000")
+    @Schema(description = "Monitoring timeout", example = "1000")
     private Integer monitorTimeout;
 
 }

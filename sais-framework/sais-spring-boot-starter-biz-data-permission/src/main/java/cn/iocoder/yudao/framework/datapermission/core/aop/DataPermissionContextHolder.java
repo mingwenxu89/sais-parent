@@ -7,66 +7,66 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * {@link DataPermission} 注解的 Context 上下文
+ * {@link DataPermission} annotation Context context
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public class DataPermissionContextHolder {
 
-    /**
-     * 使用 List 的原因，可能存在方法的嵌套调用
-     */
-    private static final ThreadLocal<LinkedList<DataPermission>> DATA_PERMISSIONS =
-            TransmittableThreadLocal.withInitial(LinkedList::new);
+ /**
+     * The reason for using List is that there may be nested calls to methods
+ */
+ private static final ThreadLocal<LinkedList<DataPermission>> DATA_PERMISSIONS =
+ TransmittableThreadLocal.withInitial(LinkedList::new);
 
-    /**
-     * 获得当前的 DataPermission 注解
-     *
-     * @return DataPermission 注解
-     */
-    public static DataPermission get() {
-        return DATA_PERMISSIONS.get().peekLast();
-    }
+ /**
+     * Get the current DataPermission annotation
+ *
+     * @return DataPermission annotation
+ */
+ public static DataPermission get() {
+ return DATA_PERMISSIONS.get().peekLast();
+ }
 
-    /**
-     * 入栈 DataPermission 注解
-     *
-     * @param dataPermission DataPermission 注解
-     */
-    public static void add(DataPermission dataPermission) {
-        DATA_PERMISSIONS.get().addLast(dataPermission);
-    }
+ /**
+     * Push DataPermission annotation
+ *
+     * @param dataPermission DataPermission annotation
+ */
+ public static void add(DataPermission dataPermission) {
+ DATA_PERMISSIONS.get().addLast(dataPermission);
+ }
 
-    /**
-     * 出栈 DataPermission 注解
-     *
-     * @return DataPermission 注解
-     */
-    public static DataPermission remove() {
-        DataPermission dataPermission = DATA_PERMISSIONS.get().removeLast();
-        // 无元素时，清空 ThreadLocal
-        if (DATA_PERMISSIONS.get().isEmpty()) {
-            DATA_PERMISSIONS.remove();
-        }
-        return dataPermission;
-    }
+ /**
+     * Pop DataPermission annotation
+ *
+     * @return DataPermission annotation
+ */
+ public static DataPermission remove() {
+ DataPermission dataPermission = DATA_PERMISSIONS.get().removeLast();
+        // When there is no element, clear ThreadLocal
+ if (DATA_PERMISSIONS.get().isEmpty()) {
+ DATA_PERMISSIONS.remove();
+ }
+ return dataPermission;
+ }
 
-    /**
-     * 获得所有 DataPermission
-     *
-     * @return DataPermission 队列
-     */
-    public static List<DataPermission> getAll() {
-        return DATA_PERMISSIONS.get();
-    }
+ /**
+     * Get all DataPermission
+ *
+     * @return DataPermission Queue
+ */
+ public static List<DataPermission> getAll() {
+ return DATA_PERMISSIONS.get();
+ }
 
-    /**
-     * 清空上下文
-     *
-     * 目前仅仅用于单测
-     */
-    public static void clear() {
-        DATA_PERMISSIONS.remove();
-    }
+ /**
+     * clear context
+ *
+     * Currently only used for single testing
+ */
+ public static void clear() {
+ DATA_PERMISSIONS.remove();
+ }
 
 }

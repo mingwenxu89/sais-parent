@@ -22,9 +22,9 @@ import static cn.hutool.core.collection.CollUtil.findOne;
 import static cn.iocoder.yudao.framework.common.util.collection.CollectionUtils.convertList;
 
 /**
- * 社交应用的 API 实现类
+ * API implementation class for social applications
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Service
 @Validated
@@ -47,7 +47,7 @@ public class SocialClientApiImpl implements SocialClientApi {
         return BeanUtils.toBean(signature, SocialWxJsapiSignatureRespDTO.class);
     }
 
-    //======================= 微信小程序独有 =======================
+    //======================= Exclusive to WeChat miniapp =======================
 
     @Override
     public SocialWxPhoneNumberInfoRespDTO getWxMaPhoneNumberInfo(Integer userType, String phoneCode) {
@@ -68,29 +68,29 @@ public class SocialClientApiImpl implements SocialClientApi {
 
     @Override
     public void sendWxaSubscribeMessage(SocialWxaSubscribeMessageSendReqDTO reqDTO) {
-        // 1.1 获得订阅模版列表
+        // 1.1 Get subscription template list
         List<TemplateInfo> templateList = socialClientService.getSubscribeTemplateList(reqDTO.getUserType());
         if (CollUtil.isEmpty(templateList)) {
-            log.warn("[sendSubscribeMessage][reqDTO({}) 发送订阅消息失败，原因：没有找到订阅模板]", reqDTO);
+            log.warn("[sendSubscribeMessage][reqDTO({}) failed to send subscription message, reason: no subscription template found]", reqDTO);
             return;
         }
-        // 1.2 获得需要使用的模版
+        // 1.2 Obtain the template you need to use
         TemplateInfo template = findOne(templateList, item ->
                 ObjUtil.equal(item.getTitle(), reqDTO.getTemplateTitle()));
         if (template == null) {
-            log.warn("[sendWxaSubscribeMessage][reqDTO({}) 发送订阅消息失败，原因：没有找到订阅模板]", reqDTO);
+            log.warn("[sendWxaSubscribeMessage][reqDTO({}) failed to send subscription message, reason: no subscription template found]", reqDTO);
             return;
         }
 
-        // 2. 获得社交用户
+        // 2. Get social users
         SocialUserRespDTO socialUser = socialUserService.getSocialUserByUserId(reqDTO.getUserType(), reqDTO.getUserId(),
                 SocialTypeEnum.WECHAT_MINI_PROGRAM.getType());
         if (ObjUtil.isNull(socialUser) || StrUtil.isBlankIfStr(socialUser.getOpenid())) {
-            log.warn("[sendWxaSubscribeMessage][reqDTO({}) 发送订阅消息失败，原因：会员 openid 缺失]", reqDTO);
+            log.warn("[sendWxaSubscribeMessage][reqDTO({}) failed to send subscription message, reason: member openid is missing]", reqDTO);
             return;
         }
 
-        // 3. 发送订阅消息
+        // 3. Send subscription message
         socialClientService.sendSubscribeMessage(reqDTO, template.getPriTmplId(), socialUser.getOpenid());
     }
 

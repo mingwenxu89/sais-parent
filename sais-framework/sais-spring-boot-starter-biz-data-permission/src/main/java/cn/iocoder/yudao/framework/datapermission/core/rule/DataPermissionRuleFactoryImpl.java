@@ -12,73 +12,73 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * 默认的 DataPermissionRuleFactoryImpl 实现类
- * 支持通过 {@link DataPermissionContextHolder} 过滤数据权限
+ * Default DataPermissionRuleFactoryImpl implementation class
+ * Support filtering data permissions through {@link DataPermissionContextHolder}
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @RequiredArgsConstructor
 public class DataPermissionRuleFactoryImpl implements DataPermissionRuleFactory {
 
-    /**
-     * 数据权限规则数组
-     */
-    private final List<DataPermissionRule> rules;
+ /**
+     * Data permission rules array
+ */
+ private final List<DataPermissionRule> rules;
 
-    @Override
-    public List<DataPermissionRule> getDataPermissionRules() {
-        return rules;
-    }
+ @Override
+ public List<DataPermissionRule> getDataPermissionRules() {
+ return rules;
+ }
 
-    @Override // mappedStatementId 参数，暂时没有用。以后，可以基于 mappedStatementId + DataPermission 进行缓存
-    public List<DataPermissionRule> getDataPermissionRule(String mappedStatementId) {
-        // 1.1 无数据权限
-        if (CollUtil.isEmpty(rules)) {
-            return Collections.emptyList();
-        }
-        // 1.2 未配置，则默认开启
-        DataPermission dataPermission = DataPermissionContextHolder.get();
-        if (dataPermission == null) {
-            return rules;
-        }
-        // 1.3 已配置，但禁用
-        if (!dataPermission.enable()) {
-            return Collections.emptyList();
-        }
-        // 1.4 特殊：数据翻译时，强制忽略数据权限 https://github.com/YunaiV/ruoyi-vue-pro/issues/1007
-        if (isTranslateCall()) {
-            return Collections.emptyList();
-        }
+    @Override // The mappedStatementID parameter is temporarily unused. Later, caching can be based on mappedStatementID + DataPermission
+ public List<DataPermissionRule> getDataPermissionRule(String mappedStatementId) {
+        // 1.1 No data permissions
+ if (CollUtil.isEmpty(rules)) {
+ return Collections.emptyList();
+ }
+        // 1.2 If not configured, it will be enabled by default.
+ DataPermission dataPermission = DataPermissionContextHolder.get();
+ if (dataPermission == null) {
+ return rules;
+ }
+        // 1.3 Configured, but disabled
+ if (!dataPermission.enable()) {
+ return Collections.emptyList();
+ }
+        // 1.4 Special: When translating data, data permissions are forced to be ignored https://github.com/YunaiV/ruoyi-vue-pro/issues/1007
+ if (isTranslateCall()) {
+ return Collections.emptyList();
+ }
 
-        // 2.1 情况一：已配置，只选择部分规则
-        if (ArrayUtil.isNotEmpty(dataPermission.includeRules())) {
-            return rules.stream().filter(rule -> ArrayUtil.contains(dataPermission.includeRules(), rule.getClass()))
-                    .collect(Collectors.toList()); // 一般规则不会太多，所以不采用 HashSet 查询
-        }
-        // 2.2 已配置，只排除部分规则
-        if (ArrayUtil.isNotEmpty(dataPermission.excludeRules())) {
-            return rules.stream().filter(rule -> !ArrayUtil.contains(dataPermission.excludeRules(), rule.getClass()))
-                    .collect(Collectors.toList()); // 一般规则不会太多，所以不采用 HashSet 查询
-        }
-        // 2.3 已配置，全部规则
-        return rules;
-    }
+        // 2.1 Situation 1: Configured, only select some rules
+ if (ArrayUtil.isNotEmpty(dataPermission.includeRules())) {
+ return rules.stream().filter(rule -> ArrayUtil.contains(dataPermission.includeRules(), rule.getClass()))
+                    .collect(Collectors.toList()); // Generally, there are not too many rules, so HashSet query is not used.
+ }
+        // 2.2 Configured, only exclude some rules
+ if (ArrayUtil.isNotEmpty(dataPermission.excludeRules())) {
+ return rules.stream().filter(rule -> !ArrayUtil.contains(dataPermission.excludeRules(), rule.getClass()))
+                    .collect(Collectors.toList()); // Generally, there are not too many rules, so HashSet query is not used.
+ }
+        // 2.3 Configured, all rules
+ return rules;
+ }
 
-    /**
-     * 判断是否为数据翻译 {@link com.fhs.core.trans.anno.Trans} 的调用
-     *
-     * 目前暂时只有这个办法，已经和 easy-trans 做过沟通
-     *
-     * @return 是否
-     */
-    private boolean isTranslateCall() {
-        StackTraceElement[] stack = Thread.currentThread().getStackTrace();
-        for (StackTraceElement e : stack) {
-            if (SimpleTransService.class.getName().equals(e.getClassName())) {
-                return true;
-            }
-        }
-        return false;
-    }
+ /**
+     * Determine whether it is a call to data translation {@link com.fhs.core.trans.anno.Trans}
+ *
+     * At present, this is the only way. We have already communicated with easy-trans.
+ *
+     * @return whether
+ */
+ private boolean isTranslateCall() {
+ StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+ for (StackTraceElement e: stack) {
+ if (SimpleTransService.class.getName().equals(e.getClassName())) {
+ return true;
+ }
+ }
+ return false;
+ }
 
 }

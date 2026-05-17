@@ -10,9 +10,9 @@ import org.springframework.validation.annotation.Validated;
 import jakarta.annotation.Resource;
 
 /**
- * 社交用户的 API 实现类
+ * API implementation class for social users
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Service
 @Validated

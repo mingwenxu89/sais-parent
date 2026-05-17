@@ -9,19 +9,19 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 
 /**
- * Metrics 配置类
+ * Metrics configuration class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @AutoConfiguration
 @ConditionalOnClass({MeterRegistryCustomizer.class})
-@ConditionalOnProperty(prefix = "yudao.metrics", value = "enable", matchIfMissing = true) // 允许使用 yudao.metrics.enable=false 禁用 Metrics
+@ConditionalOnProperty(prefix = "yudao.metrics", value = "enable", matchIfMissing = true) // Allow using yudao.metrics.enable=false to disable Metrics
 public class YudaoMetricsAutoConfiguration {
 
-    @Bean
-    public MeterRegistryCustomizer<MeterRegistry> metricsCommonTags(
-            @Value("${spring.application.name}") String applicationName) {
-        return registry -> registry.config().commonTags("application", applicationName);
-    }
+ @Bean
+ public MeterRegistryCustomizer<MeterRegistry> metricsCommonTags(
+ @Value("${spring.application.name}") String applicationName) {
+ return registry -> registry.config().commonTags("application", applicationName);
+ }
 
 }

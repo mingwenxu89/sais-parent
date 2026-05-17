@@ -5,39 +5,39 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 /**
- * Job 日志 Framework Service 接口
+ * Job Log Framework Service Interface
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface JobLogFrameworkService {
 
     /**
-     * 创建 Job 日志
+     * Create job log
      *
-     * @param jobId           任务编号
-     * @param beginTime       开始时间
-     * @param jobHandlerName  Job 处理器的名字
-     * @param jobHandlerParam Job 处理器的参数
-     * @param executeIndex    第几次执行
-     * @return Job 日志的编号
+     * @param jobId Task number
+     * @param beginTime start time
+     * @param jobHandlerName Job processor name
+     * @param jobHandlerParam Job processor parameters
+     * @param executeIndex How many times to execute
+     * @return Job log number
      */
-    Long createJobLog(@NotNull(message = "任务编号不能为空") Long jobId,
-                      @NotNull(message = "开始时间") LocalDateTime beginTime,
-                      @NotEmpty(message = "Job 处理器的名字不能为空") String jobHandlerName,
+    Long createJobLog(@NotNull(message = "task number cannot be empty") Long jobId,
+                      @NotNull(message = "start time") LocalDateTime beginTime,
+                      @NotEmpty(message = "job processor name cannot be empty") String jobHandlerName,
                       String jobHandlerParam,
-                      @NotNull(message = "第几次执行不能为空") Integer executeIndex);
+                      @NotNull(message = "the number of executions cannot be empty") Integer executeIndex);
 
     /**
-     * 更新 Job 日志的执行结果
+     * Update the execution results of the Job log
      *
-     * @param logId    日志编号
-     * @param endTime  结束时间。因为是异步，避免记录时间不准去
-     * @param duration 运行时长，单位：毫秒
-     * @param success  是否成功
-     * @param result   成功数据
+     * @param logId Log number
+     * @param endTime end time. Because it is asynchronous, it is not allowed to record the time to avoID it.
+     * @param duration Running time, unit: milliseconds
+     * @param success Is it successful?
+     * @param result success data
      */
-    void updateJobLogResultAsync(@NotNull(message = "日志编号不能为空") Long logId,
-                                 @NotNull(message = "结束时间不能为空") LocalDateTime endTime,
-                                 @NotNull(message = "运行时长不能为空") Integer duration,
+    void updateJobLogResultAsync(@NotNull(message = "log number cannot be empty") Long logId,
+                                 @NotNull(message = "end time cannot be empty") LocalDateTime endTime,
+                                 @NotNull(message = "running time cannot be empty") Integer duration,
                                  boolean success, String result);
 }

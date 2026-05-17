@@ -7,29 +7,29 @@ import jakarta.validation.constraints.NotEmpty;
 import java.util.Map;
 
 /**
- * 短信发送给 Admin 或者 Member 用户
+ * Send SMS to Admin or Member users
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Data
 public class SmsSendSingleToUserReqDTO {
 
     /**
-     * 用户编号
+     * User ID
      */
     private Long userId;
     /**
-     * 手机号
+     * Mobile phone ID
      */
     @Mobile
     private String mobile;
     /**
-     * 短信模板编号
+     * SMS template ID
      */
-    @NotEmpty(message = "短信模板编号不能为空")
+    @NotEmpty(message = "SMS template ID cannot be empty")
     private String templateCode;
     /**
-     * 短信模板参数
+     * SMS template parameters
      */
     private Map<String, Object> templateParams;
 

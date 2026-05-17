@@ -10,76 +10,76 @@ import org.quartz.SchedulerException;
 import java.util.List;
 
 /**
- * 定时任务 Service 接口
+ * Scheduled task service API
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface JobService {
 
     /**
-     * 创建定时任务
+     * Create a scheduled task
      *
-     * @param createReqVO 创建信息
-     * @return 编号
+     * @param createReqVO Create information
+     * @return ID
      */
     Long createJob(@Valid JobSaveReqVO createReqVO) throws SchedulerException;
 
     /**
-     * 更新定时任务
+     * Update scheduled tasks
      *
-     * @param updateReqVO 更新信息
+     * @param updateReqVO Update information
      */
     void updateJob(@Valid JobSaveReqVO updateReqVO) throws SchedulerException;
 
     /**
-     * 更新定时任务的状态
+     * Update the status of scheduled tasks
      *
-     * @param id     任务编号
-     * @param status 状态
+     * @param id     Task ID
+     * @param status Status
      */
     void updateJobStatus(Long id, Integer status) throws SchedulerException;
 
     /**
-     * 触发定时任务
+     * Trigger scheduled tasks
      *
-     * @param id 任务编号
+     * @param id Task ID
      */
     void triggerJob(Long id) throws SchedulerException;
 
     /**
-     * 同步定时任务
+     * Synchronize scheduled tasks
      *
-     * 目的：自己存储的 Job 信息，强制同步到 Quartz 中
+     * Purpose: Force the job information stored by yourself to be synchronized to Quartz
      */
     void syncJob() throws SchedulerException;
 
     /**
-     * 删除定时任务
+     * Delete scheduled tasks
      *
-     * @param id 编号
+     * @param id ID
      */
     void deleteJob(Long id) throws SchedulerException;
 
     /**
-     * 批量删除定时任务
+     * Delete scheduled tasks in batches
      *
-     * @param ids 编号列表
+     * @param ids IDed list
      */
     void deleteJobList(List<Long> ids) throws SchedulerException;
 
     /**
-     * 获得定时任务
+     * Get scheduled tasks
      *
-     * @param id 编号
-     * @return 定时任务
+     * @param id ID
+     * @return scheduled tasks
      */
     JobDO getJob(Long id);
 
     /**
-     * 获得定时任务分页
+     * Get scheduled task pagination
      *
-     * @param pageReqVO 分页查询
-     * @return 定时任务分页
+     * @param pageReqVO Page query
+     * @return Scheduled task paging
      */
     PageResult<JobDO> getJobPage(JobPageReqVO pageReqVO);
 

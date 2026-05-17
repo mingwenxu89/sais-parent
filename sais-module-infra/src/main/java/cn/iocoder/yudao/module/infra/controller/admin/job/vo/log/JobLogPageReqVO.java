@@ -9,25 +9,25 @@ import java.time.LocalDateTime;
 
 import static cn.iocoder.yudao.framework.common.util.date.DateUtils.FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND;
 
-@Schema(description = "管理后台 - 定时任务日志分页 Request VO")
+@Schema(description = "Management background - scheduled task log paging Request VO")
 @Data
 public class JobLogPageReqVO extends PageParam {
 
-    @Schema(description = "任务编号", example = "10")
+    @Schema(description = "Task ID", example = "10")
     private Long jobId;
 
-    @Schema(description = "处理器的名字，模糊匹配")
+    @Schema(description = "Processor name, fuzzy matching")
     private String handlerName;
 
     @DateTimeFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
-    @Schema(description = "开始执行时间")
+    @Schema(description = "Start execution time")
     private LocalDateTime beginTime;
 
     @DateTimeFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
-    @Schema(description = "结束执行时间")
+    @Schema(description = "end execution time")
     private LocalDateTime endTime;
 
-    @Schema(description = "任务状态，参见 JobLogStatusEnum 枚举")
+    @Schema(description = "Task status, see JobLogStatusEnum enumeration")
     private Integer status;
 
 }

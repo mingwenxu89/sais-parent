@@ -1,6 +1,6 @@
-#set ($subTable = $subTables.get($subIndex))##当前表
-#set ($subColumns = $subColumnsList.get($subIndex))##当前字段数组
-#set ($subJoinColumn = $subJoinColumns.get($subIndex))##当前 join 字段
+#set ($subTable = $subTables.get($subIndex))##current table
+#set ($subColumns = $subColumnsList.get($subIndex))##Current field array
+#set ($subJoinColumn = $subJoinColumns.get($subIndex))##Current join field
 #set ($subSimpleClassName = $subSimpleClassNames.get($subIndex))
 #set ($apiName = "${table.moduleName.substring(0,1).toUpperCase()}${table.moduleName.substring(1)}${simpleClassName}Api")
 <script lang="ts" setup>
@@ -47,12 +47,12 @@
       }
 
       modalApi.lock();
-      // 提交表单
+      // Submit form
       const data = (await formApi.getValues()) as ${apiName}.${subSimpleClassName};
       data.${subJoinColumn.javaField} = formData.value?.${subJoinColumn.javaField};
       try {
         await (formData.value?.id ? update${subSimpleClassName}(data) : create${subSimpleClassName}(data));
-        // 关闭并提示
+        // Close and prompt
         await modalApi.close();
         emit('success');
         ElMessage.success($t('ui.actionMessage.operationSuccess'));
@@ -66,7 +66,7 @@
         return;
       }
 
-      // 加载数据
+      // Load data
       let data = modalApi.getData<${apiName}.${subSimpleClassName}>();
       if (!data) {
         return;
@@ -79,7 +79,7 @@
           modalApi.unlock();
         }
       }
-      // 设置到 values
+      // set to values
       formData.value = data;
       await formApi.setValues(formData.value);
     },

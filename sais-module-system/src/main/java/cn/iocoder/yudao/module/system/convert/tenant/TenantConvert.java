@@ -6,9 +6,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 /**
- * 租户 Convert
+ * Tenant Convert
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Mapper
 public interface TenantConvert {

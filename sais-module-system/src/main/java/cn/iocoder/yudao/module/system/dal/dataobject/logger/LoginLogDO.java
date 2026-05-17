@@ -11,61 +11,61 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * 登录日志表
+ * Login log table
  *
- * 注意，包括登录和登出两种行为
+ * Note, including both login and logout behaviors
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @TableName("system_login_log")
-@KeySequence("system_login_log_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
+@KeySequence("system_login_log_seq") // Primary key auto-increment for Oracle, PostgreSQL, Kingbase, DB2, H2 databases. If it is a database such as MySQL, you DO not need to write it.
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class LoginLogDO extends BaseDO {
 
     /**
-     * 日志主键
+     * Log primary key
      */
     private Long id;
     /**
-     * 日志类型
+     * Log type
      *
-     * 枚举 {@link LoginLogTypeEnum}
+     * Enum {@link LoginLogTypeEnum}
      */
     private Integer logType;
     /**
-     * 链路追踪编号
+     * link tracking ID
      */
     private String traceId;
     /**
-     * 用户编号
+     * User ID
      */
     private Long userId;
     /**
-     * 用户类型
+     * User type
      *
-     * 枚举 {@link UserTypeEnum}
+     * Enumeration {@link UserTypeEnum}
      */
     private Integer userType;
     /**
-     * 用户账号
+     * User account
      *
-     * 冗余，因为账号可以变更
+     * Redundant because accounts can be changed
      */
     private String username;
     /**
-     * 登录结果
+     * Login results
      *
-     * 枚举 {@link LoginResultEnum}
+     * Enum {@link LoginResultEnum}
      */
     private Integer result;
     /**
-     * 用户 IP
+     * User IP
      */
     private String userIp;
     /**
-     * 浏览器 UA
+     * Browser UA
      */
     private String userAgent;
 

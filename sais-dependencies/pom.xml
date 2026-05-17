@@ -10,18 +10,18 @@
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
-    <description>基础 bom 文件，管理整个项目的依赖版本</description>
+    <description>Base BOM file, managing dependency versions for the entire project</description>
     <url>https://github.com/YunaiV/ruoyi-vue-pro</url>
 
     <properties>
         <revision>2026.01-jdk21-SNAPSHOT</revision>
         <flatten-maven-plugin.version>1.7.2</flatten-maven-plugin.version>
-        <!-- 统一依赖管理 -->
+        <!-- Unified dependency management -->
         <spring.boot.version>3.5.9</spring.boot.version>
-        <!-- Web 相关 -->
+        <!-- Web related -->
         <springdoc.version>2.8.14</springdoc.version>
         <knife4j.version>4.5.0</knife4j.version>
-        <!-- DB 相关 -->
+        <!-- DB related -->
         <druid.version>1.2.27</druid.version>
         <mybatis.version>3.5.19</mybatis.version>
         <mybatis-plus.version>3.5.15</mybatis-plus.version>
@@ -33,21 +33,21 @@
         <kingbase.jdbc.version>8.6.0</kingbase.jdbc.version>
         <opengauss.jdbc.version>5.1.0</opengauss.jdbc.version>
         <taos.version>3.7.9</taos.version>
-        <!-- 消息队列 -->
+        <!-- Message queue -->
         <rocketmq-spring.version>2.3.5</rocketmq-spring.version>
-        <!-- 服务保障相关 -->
+        <!-- Service reliability related -->
         <lock4j.version>2.2.7</lock4j.version>
-        <!-- 监控相关 -->
+        <!-- Monitoring related -->
         <skywalking.version>9.5.0</skywalking.version>
         <spring-boot-admin.version>3.5.6</spring-boot-admin.version>
         <opentracing.version>0.33.0</opentracing.version>
-        <!-- Test 测试相关 -->
+        <!-- Test related -->
         <podam.version>8.0.2.RELEASE</podam.version>
         <jedis-mock.version>1.1.12</jedis-mock.version>
         <mockito-inline.version>5.2.0</mockito-inline.version>
-        <!-- Bpm 工作流相关 -->
+        <!-- BPM workflow related -->
         <flowable.version>7.2.0</flowable.version>
-        <!-- 工具类相关 -->
+        <!-- Utilities related -->
         <anji-plus-captcha.version>1.4.0</anji-plus-captcha.version>
         <jsoup.version>1.21.2</jsoup.version>
         <lombok.version>1.18.42</lombok.version>
@@ -69,7 +69,7 @@
         <vertx.version>4.5.22</vertx.version>
         <okhttp.version>4.12.0</okhttp.version>
         <californium.version>3.12.0</californium.version>
-        <!-- 三方云服务相关 -->
+        <!-- Third-party cloud services related -->
         <awssdk.version>2.40.15</awssdk.version>
         <justauth.version>1.16.7</justauth.version>
         <justauth-starter.version>1.4.0</justauth-starter.version>
@@ -81,7 +81,7 @@
 
     <dependencyManagement>
         <dependencies>
-            <!-- 统一依赖管理 -->
+            <!-- Unified dependency management -->
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-bom</artifactId>
@@ -97,13 +97,13 @@
                 <scope>import</scope>
             </dependency>
 
-            <!-- 业务组件 -->
+            <!-- Business components -->
             <dependency>
                 <groupId>io.github.mouzt</groupId>
                 <artifactId>bizlog-sdk</artifactId>
                 <version>${bizlog-sdk.version}</version>
                 <exclusions>
-                    <exclusion> <!-- 排除掉springboot依赖使用项目的 -->
+                    <exclusion> <!-- Exclude to use project's own Spring Boot dependency -->
                         <groupId>org.springframework.boot</groupId>
                         <artifactId>spring-boot-starter</artifactId>
                     </exclusion>
@@ -125,15 +125,15 @@
                 <version>${revision}</version>
             </dependency>
 
-            <!-- Spring 核心 -->
+            <!-- Spring core -->
             <dependency>
-                <!-- 用于生成自定义的 Spring @ConfigurationProperties 配置类的说明文件 -->
+                <!-- Used to generate description files for custom Spring @ConfigurationProperties configuration classes -->
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-configuration-processor</artifactId>
                 <version>${spring.boot.version}</version>
             </dependency>
 
-            <!-- Web 相关 -->
+            <!-- Web related -->
             <dependency>
                 <groupId>cn.iocoder.boot</groupId>
                 <artifactId>sais-spring-boot-starter-web</artifactId>
@@ -163,7 +163,7 @@
                 <version>${springdoc.version}</version>
             </dependency>
 
-            <!-- DB 相关 -->
+            <!-- DB related -->
             <dependency>
                 <groupId>cn.iocoder.boot</groupId>
                 <artifactId>sais-spring-boot-starter-mybatis</artifactId>
@@ -176,7 +176,7 @@
                 <version>${druid.version}</version>
             </dependency>
             <dependency>
-                <!-- 注意：必须声明，避免 flowable 和 mybatis-plus 引入的 mybatis 版本不一致！！！ -->
+                <!-- Note: must declare to avoid version mismatch between mybatis versions pulled by Flowable and MyBatis-Plus -->
                 <groupId>org.mybatis</groupId>
                 <artifactId>mybatis</artifactId>
                 <version>${mybatis.version}</version>
@@ -193,22 +193,22 @@
             </dependency>
             <dependency>
                 <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-generator</artifactId> <!-- 代码生成器，使用它解析表结构 -->
+                <artifactId>mybatis-plus-generator</artifactId> <!-- Code generator, used to parse table structures -->
                 <version>${mybatis-plus.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.baomidou</groupId>
-                <artifactId>dynamic-datasource-spring-boot3-starter</artifactId> <!-- 多数据源 -->
+                <artifactId>dynamic-datasource-spring-boot3-starter</artifactId> <!-- Multiple datasources -->
                 <version>${dynamic-datasource.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.github.yulichang</groupId>
-                <artifactId>mybatis-plus-join-boot-starter</artifactId> <!-- MyBatis 联表查询 -->
+                <artifactId>mybatis-plus-join-boot-starter</artifactId> <!-- MyBatis join queries -->
                 <version>${mybatis-plus-join.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.fhs-opensource</groupId> <!-- VO 数据翻译 -->
+                <groupId>com.fhs-opensource</groupId> <!-- VO data translation -->
                 <artifactId>easy-trans-spring-boot-starter</artifactId>
                 <version>${easy-trans.version}</version>
                 <exclusions>
@@ -280,14 +280,14 @@
                 <version>${taos.version}</version>
             </dependency>
 
-            <!-- Job 定时任务相关 -->
+            <!-- Scheduled job related -->
             <dependency>
                 <groupId>cn.iocoder.boot</groupId>
                 <artifactId>sais-spring-boot-starter-job</artifactId>
                 <version>${revision}</version>
             </dependency>
 
-            <!-- 消息队列相关 -->
+            <!-- Message queue related -->
             <dependency>
                 <groupId>cn.iocoder.boot</groupId>
                 <artifactId>sais-spring-boot-starter-mq</artifactId>
@@ -299,7 +299,7 @@
                 <version>${rocketmq-spring.version}</version>
             </dependency>
 
-            <!-- 服务保障相关 -->
+            <!-- Service reliability related -->
             <dependency>
                 <groupId>cn.iocoder.boot</groupId>
                 <artifactId>sais-spring-boot-starter-protection</artifactId>
@@ -318,7 +318,7 @@
                 </exclusions>
             </dependency>
 
-            <!-- 监控相关 -->
+            <!-- Monitoring related -->
             <dependency>
                 <groupId>cn.iocoder.boot</groupId>
                 <artifactId>sais-spring-boot-starter-monitor</artifactId>
@@ -368,7 +368,7 @@
 
             <dependency>
                 <groupId>de.codecentric</groupId>
-                <artifactId>spring-boot-admin-starter-server</artifactId> <!-- 实现 Spring Boot Admin Server 服务端 -->
+                <artifactId>spring-boot-admin-starter-server</artifactId> <!-- Spring Boot Admin Server implementation -->
                 <version>${spring-boot-admin.version}</version>
                 <exclusions>
                     <exclusion>
@@ -379,14 +379,14 @@
             </dependency>
             <dependency>
                 <groupId>de.codecentric</groupId>
-                <artifactId>spring-boot-admin-starter-client</artifactId> <!-- 实现 Spring Boot Admin Server 服务端 -->
+                <artifactId>spring-boot-admin-starter-client</artifactId> <!-- Spring Boot Admin Client implementation -->
                 <version>${spring-boot-admin.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-inline</artifactId>
-                <version>${mockito-inline.version}</version> <!-- 支持 Mockito 的 final 类与 static 方法的 mock -->
+                <version>${mockito-inline.version}</version> <!-- Supports mocking of final classes and static methods in Mockito -->
             </dependency>
 
             <dependency>
@@ -406,18 +406,18 @@
             </dependency>
 
             <dependency>
-                <groupId>com.github.fppt</groupId> <!-- 单元测试，我们采用内嵌的 Redis 数据库 -->
+                <groupId>com.github.fppt</groupId> <!-- Unit test, using embedded Redis database -->
                 <artifactId>jedis-mock</artifactId>
                 <version>${jedis-mock.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>uk.co.jemos.podam</groupId> <!-- 单元测试，随机生成 POJO 类 -->
+                <groupId>uk.co.jemos.podam</groupId> <!-- Unit test, randomly generates POJO instances -->
                 <artifactId>podam</artifactId>
                 <version>${podam.version}</version>
             </dependency>
 
-            <!-- 工作流相关 -->
+            <!-- Workflow related -->
             <dependency>
                 <groupId>org.flowable</groupId>
                 <artifactId>flowable-spring-boot-starter-process</artifactId>
@@ -428,9 +428,9 @@
                 <artifactId>flowable-spring-boot-starter-actuator</artifactId>
                 <version>${flowable.version}</version>
             </dependency>
-            <!-- 工作流相关结束 -->
+            <!-- Workflow related end -->
 
-            <!-- 工具类相关 -->
+            <!-- Utilities related -->
             <dependency>
                 <groupId>cn.iocoder.boot</groupId>
                 <artifactId>sais-common</artifactId>
@@ -479,7 +479,7 @@
 
             <dependency>
                 <groupId>org.apache.tika</groupId>
-                <artifactId>tika-core</artifactId> <!-- 文件类型的识别 -->
+                <artifactId>tika-core</artifactId> <!-- File type detection -->
                 <version>${tika-core.version}</version>
             </dependency>
 
@@ -503,30 +503,30 @@
 
             <dependency>
                 <groupId>com.alibaba</groupId>
-                <artifactId>transmittable-thread-local</artifactId> <!-- 解决 ThreadLocal 父子线程的传值问题 -->
+                <artifactId>transmittable-thread-local</artifactId> <!-- Resolves ThreadLocal value propagation between parent and child threads -->
                 <version>${transmittable-thread-local.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>commons-net</groupId>
-                <artifactId>commons-net</artifactId> <!-- 解决 ftp 连接 -->
+                <artifactId>commons-net</artifactId> <!-- FTP connection support -->
                 <version>${commons-net.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.github.mwiede</groupId>
-                <artifactId>jsch</artifactId> <!-- 解决 sftp 连接 -->
+                <artifactId>jsch</artifactId> <!-- SFTP connection support -->
                 <version>${jsch.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>${commons-lang3.version}</version> <!-- 解决 CVE-2025-48924 漏洞 -->
+                <version>${commons-lang3.version}</version> <!-- Fix CVE-2025-48924 vulnerability -->
             </dependency>
 
             <dependency>
                 <groupId>com.anji-plus</groupId>
-                <artifactId>captcha-spring-boot-starter</artifactId> <!-- 验证码，一般用于登录使用 -->
+                <artifactId>captcha-spring-boot-starter</artifactId> <!-- Captcha, typically used for login -->
                 <version>${anji-plus-captcha.version}</version>
             </dependency>
 
@@ -586,7 +586,7 @@
                 <version>${californium.version}</version>
             </dependency>
 
-            <!-- 三方云服务相关 -->
+            <!-- Third-party cloud services related -->
             <dependency>
                 <groupId>software.amazon.awssdk</groupId>
                 <artifactId>s3</artifactId>
@@ -601,7 +601,7 @@
 
             <dependency>
                 <groupId>me.zhyd.oauth</groupId>
-                <artifactId>JustAuth</artifactId> <!-- 社交登陆（例如说，个人微信、企业微信等等） -->
+                <artifactId>JustAuth</artifactId> <!-- Social login (e.g., WeChat personal, WeChat Work, etc.) -->
                 <version>${justauth.version}</version>
             </dependency>
             <dependency>
@@ -609,7 +609,7 @@
                 <artifactId>justauth-spring-boot-starter</artifactId>
                 <version>${justauth-starter.version}</version>
                 <exclusions>
-                    <!-- 移除，避免和项目里的 hutool-all 冲突 -->
+                    <!-- Remove to avoid conflict with hutool-all in the project -->
                     <exclusion>
                         <groupId>cn.hutool</groupId>
                         <artifactId>hutool-core</artifactId>
@@ -645,7 +645,7 @@
                 <version>${weixin-java.version}</version>
             </dependency>
 
-            <!-- 积木报表-->
+            <!-- JimuReport -->
             <dependency>
                 <groupId>org.jeecgframework.jimureport</groupId>
                 <artifactId>jimureport-spring-boot-starter</artifactId>
@@ -671,7 +671,7 @@
 
     <build>
         <plugins>
-            <!-- 统一 revision 版本 -->
+            <!-- Unify revision version -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>

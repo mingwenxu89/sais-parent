@@ -21,11 +21,11 @@ import java.util.Set;
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 
 /**
- * 权限 Controller，提供赋予用户、角色的权限的 API 接口
+ * Permission Controller, which provides API APIs for granting permissions to users and roles.
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
-@Tag(name = "管理后台 - 权限")
+@Tag(name = "Admin Backstage - Permissions")
 @RestController
 @RequestMapping("/system/permission")
 public class PermissionController {
@@ -35,8 +35,8 @@ public class PermissionController {
     @Resource
     private TenantService tenantService;
 
-    @Operation(summary = "获得角色拥有的菜单编号")
-    @Parameter(name = "roleId", description = "角色编号", required = true)
+    @Operation(summary = "Get the menu ID owned by the character")
+    @Parameter(name = "roleId", description = "role ID", required = true)
     @GetMapping("/list-role-menus")
     @PreAuthorize("@ss.hasPermission('system:permission:assign-role-menu')")
     public CommonResult<Set<Long>> getRoleMenuList(Long roleId) {
@@ -44,34 +44,34 @@ public class PermissionController {
     }
 
     @PostMapping("/assign-role-menu")
-    @Operation(summary = "赋予角色菜单")
+    @Operation(summary = "Assign role menu")
     @PreAuthorize("@ss.hasPermission('system:permission:assign-role-menu')")
     public CommonResult<Boolean> assignRoleMenu(@Validated @RequestBody PermissionAssignRoleMenuReqVO reqVO) {
-        // 开启多租户的情况下，需要过滤掉未开通的菜单
+        // When multi-tenancy is enabled, unactivated menus need to be filtered out.
         tenantService.handleTenantMenu(menuIds -> reqVO.getMenuIds().removeIf(menuId -> !CollUtil.contains(menuIds, menuId)));
 
-        // 执行菜单的分配
+        // Execution menu assignment
         permissionService.assignRoleMenu(reqVO.getRoleId(), reqVO.getMenuIds());
         return success(true);
     }
 
     @PostMapping("/assign-role-data-scope")
-    @Operation(summary = "赋予角色数据权限")
+    @Operation(summary = "Grant role data permissions")
     @PreAuthorize("@ss.hasPermission('system:permission:assign-role-data-scope')")
     public CommonResult<Boolean> assignRoleDataScope(@Valid @RequestBody PermissionAssignRoleDataScopeReqVO reqVO) {
         permissionService.assignRoleDataScope(reqVO.getRoleId(), reqVO.getDataScope(), reqVO.getDataScopeDeptIds());
         return success(true);
     }
 
-    @Operation(summary = "获得管理员拥有的角色编号列表")
-    @Parameter(name = "userId", description = "用户编号", required = true)
+    @Operation(summary = "getAdministratorownedrole ID list")
+    @Parameter(name = "userId", description = "User ID", required = true)
     @GetMapping("/list-user-roles")
     @PreAuthorize("@ss.hasPermission('system:permission:assign-user-role')")
     public CommonResult<Set<Long>> listAdminRoles(@RequestParam("userId") Long userId) {
         return success(permissionService.getUserRoleIdListByUserId(userId));
     }
 
-    @Operation(summary = "赋予用户角色")
+    @Operation(summary = "Assign user roles")
     @PostMapping("/assign-user-role")
     @PreAuthorize("@ss.hasPermission('system:permission:assign-user-role')")
     public CommonResult<Boolean> assignUserRole(@Validated @RequestBody PermissionAssignUserRoleReqVO reqVO) {

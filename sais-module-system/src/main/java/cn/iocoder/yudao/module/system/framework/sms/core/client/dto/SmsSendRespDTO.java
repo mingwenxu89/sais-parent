@@ -3,40 +3,40 @@ package cn.iocoder.yudao.module.system.framework.sms.core.client.dto;
 import lombok.Data;
 
 /**
- * 短信发送 Response DTO
+ * Send SMS Response DTO
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Data
 public class SmsSendRespDTO {
 
     /**
-     * 是否成功
+     * Is it successful?
      */
     private Boolean success;
 
     /**
-     * API 请求编号
+     * API request ID
      */
     private String apiRequestId;
 
-    // ==================== 成功时字段 ====================
+    // ==================== Fields on success ====================
 
     /**
-     * 短信 API 发送返回的序号
+     * Serial ID returned by SMS API sending
      */
     private String serialNo;
 
-    // ==================== 失败时字段 ====================
+    // ==================== Fields on failure ====================
 
     /**
-     * API 返回错误码
+     * API return error code
      *
-     * 由于第三方的错误码可能是字符串，所以使用 String 类型
+     * Since the third-party error code may be a string, the String type is used
      */
     private String apiCode;
     /**
-     * API 返回提示
+     * API return prompt
      */
     private String apiMsg;
 

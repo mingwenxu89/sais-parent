@@ -21,7 +21,7 @@ import java.util.List;
 
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 
-@Tag(name = "管理后台 - 文件配置")
+@Tag(name = "Management background - file configuration")
 @RestController
 @RequestMapping("/infra/file-config")
 @Validated
@@ -31,14 +31,14 @@ public class FileConfigController {
     private FileConfigService fileConfigService;
 
     @PostMapping("/create")
-    @Operation(summary = "创建文件配置")
+    @Operation(summary = "Create file configuration")
     @PreAuthorize("@ss.hasPermission('infra:file-config:create')")
     public CommonResult<Long> createFileConfig(@Valid @RequestBody FileConfigSaveReqVO createReqVO) {
         return success(fileConfigService.createFileConfig(createReqVO));
     }
 
     @PutMapping("/update")
-    @Operation(summary = "更新文件配置")
+    @Operation(summary = "Update file configuration")
     @PreAuthorize("@ss.hasPermission('infra:file-config:update')")
     public CommonResult<Boolean> updateFileConfig(@Valid @RequestBody FileConfigSaveReqVO updateReqVO) {
         fileConfigService.updateFileConfig(updateReqVO);
@@ -46,7 +46,7 @@ public class FileConfigController {
     }
 
     @PutMapping("/update-master")
-    @Operation(summary = "更新文件配置为 Master")
+    @Operation(summary = "Update file configuration as Master")
     @PreAuthorize("@ss.hasPermission('infra:file-config:update')")
     public CommonResult<Boolean> updateFileConfigMaster(@RequestParam("id") Long id) {
         fileConfigService.updateFileConfigMaster(id);
@@ -54,8 +54,8 @@ public class FileConfigController {
     }
 
     @DeleteMapping("/delete")
-    @Operation(summary = "删除文件配置")
-    @Parameter(name = "id", description = "编号", required = true)
+    @Operation(summary = "Delete file configuration")
+    @Parameter(name = "id", description = "ID", required = true)
     @PreAuthorize("@ss.hasPermission('infra:file-config:delete')")
     public CommonResult<Boolean> deleteFileConfig(@RequestParam("id") Long id) {
         fileConfigService.deleteFileConfig(id);
@@ -63,8 +63,8 @@ public class FileConfigController {
     }
 
     @DeleteMapping("/delete-list")
-    @Operation(summary = "批量删除文件配置")
-    @Parameter(name = "ids", description = "编号列表", required = true)
+    @Operation(summary = "Deleting file configurations in batches")
+    @Parameter(name = "ids", description = "IDed list", required = true)
     @PreAuthorize("@ss.hasPermission('infra:file-config:delete')")
     public CommonResult<Boolean> deleteFileConfigList(@RequestParam("ids") List<Long> ids) {
         fileConfigService.deleteFileConfigList(ids);
@@ -72,8 +72,8 @@ public class FileConfigController {
     }
 
     @GetMapping("/get")
-    @Operation(summary = "获得文件配置")
-    @Parameter(name = "id", description = "编号", required = true, example = "1024")
+    @Operation(summary = "Get file configuration")
+    @Parameter(name = "id", description = "ID", required = true, example = "1024")
     @PreAuthorize("@ss.hasPermission('infra:file-config:query')")
     public CommonResult<FileConfigRespVO> getFileConfig(@RequestParam("id") Long id) {
         FileConfigDO config = fileConfigService.getFileConfig(id);
@@ -81,7 +81,7 @@ public class FileConfigController {
     }
 
     @GetMapping("/page")
-    @Operation(summary = "获得文件配置分页")
+    @Operation(summary = "Get file configuration pagination")
     @PreAuthorize("@ss.hasPermission('infra:file-config:query')")
     public CommonResult<PageResult<FileConfigRespVO>> getFileConfigPage(@Valid FileConfigPageReqVO pageVO) {
         PageResult<FileConfigDO> pageResult = fileConfigService.getFileConfigPage(pageVO);
@@ -89,7 +89,7 @@ public class FileConfigController {
     }
 
     @GetMapping("/test")
-    @Operation(summary = "测试文件配置是否正确")
+    @Operation(summary = "Test whether the file configuration is correct")
     @PreAuthorize("@ss.hasPermission('infra:file-config:query')")
     public CommonResult<String> testFileConfig(@RequestParam("id") Long id) throws Exception {
         String url = fileConfigService.testFileConfig(id);

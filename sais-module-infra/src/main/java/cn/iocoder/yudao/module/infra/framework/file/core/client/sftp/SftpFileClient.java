@@ -13,23 +13,23 @@ import com.jcraft.jsch.JSch;
 import java.io.File;
 
 /**
- * Sftp 文件客户端
+ * SFTP file client
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public class SftpFileClient extends AbstractFileClient<SftpFileClientConfig> {
 
     /**
-     * 连接超时时间，单位：毫秒
+     * Connection timeout, unit: milliseconds
      */
     private static final Long CONNECTION_TIMEOUT = 3000L;
     /**
-     * 读写超时时间，单位：毫秒
+     * Read and write timeout, unit: milliseconds
      */
     private static final Long SO_TIMEOUT = 10000L;
 
     static {
-        // 某些旧的 sftp 服务器仅支持 ssh-dss 协议，该协议并不安全，默认不支持该协议，按需添加
+        // Some old SFTP servers only support the ssh-dss protocol. This protocol is not secure and is not supported by default. Add it as needed.
         JSch.setConfig("server_host_key", JSch.getConfig("server_host_key") + ",ssh-dss");
     }
 
@@ -41,7 +41,7 @@ public class SftpFileClient extends AbstractFileClient<SftpFileClientConfig> {
 
     @Override
     protected void doInit() {
-        // 初始化 Sftp 对象
+        // Initialize SFTP object
         FtpConfig ftpConfig = new FtpConfig(config.getHost(), config.getPort(), config.getUsername(), config.getPassword(),
                 CharsetUtil.CHARSET_UTF_8, null, null);
         ftpConfig.setConnectionTimeout(CONNECTION_TIMEOUT);
@@ -51,18 +51,18 @@ public class SftpFileClient extends AbstractFileClient<SftpFileClientConfig> {
 
     @Override
     public String upload(byte[] content, String path, String type) {
-        // 执行写入
+        // perform write
         String filePath = getFilePath(path);
         String fileName = FileUtil.getName(filePath);
         String dir = StrUtil.removeSuffix(filePath, fileName);
         File file = FileUtils.createTempFile(content);
         reconnectIfTimeout();
-        sftp.mkDirs(dir); // 需要创建父目录，不然会报错
+        sftp.mkDirs(dir); // You need to create a parent directory, otherwise an error will be reported
         boolean success = sftp.upload(filePath, file);
         if (!success) {
-            throw new JschRuntimeException(StrUtil.format("上传文件到目标目录 ({}) 失败", filePath));
+            throw new JschRuntimeException(StrUtil.format("Failed to upload file to target directory ({})", filePath));
         }
-        // 拼接返回路径
+        // splice return path
         return super.formatFileUrl(config.getDomain(), path);
     }
 

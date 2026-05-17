@@ -19,7 +19,7 @@ import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionU
 import static cn.iocoder.yudao.module.infra.enums.ErrorCodeConstants.*;
 
 /**
- * 参数配置 Service 实现类
+ * Parameter configuration Service implementation class
  */
 @Service
 @Slf4j
@@ -31,10 +31,10 @@ public class ConfigServiceImpl implements ConfigService {
 
     @Override
     public Long createConfig(ConfigSaveReqVO createReqVO) {
-        // 校验参数配置 key 的唯一性
+        // Verify the uniqueness of parameter configuration key
         validateConfigKeyUnique(null, createReqVO.getKey());
 
-        // 插入参数配置
+        // Insert parameter configuration
         ConfigDO config = ConfigConvert.INSTANCE.convert(createReqVO);
         config.setType(ConfigTypeEnum.CUSTOM.getType());
         configMapper.insert(config);
@@ -43,31 +43,31 @@ public class ConfigServiceImpl implements ConfigService {
 
     @Override
     public void updateConfig(ConfigSaveReqVO updateReqVO) {
-        // 校验自己存在
+        // Verify your own existence
         validateConfigExists(updateReqVO.getId());
-        // 校验参数配置 key 的唯一性
+        // Verify the uniqueness of parameter configuration key
         validateConfigKeyUnique(updateReqVO.getId(), updateReqVO.getKey());
 
-        // 更新参数配置
+        // Update parameter configuration
         ConfigDO updateObj = ConfigConvert.INSTANCE.convert(updateReqVO);
         configMapper.updateById(updateObj);
     }
 
     @Override
     public void deleteConfig(Long id) {
-        // 校验配置存在
+        // Verify configuration exists
         ConfigDO config = validateConfigExists(id);
-        // 内置配置，不允许删除
+        // Built-in configuration, deletion is not allowed
         if (ConfigTypeEnum.SYSTEM.getType().equals(config.getType())) {
             throw exception(CONFIG_CAN_NOT_DELETE_SYSTEM_TYPE);
         }
-        // 删除
+        // Delete
         configMapper.deleteById(id);
     }
 
     @Override
     public void deleteConfigList(List<Long> ids) {
-        // 校验是否有内置配置
+        // Verify whether there is built-in configuration
         List<ConfigDO> configs = configMapper.selectByIds(ids);
         configs.forEach(config -> {
             if (ConfigTypeEnum.SYSTEM.getType().equals(config.getType())) {
@@ -75,7 +75,7 @@ public class ConfigServiceImpl implements ConfigService {
             }
         });
 
-        // 批量删除
+        // Batch delete
         configMapper.deleteByIds(ids);
     }
 
@@ -112,7 +112,7 @@ public class ConfigServiceImpl implements ConfigService {
         if (config == null) {
             return;
         }
-        // 如果 id 为空，说明不用比较是否为相同 id 的参数配置
+        // If the id is empty, it means that there is no need to compare whether the parameter configuration is the same id.
         if (id == null) {
             throw exception(CONFIG_KEY_DUPLICATE);
         }

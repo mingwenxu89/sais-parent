@@ -6,33 +6,33 @@ import cn.iocoder.yudao.module.infra.controller.admin.job.vo.log.JobLogPageReqVO
 import cn.iocoder.yudao.module.infra.dal.dataobject.job.JobLogDO;
 
 /**
- * Job 日志 Service 接口
+ * Job log service API
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface JobLogService extends JobLogFrameworkService {
 
     /**
-     * 获得定时任务
+     * Get scheduled tasks
      *
-     * @param id 编号
-     * @return 定时任务
+     * @param id ID
+     * @return scheduled tasks
      */
     JobLogDO getJobLog(Long id);
 
     /**
-     * 获得定时任务分页
+     * Get scheduled task pagination
      *
-     * @param pageReqVO 分页查询
-     * @return 定时任务分页
+     * @param pageReqVO Page query
+     * @return Scheduled task paging
      */
     PageResult<JobLogDO> getJobLogPage(JobLogPageReqVO pageReqVO);
 
     /**
-     * 清理 exceedDay 天前的任务日志
+     * Clear task logs from exceedDay days ago
      *
-     * @param exceedDay   超过多少天就进行清理
-     * @param deleteLimit 清理的间隔条数
+     * @param exceedDay   How many days will it take to clean up?
+     * @param deleteLimit ID of intervals to clear
      */
     Integer cleanJobLog(Integer exceedDay, Integer deleteLimit);
 

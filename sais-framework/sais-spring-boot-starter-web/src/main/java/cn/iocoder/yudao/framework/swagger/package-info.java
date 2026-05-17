@@ -1,6 +1,6 @@
 /**
- * 基于 Swagger + Knife4j 实现 API 接口文档
+ * Implement API interface documentation based on Swagger + Knife4j
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 package cn.iocoder.yudao.framework.swagger;

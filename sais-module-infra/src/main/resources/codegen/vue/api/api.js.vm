@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 #set ($baseURL = "/${table.moduleName}/${simpleClassName_strikeCase}")
 
-// 创建${table.classComment}
+// Create ${table.classComment}
 export function create${simpleClassName}(data) {
   return request({
     url: '${baseURL}/create',
@@ -10,7 +10,7 @@ export function create${simpleClassName}(data) {
   })
 }
 
-// 更新${table.classComment}
+// Update ${table.classComment}
 export function update${simpleClassName}(data) {
   return request({
     url: '${baseURL}/update',
@@ -19,7 +19,7 @@ export function update${simpleClassName}(data) {
   })
 }
 
-// 删除${table.classComment}
+// Delete ${table.classComment}
 export function delete${simpleClassName}(id) {
   return request({
     url: '${baseURL}/delete?id=' + id,
@@ -28,7 +28,7 @@ export function delete${simpleClassName}(id) {
 }
 
 #if ( $table.templateType != 2 && $deleteBatchEnable)
-/** 批量删除${table.classComment} */
+/** Batch delete ${table.classComment} */
 export function delete${simpleClassName}List(ids) {
   return request({
     url: `${baseURL}/delete-list?ids=${ids.join(',')}`,
@@ -37,7 +37,7 @@ export function delete${simpleClassName}List(ids) {
 }
 #end
 
-// 获得${table.classComment}
+// Get ${table.classComment}
 export function get${simpleClassName}(id) {
   return request({
     url: '${baseURL}/get?id=' + id,
@@ -46,7 +46,7 @@ export function get${simpleClassName}(id) {
 }
 
 #if ( $table.templateType != 2 )
-// 获得${table.classComment}分页
+// Get ${table.classComment} pagination
 export function get${simpleClassName}Page(params) {
   return request({
     url: '${baseURL}/page',
@@ -55,7 +55,7 @@ export function get${simpleClassName}Page(params) {
   })
 }
 #else
-// 获得${table.classComment}列表
+// Get ${table.classComment} list
 export function get${simpleClassName}List(params) {
   return request({
     url: '${baseURL}/list',
@@ -64,7 +64,7 @@ export function get${simpleClassName}List(params) {
   })
 }
 #end
-// 导出${table.classComment} Excel
+// Export ${table.classComment} Excel
 export function export${simpleClassName}Excel(params) {
   return request({
     url: '${baseURL}/export-excel',
@@ -73,21 +73,21 @@ export function export${simpleClassName}Excel(params) {
     responseType: 'blob'
   })
 }
-## 特殊：主子表专属逻辑
+## Special: Exclusive logic for master and sub-tables
 #foreach ($subTable in $subTables)
   #set ($index = $foreach.count - 1)
   #set ($subSimpleClassName = $subSimpleClassNames.get($index))
-  #set ($subPrimaryColumn = $subPrimaryColumns.get($index))##当前 primary 字段
-  #set ($subJoinColumn = $subJoinColumns.get($index))##当前 join 字段
-  #set ($SubJoinColumnName = $subJoinColumn.javaField.substring(0,1).toUpperCase() + ${subJoinColumn.javaField.substring(1)})##首字母大写
+  #set ($subPrimaryColumn = $subPrimaryColumns.get($index))##Current primary field
+  #set ($subJoinColumn = $subJoinColumns.get($index))##Current join field
+  #set ($SubJoinColumnName = $subJoinColumn.javaField.substring(0,1).toUpperCase() + ${subJoinColumn.javaField.substring(1)})##Capitalize first letter
   #set ($subSimpleClassName_strikeCase = $subSimpleClassName_strikeCases.get($index))
   #set ($subJoinColumn_strikeCase = $subJoinColumn_strikeCases.get($index))
   #set ($subClassNameVar = $subClassNameVars.get($index))
 
-// ==================== 子表（$subTable.classComment） ====================
-  ## 情况一：MASTER_ERP 时，需要分查询页子表
+// ==================== Subtable ($subTable.classComment) ====================
+  ## Situation 1: When MASTER_ERP is used, page subtables need to be queried separately.
   #if ($table.templateType == 11)
-  // 获得${subTable.classComment}分页
+  // Get ${subTable.classComment} pagination
   export function get${subSimpleClassName}Page(params) {
     return request({
       url: '${baseURL}/${subSimpleClassName_strikeCase}/page',
@@ -95,10 +95,10 @@ export function export${simpleClassName}Excel(params) {
       params
     })
   }
-    ## 情况二：非 MASTER_ERP 时，需要列表查询子表
+    ## Scenario 2: When it is not MASTER_ERP, you need to query the subtable in a list
   #else
     #if ($subTable.subJoinMany)
-    // 获得${subTable.classComment}列表
+    // Get ${subTable.classComment} list
     export function get${subSimpleClassName}ListBy${SubJoinColumnName}(${subJoinColumn.javaField}) {
       return request({
         url: '${baseURL}/${subSimpleClassName_strikeCase}/list-by-${subJoinColumn_strikeCase}?${subJoinColumn.javaField}=' + ${subJoinColumn.javaField},
@@ -106,7 +106,7 @@ export function export${simpleClassName}Excel(params) {
       })
     }
     #else
-    // 获得${subTable.classComment}
+    // Get ${subTable.classComment}
     export function get${subSimpleClassName}By${SubJoinColumnName}(${subJoinColumn.javaField}) {
       return request({
         url: '${baseURL}/${subSimpleClassName_strikeCase}/get-by-${subJoinColumn_strikeCase}?${subJoinColumn.javaField}=' + ${subJoinColumn.javaField},
@@ -115,9 +115,9 @@ export function export${simpleClassName}Excel(params) {
     }
     #end
   #end
-  ## 特殊：MASTER_ERP 时，支持单个的新增、修改、删除操作
+  ## Special: MASTER_ERP supports single add, modify, and delete operations
   #if ($table.templateType == 11)
-  // 新增${subTable.classComment}
+  // Added ${subTable.classComment}
   export function create${subSimpleClassName}(data) {
     return request({
       url: '${baseURL}/${subSimpleClassName_strikeCase}/create',
@@ -125,7 +125,7 @@ export function export${simpleClassName}Excel(params) {
       data
     })
   }
-  // 修改${subTable.classComment}
+  // Modify ${subTable.classComment}
   export function update${subSimpleClassName}(data) {
     return request({
       url: '${baseURL}/${subSimpleClassName_strikeCase}/update',
@@ -133,7 +133,7 @@ export function export${simpleClassName}Excel(params) {
       data
     })
   }
-  // 删除${subTable.classComment}
+  // Delete ${subTable.classComment}
   export function delete${subSimpleClassName}(id) {
     return request({
       url: '${baseURL}/${subSimpleClassName_strikeCase}/delete?id=' + id,
@@ -141,7 +141,7 @@ export function export${simpleClassName}Excel(params) {
     })
   }
   #if ($deleteBatchEnable)
-  /** 批量删除${subTable.classComment} */
+  /** Batch delete ${subTable.classComment} */
   export function delete${subSimpleClassName}List(ids) {
     return request({
       url: `${baseURL}/${subSimpleClassName_strikeCase}/delete-list?ids=${ids.join(',')}`,
@@ -149,7 +149,7 @@ export function export${simpleClassName}Excel(params) {
     })
   }
   #end
-  // 获得${subTable.classComment}
+  // Get ${subTable.classComment}
   export function get${subSimpleClassName}(id) {
     return request({
       url: '${baseURL}/${subSimpleClassName_strikeCase}/get?id=' + id,

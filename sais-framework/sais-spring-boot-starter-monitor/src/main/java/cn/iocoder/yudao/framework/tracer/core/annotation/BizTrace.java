@@ -3,12 +3,13 @@ package cn.iocoder.yudao.framework.tracer.core.annotation;
 import java.lang.annotation.*;
 
 /**
- * 打印业务编号 / 业务类型注解
+ * Annotation for printing business ID / business type
  *
- * 使用时，需要设置 SkyWalking OAP Server 的 application.yaml 配置文件，修改 SW_SEARCHABLE_TAG_KEYS 配置项，
- * 增加 biz.type 和 biz.id 两值，然后重启 SkyWalking OAP Server 服务器。
+ * When using, you need to configure the SkyWalking OAP Server's application.yaml file,
+ * modify the SW_SEARCHABLE_TAG_KEYS configuration item by adding biz.type and biz.id,
+ * then restart the SkyWalking OAP Server.
  *
- * @author 麻薯
+ * @author mashu
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
@@ -16,26 +17,26 @@ import java.lang.annotation.*;
 public @interface BizTrace {
 
     /**
-     * 业务编号 tag 名
+     * Business ID tag name
      */
     String ID_TAG = "biz.id";
     /**
-     * 业务类型 tag 名
+     * Business type tag name
      */
     String TYPE_TAG = "biz.type";
 
     /**
-     * @return 操作名
+     * @return operation name
      */
     String operationName() default "";
 
     /**
-     * @return 业务编号
+     * @return business ID
      */
     String id();
 
     /**
-     * @return 业务类型
+     * @return business type
      */
     String type();
 

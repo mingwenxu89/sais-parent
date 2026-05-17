@@ -5,9 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 社交用户 Response DTO
+ * Social User Response DTO
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Data
 @NoArgsConstructor
@@ -15,20 +15,20 @@ import lombok.NoArgsConstructor;
 public class SocialUserRespDTO {
 
     /**
-     * 社交用户的 openid
+     * openid of social user
      */
     private String openid;
     /**
-     * 社交用户的昵称
+     * Nickname of social user
      */
     private String nickname;
     /**
-     * 社交用户的头像
+     * social useravatar
      */
     private String avatar;
 
     /**
-     * 关联的用户编号
+     * Associated user ID
      */
     private Long userId;
 

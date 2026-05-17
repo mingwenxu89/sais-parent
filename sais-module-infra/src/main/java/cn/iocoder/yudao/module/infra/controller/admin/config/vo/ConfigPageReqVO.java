@@ -9,20 +9,20 @@ import java.time.LocalDateTime;
 
 import static cn.iocoder.yudao.framework.common.util.date.DateUtils.FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND;
 
-@Schema(description = "管理后台 - 参数配置分页 Request VO")
+@Schema(description = "Management background - parameter configuration paging Request VO")
 @Data
 public class ConfigPageReqVO extends PageParam {
 
-    @Schema(description = "数据源名称，模糊匹配", example = "名称")
+    @Schema(description = "Data source name, fuzzy matching", example = "Name")
     private String name;
 
-    @Schema(description = "参数键名，模糊匹配", example = "yunai.db.username")
+    @Schema(description = "Parameter key name, fuzzy matching", example = "yunai.db.username")
     private String key;
 
-    @Schema(description = "参数类型，参见 SysConfigTypeEnum 枚举", example = "1")
+    @Schema(description = "Parameter type, see SysConfigTypeEnum enumeration", example = "1")
     private Integer type;
 
-    @Schema(description = "创建时间", example = "[2022-07-01 00:00:00,2022-07-01 23:59:59]")
+    @Schema(description = "Create Time", example = "[2022-07-01 00:00:00,2022-07-01 23:59:59]")
     @DateTimeFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
     private LocalDateTime[] createTime;
 

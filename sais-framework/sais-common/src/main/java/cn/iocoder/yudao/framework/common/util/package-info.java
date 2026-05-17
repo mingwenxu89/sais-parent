@@ -1,7 +1,7 @@
 /**
- * 对于工具类的选择，优先查找 Hutool 中有没对应的方法
- * 如果没有，则自己封装对应的工具类，以 Utils 结尾，用于区分
+ * For the selection of tool classes, first look for whether there is a corresponding method in Hutool
+ * If not, encapsulate the corresponding tool class yourself, ending with Utils to distinguish
  *
- * ps：如果担心 Hutool 存在坑的问题，可以阅读 Hutool 的实现源码，以确保可靠性。并且，可以补充相关的单元测试。
+ * ps: If you are worried about Hutool’s pitfalls, you can read Hutool’s implementation source code to ensure reliability. Moreover, relevant unit tests can be added.
  */
 package cn.iocoder.yudao.framework.common.util;

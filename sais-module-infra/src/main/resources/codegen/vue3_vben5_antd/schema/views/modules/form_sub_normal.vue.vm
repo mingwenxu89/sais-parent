@@ -1,9 +1,9 @@
-#set ($subTable = $subTables.get($subIndex))##当前表
-#set ($subColumns = $subColumnsList.get($subIndex))##当前字段数组
-#set ($subJoinColumn = $subJoinColumns.get($subIndex))##当前 join 字段
+#set ($subTable = $subTables.get($subIndex))##current table
+#set ($subColumns = $subColumnsList.get($subIndex))##Current field array
+#set ($subJoinColumn = $subJoinColumns.get($subIndex))##Current join field
 #set ($subSimpleClassName = $subSimpleClassNames.get($subIndex))
 #set ($subClassNameVar = $subClassNameVars.get($subIndex))
-#set ($SubJoinColumnName = $subJoinColumn.javaField.substring(0,1).toUpperCase() + ${subJoinColumn.javaField.substring(1)})##首字母大写
+#set ($SubJoinColumnName = $subJoinColumn.javaField.substring(0,1).toUpperCase() + ${subJoinColumn.javaField.substring(1)})##Capitalize first letter
 #set ($apiName = "${table.moduleName.substring(0,1).toUpperCase()}${table.moduleName.substring(1)}${simpleClassName}Api")
 <script lang="ts" setup>
   import type { ${apiName} } from '#/api/${table.moduleName}/${table.businessName}';
@@ -12,7 +12,7 @@
 
   import { $t } from '#/locales';
 
-#if ($subTable.subJoinMany) ## 一对多
+#if ($subTable.subJoinMany) ## one to many
 import { Plus } from "@vben/icons";
 import { Button, Tabs, Checkbox, Input, Textarea, Select,RadioGroup,CheckboxGroup, DatePicker } from 'ant-design-vue';
 import { ImageUpload, FileUpload } from "#/components/upload";
@@ -26,10 +26,10 @@ import { get${subSimpleClassName}By${SubJoinColumnName} } from '#/api/${table.mo
 #end
 
 const props = defineProps<{
-   ${subJoinColumn.javaField}?: number // ${subJoinColumn.columnComment}（主表的关联字段）
+   ${subJoinColumn.javaField}?: number // ${subJoinColumn.columnComment}（Related fields of the main table)
 }>()
 
-#if ($subTable.subJoinMany) ## 一对多
+#if ($subTable.subJoinMany) ## one to many
 const [Grid, gridApi] = useVbenVxeGrid({
 gridOptions: {
   columns: use${subSimpleClassName}GridEditColumns(),
@@ -49,17 +49,17 @@ gridOptions: {
 },
 });
 
-/** 添加${subTable.classComment} */
+/** Add ${subTable.classComment} */
 const handleAdd = async () => {
   await gridApi.grid.insertAt({} as ${apiName}.${subSimpleClassName}, -1);
 }
 
-/** 删除${subTable.classComment} */
+/** Delete ${subTable.classComment} */
 const handleDelete =  async (row: ${apiName}.${subSimpleClassName}) => {
   await gridApi.grid.remove(row);
 }
 
-/** 提供获取表格数据的方法供父组件调用 */
+/** Provide methods to obtain table data for parent components to call */
 defineExpose({
   getData: (): ${apiName}.${subSimpleClassName}[] => {
     const data = gridApi.grid.getData() as ${apiName}.${subSimpleClassName}[];
@@ -71,7 +71,7 @@ defineExpose({
   },
 });
 
-/** 监听主表的关联字段的变化，加载对应的子表数据 */
+/** Monitor changes in the associated fields of the main table and load the corresponding sub-table data */
 watch(
     () => props.${subJoinColumn.javaField},
     async (val) => {
@@ -97,7 +97,7 @@ const [Form, formApi] = useVbenForm({
   showDefaultActions: false
 });
 
-/** 暴露出表单校验方法和表单值获取方法 */
+/** Expose form verification methods and form value acquisition methods */
 defineExpose({
   validate: async () => {
     const { valid } = await formApi.validate();
@@ -106,7 +106,7 @@ defineExpose({
   getValues: formApi.getValues,
 });
 
-/** 监听主表的关联字段的变化，加载对应的子表数据 */
+/** Monitor changes in the associated fields of the main table and load the corresponding sub-table data */
 watch(
     () => props.${subJoinColumn.javaField},
     async (val) => {
@@ -122,25 +122,25 @@ watch(
 </script>
 
 <template>
-#if ($subTable.subJoinMany) ## 一对多
+#if ($subTable.subJoinMany) ## one to many
   <Grid class="mx-4">
       #foreach($column in $subColumns)
           #if ($column.createOperation || $column.updateOperation)
               #set ($javaField = $column.javaField)
-              #if ( $column.id == $subJoinColumn.id) ## 特殊：忽略主子表的 join 字段，不用填写
-              #elseif ($column.htmlType == "input" && !$column.primaryKey)## 忽略主键，不用在表单里
+              #if ( $column.id == $subJoinColumn.id) ## Special: Ignore the join field of the master and child tables and DO not need to fill it in.
+              #elseif ($column.htmlType == "input" && !$column.primaryKey)## Ignore the primary key, DO not use it in the form
                 <template #${javaField}="{ row }">
                   <Input v-model:value="row.${javaField}" />
                 </template>
-              #elseif($column.htmlType == "imageUpload")## 图片上传
+              #elseif($column.htmlType == "imageUpload")## Image upload
                 <template #${javaField}="{ row }">
                   <ImageUpload v-model:value="row.${javaField}" />
                 </template>
-              #elseif($column.htmlType == "fileUpload")## 文件上传
+              #elseif($column.htmlType == "fileUpload")## File upload
                 <template #${javaField}="{ row }">
                   <FileUpload v-model:value="row.${javaField}" />
                 </template>
-              #elseif($column.htmlType == "select")## 下拉框
+              #elseif($column.htmlType == "select")## Select box
                 <template #${javaField}="{ row, column }">
                   <Select v-model:value="row.${javaField}" class="w-full">
                     <Select.Option v-for="option in column.params.options" :key="option.value" :value="option.value">
@@ -148,15 +148,15 @@ watch(
                     </Select.Option>
                   </Select>
                 </template>
-              #elseif($column.htmlType == "checkbox")## 多选框
+              #elseif($column.htmlType == "checkbox")## checkbox
                 <template #${javaField}="{ row, column }">
                   <CheckboxGroup v-model:value="row.${javaField}" :options="column.params.options" />
                 </template>
-              #elseif($column.htmlType == "radio")## 单选框
+              #elseif($column.htmlType == "radio")## Radio button
                 <template #${javaField}="{ row, column }">
                   <RadioGroup v-model:value="row.${javaField}" :options="column.params.options" />
                 </template>
-              #elseif($column.htmlType == "datetime")## 时间框
+              #elseif($column.htmlType == "datetime")## time box
                 <template #${javaField}="{ row }">
                   <DatePicker
                       v-model:value="row.${javaField}"
@@ -165,7 +165,7 @@ watch(
                       valueFormat='x'
                   />
                 </template>
-              #elseif($column.htmlType == "textarea" || $column.htmlType == "editor")## 文本框
+              #elseif($column.htmlType == "textarea" || $column.htmlType == "editor")## Text input
                 <template #${javaField}="{ row }">
                   <Textarea v-model:value="row.${javaField}" />
                 </template>

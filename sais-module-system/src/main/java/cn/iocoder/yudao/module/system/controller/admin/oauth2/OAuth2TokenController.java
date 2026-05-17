@@ -21,7 +21,7 @@ import java.util.List;
 
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 
-@Tag(name = "管理后台 - OAuth2.0 令牌")
+@Tag(name = "Management backend - OAuth2.0 token")
 @RestController
 @RequestMapping("/system/oauth2-token")
 public class OAuth2TokenController {
@@ -32,7 +32,7 @@ public class OAuth2TokenController {
     private AdminAuthService authService;
 
     @GetMapping("/page")
-    @Operation(summary = "获得访问令牌分页", description = "只返回有效期内的")
+    @Operation(summary = "Get access token pagination", description = "Only return those within the validity period")
     @PreAuthorize("@ss.hasPermission('system:oauth2-token:page')")
     public CommonResult<PageResult<OAuth2AccessTokenRespVO>> getAccessTokenPage(@Valid OAuth2AccessTokenPageReqVO reqVO) {
         PageResult<OAuth2AccessTokenDO> pageResult = oauth2TokenService.getAccessTokenPage(reqVO);
@@ -40,8 +40,8 @@ public class OAuth2TokenController {
     }
 
     @DeleteMapping("/delete")
-    @Operation(summary = "删除访问令牌")
-    @Parameter(name = "accessToken", description = "访问令牌", required = true, example = "tudou")
+    @Operation(summary = "Delete access token")
+    @Parameter(name = "accessToken", description = "Access Token", required = true, example = "tudou")
     @PreAuthorize("@ss.hasPermission('system:oauth2-token:delete')")
     public CommonResult<Boolean> deleteAccessToken(@RequestParam("accessToken") String accessToken) {
         authService.logout(accessToken, LoginLogTypeEnum.LOGOUT_DELETE.getType());
@@ -49,8 +49,8 @@ public class OAuth2TokenController {
     }
 
     @DeleteMapping("/delete-list")
-    @Operation(summary = "批量删除访问令牌")
-    @Parameter(name = "accessTokens", description = "访问令牌数组", required = true)
+    @Operation(summary = "Delete access tokens in batches")
+    @Parameter(name = "accessTokens", description = "access token array", required = true)
     @PreAuthorize("@ss.hasPermission('system:oauth2-token:delete')")
     public CommonResult<Boolean> deleteAccessTokenList(@RequestParam("accessTokens") List<String> accessTokens) {
         accessTokens.forEach(accessToken ->

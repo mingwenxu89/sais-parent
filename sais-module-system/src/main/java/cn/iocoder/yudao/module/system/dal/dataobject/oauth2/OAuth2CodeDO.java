@@ -13,55 +13,55 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * OAuth2 授权码 DO
+ * OAuth2 authorization code DO
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @TableName(value = "system_oauth2_code", autoResultMap = true)
-@KeySequence("system_oauth2_code_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
+@KeySequence("system_oauth2_code_seq") // Primary key auto-increment for Oracle, PostgreSQL, Kingbase, DB2, H2 databases. If it is a database such as MySQL, you DO not need to write it.
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class OAuth2CodeDO extends BaseDO {
 
     /**
-     * 编号，数据库递增
+     * ID, database increments
      */
     private Long id;
     /**
-     * 授权码
+     * Authorization code
      */
     private String code;
     /**
-     * 用户编号
+     * User ID
      */
     private Long userId;
     /**
-     * 用户类型
+     * User type
      *
-     * 枚举 {@link UserTypeEnum}
+     * Enumeration {@link UserTypeEnum}
      */
     private Integer userType;
     /**
-     * 客户端编号
+     * client ID
      *
-     * 关联 {@link OAuth2ClientDO#getClientId()}
+     * Association {@link OAuth2ClientDO#getClientId()}
      */
     private String clientId;
     /**
-     * 授权范围
+     * Authorization scope
      */
     @TableField(typeHandler = JacksonTypeHandler.class)
     private List<String> scopes;
     /**
-     * 重定向地址
+     * redirect address
      */
     private String redirectUri;
     /**
-     * 状态
+     * Status
      */
     private String state;
     /**
-     * 过期时间
+     * Expiration time
      */
     private LocalDateTime expiresTime;
 

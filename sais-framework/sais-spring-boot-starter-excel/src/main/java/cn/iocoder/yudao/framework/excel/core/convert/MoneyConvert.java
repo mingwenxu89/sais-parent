@@ -10,30 +10,30 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 /**
- * 金额转换器
+ * amount converter
  *
- * 金额单位：分
+ * Amount unit: cents
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public class MoneyConvert implements Converter<Integer> {
 
-    @Override
-    public Class<?> supportJavaTypeKey() {
-        throw new UnsupportedOperationException("暂不支持，也不需要");
-    }
+ @Override
+ public Class<?> supportJavaTypeKey() {
+        throw new UnsupportedOperationException("Not supported and not required");
+ }
 
-    @Override
-    public CellDataTypeEnum supportExcelTypeKey() {
-        throw new UnsupportedOperationException("暂不支持，也不需要");
-    }
+ @Override
+ public CellDataTypeEnum supportExcelTypeKey() {
+        throw new UnsupportedOperationException("Not supported and not required");
+ }
 
-    @Override
-    public WriteCellData<String> convertToExcelData(Integer value, ExcelContentProperty contentProperty,
-                                                    GlobalConfiguration globalConfiguration) {
-        BigDecimal result = BigDecimal.valueOf(value)
-                .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
-        return new WriteCellData<>(result.toString());
-    }
+ @Override
+ public WriteCellData<String> convertToExcelData(Integer value, ExcelContentProperty contentProperty,
+ GlobalConfiguration globalConfiguration) {
+ BigDecimal result = BigDecimal.valueOf(value)
+.divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
+ return new WriteCellData<>(result.toString());
+ }
 
 }

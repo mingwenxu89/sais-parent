@@ -5,19 +5,19 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * OAuth2 授权类型（模式）的枚举
+ * Enumeration of OAuth2 authorization types (modes)
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @AllArgsConstructor
 @Getter
 public enum OAuth2GrantTypeEnum {
 
-    PASSWORD("password"), // 密码模式
-    AUTHORIZATION_CODE("authorization_code"), // 授权码模式
-    IMPLICIT("implicit"), // 简化模式
-    CLIENT_CREDENTIALS("client_credentials"), // 客户端模式
-    REFRESH_TOKEN("refresh_token"), // 刷新模式
+    PASSWORD("password"), // password mode
+    AUTHORIZATION_CODE("authorization_code"), // Authorization code mode
+    IMPLICIT("implicit"), // Simplified mode
+    CLIENT_CREDENTIALS("client_credentials"), // client mode
+    REFRESH_TOKEN("refresh_token"), // refresh mode
     ;
 
     private final String grantType;

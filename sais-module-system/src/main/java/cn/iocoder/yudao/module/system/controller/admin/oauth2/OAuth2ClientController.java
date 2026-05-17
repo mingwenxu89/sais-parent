@@ -21,7 +21,7 @@ import java.util.List;
 
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 
-@Tag(name = "管理后台 - OAuth2 客户端")
+@Tag(name = "Management backend - OAuth2 client")
 @RestController
 @RequestMapping("/system/oauth2-client")
 @Validated
@@ -31,14 +31,14 @@ public class OAuth2ClientController {
     private OAuth2ClientService oAuth2ClientService;
 
     @PostMapping("/create")
-    @Operation(summary = "创建 OAuth2 客户端")
+    @Operation(summary = "Create an OAuth2 client")
     @PreAuthorize("@ss.hasPermission('system:oauth2-client:create')")
     public CommonResult<Long> createOAuth2Client(@Valid @RequestBody OAuth2ClientSaveReqVO createReqVO) {
         return success(oAuth2ClientService.createOAuth2Client(createReqVO));
     }
 
     @PutMapping("/update")
-    @Operation(summary = "更新 OAuth2 客户端")
+    @Operation(summary = "Update OAuth2 client")
     @PreAuthorize("@ss.hasPermission('system:oauth2-client:update')")
     public CommonResult<Boolean> updateOAuth2Client(@Valid @RequestBody OAuth2ClientSaveReqVO updateReqVO) {
         oAuth2ClientService.updateOAuth2Client(updateReqVO);
@@ -46,8 +46,8 @@ public class OAuth2ClientController {
     }
 
     @DeleteMapping("/delete")
-    @Operation(summary = "删除 OAuth2 客户端")
-    @Parameter(name = "id", description = "编号", required = true)
+    @Operation(summary = "Remove OAuth2 client")
+    @Parameter(name = "id", description = "ID", required = true)
     @PreAuthorize("@ss.hasPermission('system:oauth2-client:delete')")
     public CommonResult<Boolean> deleteOAuth2Client(@RequestParam("id") Long id) {
         oAuth2ClientService.deleteOAuth2Client(id);
@@ -55,8 +55,8 @@ public class OAuth2ClientController {
     }
 
     @DeleteMapping("/delete-list")
-    @Parameter(name = "ids", description = "编号列表", required = true)
-    @Operation(summary = "批量删除 OAuth2 客户端")
+    @Parameter(name = "ids", description = "ID list", required = true)
+    @Operation(summary = "Batch deletion of OAuth2 clients")
     @PreAuthorize("@ss.hasPermission('system:oauth2-client:delete')")
     public CommonResult<Boolean> deleteOAuth2ClientList(@RequestParam("ids") List<Long> ids) {
         oAuth2ClientService.deleteOAuth2ClientList(ids);
@@ -64,8 +64,8 @@ public class OAuth2ClientController {
     }
 
     @GetMapping("/get")
-    @Operation(summary = "获得 OAuth2 客户端")
-    @Parameter(name = "id", description = "编号", required = true, example = "1024")
+    @Operation(summary = "Get the OAuth2 client")
+    @Parameter(name = "id", description = "ID", required = true, example = "1024")
     @PreAuthorize("@ss.hasPermission('system:oauth2-client:query')")
     public CommonResult<OAuth2ClientRespVO> getOAuth2Client(@RequestParam("id") Long id) {
         OAuth2ClientDO client = oAuth2ClientService.getOAuth2Client(id);
@@ -73,7 +73,7 @@ public class OAuth2ClientController {
     }
 
     @GetMapping("/page")
-    @Operation(summary = "获得 OAuth2 客户端分页")
+    @Operation(summary = "Get OAuth2 client pagination")
     @PreAuthorize("@ss.hasPermission('system:oauth2-client:query')")
     public CommonResult<PageResult<OAuth2ClientRespVO>> getOAuth2ClientPage(@Valid OAuth2ClientPageReqVO pageVO) {
         PageResult<OAuth2ClientDO> pageResult = oAuth2ClientService.getOAuth2ClientPage(pageVO);

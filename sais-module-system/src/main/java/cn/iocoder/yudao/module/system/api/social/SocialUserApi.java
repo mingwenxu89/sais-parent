@@ -7,47 +7,47 @@ import cn.iocoder.yudao.module.system.api.social.dto.SocialUserUnbindReqDTO;
 import jakarta.validation.Valid;
 
 /**
- * 社交用户的 API 接口
+ * Social user API API
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface SocialUserApi {
 
     /**
-     * 绑定社交用户
+     * Bind social users
      *
-     * @param reqDTO 绑定信息
-     * @return 社交用户 openid
+     * @param reqDTO binding information
+     * @return social user openid
      */
     String bindSocialUser(@Valid SocialUserBindReqDTO reqDTO);
 
     /**
-     * 取消绑定社交用户
+     * Unbind social users
      *
-     * @param reqDTO 解绑
+     * @param reqDTO unbundle
      */
     void unbindSocialUser(@Valid SocialUserUnbindReqDTO reqDTO);
 
     /**
-     * 获得社交用户，基于 userId
+     * Get social users, based on userId
      *
-     * @param userType   用户类型
-     * @param userId     用户编号
-     * @param socialType 社交平台的类型
-     * @return 社交用户
+     * @param userType   User type
+     * @param userId     User ID
+     * @param socialType Types of social platforms
+     * @return social user
      */
     SocialUserRespDTO getSocialUserByUserId(Integer userType, Long userId, Integer socialType);
 
     /**
-     * 获得社交用户
+     * Get social users
      *
-     * 在认证信息不正确的情况下，也会抛出 {@link ServiceException} 业务异常
+     * When the authentication information is incorrect, {@link ServiceException} business exception will also be thrown.
      *
-     * @param userType   用户类型
-     * @param socialType 社交平台的类型
-     * @param code       授权码
+     * @param userType   User type
+     * @param socialType Types of social platforms
+     * @param code       Authorization code
      * @param state      state
-     * @return 社交用户
+     * @return social user
      */
     SocialUserRespDTO getSocialUserByCode(Integer userType, Integer socialType, String code, String state);
 

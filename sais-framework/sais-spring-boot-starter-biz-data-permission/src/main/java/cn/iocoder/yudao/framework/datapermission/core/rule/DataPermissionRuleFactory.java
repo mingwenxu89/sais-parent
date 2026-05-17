@@ -3,26 +3,26 @@ package cn.iocoder.yudao.framework.datapermission.core.rule;
 import java.util.List;
 
 /**
- * {@link DataPermissionRule} 工厂接口
- * 作为 {@link DataPermissionRule} 的容器，提供管理能力
+ * {@link DataPermissionRule} factory interface
+ * As a container of {@link DataPermissionRule}, providing management capabilities
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface DataPermissionRuleFactory {
 
-    /**
-     * 获得所有数据权限规则数组
-     *
-     * @return 数据权限规则数组
-     */
-    List<DataPermissionRule> getDataPermissionRules();
+ /**
+     * Get array of all data permission rules
+ *
+     * @return Data permission rules array
+ */
+ List<DataPermissionRule> getDataPermissionRules();
 
-    /**
-     * 获得指定 Mapper 的数据权限规则数组
-     *
-     * @param mappedStatementId 指定 Mapper 的编号
-     * @return 数据权限规则数组
-     */
-    List<DataPermissionRule> getDataPermissionRule(String mappedStatementId);
+ /**
+     * Get the data permission rule array of the specified Mapper
+ *
+     * @param mappedStatementId Specify the number of the Mapper
+     * @return Data permission rules array
+ */
+ List<DataPermissionRule> getDataPermissionRule(String mappedStatementId);
 
 }

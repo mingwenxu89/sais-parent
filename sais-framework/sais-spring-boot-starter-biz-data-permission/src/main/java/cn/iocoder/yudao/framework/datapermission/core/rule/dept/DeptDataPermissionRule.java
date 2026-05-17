@@ -31,177 +31,177 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 基于部门的 {@link DataPermissionRule} 数据权限规则实现
+ * Department-based {@link DataPermissionRule} data permission rule implementation
  *
- * 注意，使用 DeptDataPermissionRule 时，需要保证表中有 dept_id 部门编号的字段，可自定义。
+ * Note that when using DeptDataPermissionRule, you need to ensure that there is a dept_ID department ID field in the table, which can be customized.
  *
- * 实际业务场景下，会存在一个经典的问题？当用户修改部门时，冗余的 dept_id 是否需要修改？
- * 1. 一般情况下，dept_id 不进行修改，则会导致用户看不到之前的数据。【sar-server 采用该方案】
- * 2. 部分情况下，希望该用户还是能看到之前的数据，则有两种方式解决：【需要你改造该 DeptDataPermissionRule 的实现代码】
- *  1）编写洗数据的脚本，将 dept_id 修改成新部门的编号；【建议】
- *      最终过滤条件是 WHERE dept_id = ?
- *  2）洗数据的话，可能涉及的数据量较大，也可以采用 user_id 进行过滤的方式，此时需要获取到 dept_id 对应的所有 user_id 用户编号；
- *      最终过滤条件是 WHERE user_id IN (?, ?, ? ...)
- *  3）想要保证原 dept_id 和 user_id 都可以看的到，此时使用 dept_id 和 user_id 一起过滤；
- *      最终过滤条件是 WHERE dept_id = ? OR user_id IN (?, ?, ? ...)
+ * In actual business scenarios, will there be a classic problem? When the user modifies the department, does the redundant dept_ID need to be modified?
+ * 1. Generally, if dept_ID is not modified, the user will not be able to see the previous data. [yudao-server adopts this solution]
+ * 2. In some cases, if you hope that the user can still see the previous data, there are two ways to solve it: [You need to modify the implementation code of the DeptDataPermissionRule]
+ * 1) Write a script for washing data and change dept_ID to the number of the new department; [Suggestion]
+ * The final filter condition is WHERE dept_ID = ?
+ * 2) If you wash the data, the amount of data may be large, and you can also use user_ID to filter. In this case, you need to obtain all user_ID user IDs corresponding to dept_id;
+ * The final filter condition is WHERE user_ID IN (?, ?, ? ...)
+ * 3) If you want to ensure that both the original dept_ID and user_ID can be seen, use dept_ID and user_ID to filter together;
+ * The final filter condition is WHERE dept_ID = ? OR user_ID IN (?, ?, ? ...)
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @AllArgsConstructor
 @Slf4j
 public class DeptDataPermissionRule implements DataPermissionRule {
 
-    /**
-     * LoginUser 的 Context 缓存 Key
-     */
-    protected static final String CONTEXT_KEY = DeptDataPermissionRule.class.getSimpleName();
+ /**
+     * LoginUser's Context Cache Key
+ */
+ protected static final String CONTEXT_KEY = DeptDataPermissionRule.class.getSimpleName();
 
-    private static final String DEPT_COLUMN_NAME = "dept_id";
-    private static final String USER_COLUMN_NAME = "user_id";
+ private static final String DEPT_COLUMN_NAME = "dept_id";
+ private static final String USER_COLUMN_NAME = "user_id";
 
-    private final PermissionCommonApi permissionApi;
+ private final PermissionCommonApi permissionApi;
 
-    /**
-     * 基于部门的表字段配置
-     * 一般情况下，每个表的部门编号字段是 dept_id，通过该配置自定义。
-     *
-     * key：表名
-     * value：字段名
-     */
-    private final Map<String, String> deptColumns = new HashMap<>();
-    /**
-     * 基于用户的表字段配置
-     * 一般情况下，每个表的部门编号字段是 dept_id，通过该配置自定义。
-     *
-     * key：表名
-     * value：字段名
-     */
-    private final Map<String, String> userColumns = new HashMap<>();
-    /**
-     * 所有表名，是 {@link #deptColumns} 和 {@link #userColumns} 的合集
-     */
-    private final Set<String> TABLE_NAMES = new HashSet<>();
+ /**
+     * Department-based table field configuration
+     * Generally, the department ID field of each table is dept_id, which is customized through this configuration.
+ *
+     * key: table name
+     * value: field name
+ */
+ private final Map<String, String> deptColumns = new HashMap<>();
+ /**
+     * User-based table field configuration
+     * Generally, the department ID field of each table is dept_id, which is customized through this configuration.
+ *
+     * key: table name
+     * value: field name
+ */
+ private final Map<String, String> userColumns = new HashMap<>();
+ /**
+     * All table names are the collection of {@link #deptColumns} and {@link #userColumns}
+ */
+ private final Set<String> TABLE_NAMES = new HashSet<>();
 
-    @Override
-    public Set<String> getTableNames() {
-        return TABLE_NAMES;
-    }
+ @Override
+ public Set<String> getTableNames() {
+ return TABLE_NAMES;
+ }
 
-    @Override
-    public Expression getExpression(String tableName, Alias tableAlias) {
-        // 只有有登陆用户的情况下，才进行数据权限的处理
-        LoginUser loginUser = SecurityFrameworkUtils.getLoginUser();
-        if (loginUser == null) {
-            return null;
-        }
-        // 只有管理员类型的用户，才进行数据权限的处理
-        if (ObjectUtil.notEqual(loginUser.getUserType(), UserTypeEnum.ADMIN.getValue())) {
-            return null;
-        }
+ @Override
+ public Expression getExpression(String tableName, Alias tableAlias) {
+        // Data permissions are processed only when there is a logged-in user.
+ LoginUser loginUser = SecurityFrameworkUtils.getLoginUser();
+ if (loginUser == null) {
+ return null;
+ }
+        // Only administrator-type users can process data permissions.
+ if (ObjectUtil.notEqual(loginUser.getUserType(), UserTypeEnum.ADMIN.getValue())) {
+ return null;
+ }
 
-        // 获得数据权限
-        DeptDataPermissionRespDTO deptDataPermission = loginUser.getContext(CONTEXT_KEY, DeptDataPermissionRespDTO.class);
-        // 从上下文中拿不到，则调用逻辑进行获取
-        if (deptDataPermission == null) {
-            deptDataPermission = permissionApi.getDeptDataPermission(loginUser.getId());
-            if (deptDataPermission == null) {
-                log.error("[getExpression][LoginUser({}) 获取数据权限为 null]", JsonUtils.toJsonString(loginUser));
-                throw new NullPointerException(String.format("LoginUser(%d) Table(%s/%s) 未返回数据权限",
-                        loginUser.getId(), tableName, tableAlias.getName()));
-            }
-            // 添加到上下文中，避免重复计算
-            loginUser.setContext(CONTEXT_KEY, deptDataPermission);
-        }
+        // Get data permissions
+ DeptDataPermissionRespDTO deptDataPermission = loginUser.getContext(CONTEXT_KEY, DeptDataPermissionRespDTO.class);
+        // If it cannot be obtained from the context, call logic to obtain it.
+ if (deptDataPermission == null) {
+ deptDataPermission = permissionApi.getDeptDataPermission(loginUser.getId());
+ if (deptDataPermission == null) {
+                log.error("[getExpression][LoginUser({}) gets data permission is null]", JsonUtils.toJsonString(loginUser));
+                throw new NullPointerException(String.format("LoginUser(%d) Table(%s/%s) dID not return data permissions",
+ loginUser.getId(), tableName, tableAlias.getName()));
+ }
+            // Add to context to avoID double counting
+ loginUser.setContext(CONTEXT_KEY, deptDataPermission);
+ }
 
-        // 情况一，如果是 ALL 可查看全部，则无需拼接条件
-        if (deptDataPermission.getAll()) {
-            return null;
-        }
+        // Case 1: If ALL is used to view all, no splicing conditions are required.
+ if (deptDataPermission.getAll()) {
+ return null;
+ }
 
-        // 情况二，即不能查看部门，又不能查看自己，则说明 100% 无权限
-        if (CollUtil.isEmpty(deptDataPermission.getDeptIds())
-            && Boolean.FALSE.equals(deptDataPermission.getSelf())) {
-            return new EqualsTo(null, null); // WHERE null = null，可以保证返回的数据为空
-        }
+        // Situation two, that is, you cannot view the department and you cannot view yourself, which means that you have 100% no authority.
+ if (CollUtil.isEmpty(deptDataPermission.getDeptIds())
+ && Boolean.FALSE.equals(deptDataPermission.getSelf())) {
+            return new EqualsTo(null, null); // WHERE null = null, the returned data is guaranteed to be empty
+ }
 
-        // 情况三，拼接 Dept 和 User 的条件，最后组合
-        Expression deptExpression = buildDeptExpression(tableName,tableAlias, deptDataPermission.getDeptIds());
-        Expression userExpression = buildUserExpression(tableName, tableAlias, deptDataPermission.getSelf(), loginUser.getId());
-        if (deptExpression == null && userExpression == null) {
-            // TODO 芋艿：获得不到条件的时候，暂时不抛出异常，而是不返回数据
-            log.warn("[getExpression][LoginUser({}) Table({}/{}) DeptDataPermission({}) 构建的条件为空]",
-                    JsonUtils.toJsonString(loginUser), tableName, tableAlias, JsonUtils.toJsonString(deptDataPermission));
-//            throw new NullPointerException(String.format("LoginUser(%d) Table(%s/%s) 构建的条件为空",
-//                    loginUser.getId(), tableName, tableAlias.getName()));
-            return new EqualsTo(null, null); // WHERE null = null，可以保证返回的数据为空
-        }
-        if (deptExpression == null) {
-            return userExpression;
-        }
-        if (userExpression == null) {
-            return deptExpression;
-        }
-        // 目前，如果有指定部门 + 可查看自己，采用 OR 条件。即，WHERE (dept_id IN ? OR user_id = ?)
-        return new ParenthesedExpressionList(new OrExpression(deptExpression, userExpression));
-    }
+        // Case three, splicing Dept and User conditions, final combination
+ Expression deptExpression = buildDeptExpression(tableName,tableAlias, deptDataPermission.getDeptIds());
+ Expression userExpression = buildUserExpression(tableName, tableAlias, deptDataPermission.getSelf(), loginUser.getId());
+ if (deptExpression == null && userExpression == null) {
+            // TODO Taro: When the conditions cannot be obtained, no exception will be thrown temporarily, but no data will be returned.
+            log.warn("[getExpression][LoginUser({}) Table({}/{}) DeptDataPermission({}) The condition constructed is empty]",
+ JsonUtils.toJsonString(loginUser), tableName, tableAlias, JsonUtils.toJsonString(deptDataPermission));
+// throw new NullPointerException(String.format("The condition constructed by LoginUser(%d) Table(%s/%s) is empty",
+// loginUser.getId(), tableName, tableAlias.getName()));
+            return new EqualsTo(null, null); // WHERE null = null, the returned data is guaranteed to be empty
+ }
+ if (deptExpression == null) {
+ return userExpression;
+ }
+ if (userExpression == null) {
+ return deptExpression;
+ }
+        // Currently, if there is a specified department + that can view itself, an OR condition is used. That is, WHERE (dept_ID IN ? OR user_ID = ?)
+ return new ParenthesedExpressionList(new OrExpression(deptExpression, userExpression));
+ }
 
-    private Expression buildDeptExpression(String tableName, Alias tableAlias, Set<Long> deptIds) {
-        // 如果不存在配置，则无需作为条件
-        String columnName = deptColumns.get(tableName);
-        if (StrUtil.isEmpty(columnName)) {
-            return null;
-        }
-        // 如果为空，则无条件
-        if (CollUtil.isEmpty(deptIds)) {
-            return null;
-        }
-        // 拼接条件
-        return new InExpression(MyBatisUtils.buildColumn(tableName, tableAlias, columnName),
-                // Parenthesis 的目的，是提供 (1,2,3) 的 () 左右括号
-                new ParenthesedExpressionList(new ExpressionList<LongValue>(CollectionUtils.convertList(deptIds, LongValue::new))));
-    }
+ private Expression buildDeptExpression(String tableName, Alias tableAlias, Set<Long> deptIds) {
+        // If no configuration exists, it is not required as a condition
+ String columnName = deptColumns.get(tableName);
+ if (StrUtil.isEmpty(columnName)) {
+ return null;
+ }
+        // If empty, unconditional
+ if (CollUtil.isEmpty(deptIds)) {
+ return null;
+ }
+        // Splicing conditions
+ return new InExpression(MyBatisUtils.buildColumn(tableName, tableAlias, columnName),
+                // The purpose of Parenthesis is to provide () left and right brackets for (1,2,3)
+ new ParenthesedExpressionList(new ExpressionList<LongValue>(CollectionUtils.convertList(deptIds, LongValue::new))));
+ }
 
-    private Expression buildUserExpression(String tableName, Alias tableAlias, Boolean self, Long userId) {
-        // 如果不查看自己，则无需作为条件
-        if (Boolean.FALSE.equals(self)) {
-            return null;
-        }
-        String columnName = userColumns.get(tableName);
-        if (StrUtil.isEmpty(columnName)) {
-            return null;
-        }
-        // 拼接条件
-        return new EqualsTo(MyBatisUtils.buildColumn(tableName, tableAlias, columnName), new LongValue(userId));
-    }
+ private Expression buildUserExpression(String tableName, Alias tableAlias, Boolean self, Long userId) {
+        // If you don't view yourself, you don't need to condition it
+ if (Boolean.FALSE.equals(self)) {
+ return null;
+ }
+ String columnName = userColumns.get(tableName);
+ if (StrUtil.isEmpty(columnName)) {
+ return null;
+ }
+        // Splicing conditions
+ return new EqualsTo(MyBatisUtils.buildColumn(tableName, tableAlias, columnName), new LongValue(userId));
+ }
 
-    // ==================== 添加配置 ====================
+    // ==================== Add configuration ====================
 
-    public void addDeptColumn(Class<? extends BaseDO> entityClass) {
-        addDeptColumn(entityClass, DEPT_COLUMN_NAME);
-    }
+ public void addDeptColumn(Class<? extends BaseDO> entityClass) {
+ addDeptColumn(entityClass, DEPT_COLUMN_NAME);
+ }
 
-    public void addDeptColumn(Class<? extends BaseDO> entityClass, String columnName) {
-        String tableName = TableInfoHelper.getTableInfo(entityClass).getTableName();
-       addDeptColumn(tableName, columnName);
-    }
+ public void addDeptColumn(Class<? extends BaseDO> entityClass, String columnName) {
+ String tableName = TableInfoHelper.getTableInfo(entityClass).getTableName();
+ addDeptColumn(tableName, columnName);
+ }
 
-    public void addDeptColumn(String tableName, String columnName) {
-        deptColumns.put(tableName, columnName);
-        TABLE_NAMES.add(tableName);
-    }
+ public void addDeptColumn(String tableName, String columnName) {
+ deptColumns.put(tableName, columnName);
+ TABLE_NAMES.add(tableName);
+ }
 
-    public void addUserColumn(Class<? extends BaseDO> entityClass) {
-        addUserColumn(entityClass, USER_COLUMN_NAME);
-    }
+ public void addUserColumn(Class<? extends BaseDO> entityClass) {
+ addUserColumn(entityClass, USER_COLUMN_NAME);
+ }
 
-    public void addUserColumn(Class<? extends BaseDO> entityClass, String columnName) {
-        String tableName = TableInfoHelper.getTableInfo(entityClass).getTableName();
-        addUserColumn(tableName, columnName);
-    }
+ public void addUserColumn(Class<? extends BaseDO> entityClass, String columnName) {
+ String tableName = TableInfoHelper.getTableInfo(entityClass).getTableName();
+ addUserColumn(tableName, columnName);
+ }
 
-    public void addUserColumn(String tableName, String columnName) {
-        userColumns.put(tableName, columnName);
-        TABLE_NAMES.add(tableName);
-    }
+ public void addUserColumn(String tableName, String columnName) {
+ userColumns.put(tableName, columnName);
+ TABLE_NAMES.add(tableName);
+ }
 
 }

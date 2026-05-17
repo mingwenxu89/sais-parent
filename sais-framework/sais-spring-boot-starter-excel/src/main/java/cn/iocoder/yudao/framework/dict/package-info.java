@@ -1,6 +1,6 @@
 /**
- * 字典数据模块，提供 {@link cn.iocoder.yudao.framework.dict.core.DictFrameworkUtils} 工具类
+ * Dictionary data module, providing {@link cn.iocoder.yudao.framework.dict.core.DictFrameworkUtils} tool class
  *
- * 通过将字典缓存在内存中，保证性能
+ * Guaranteed performance by caching the dictionary in memory
  */
 package cn.iocoder.yudao.framework.dict;

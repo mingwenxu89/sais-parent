@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 站内信 Service 实现类
+ * Site message Service implementation class
  *
  * @author xrcoder
  */

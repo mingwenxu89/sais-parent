@@ -6,32 +6,32 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * OAuth2.0 访问令牌的信息 Response DTO
+ * OAuth2.0 access token information Response DTO
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Data
 public class OAuth2AccessTokenRespDTO implements Serializable {
 
-    /**
-     * 访问令牌
-     */
-    private String accessToken;
-    /**
-     * 刷新令牌
-     */
-    private String refreshToken;
-    /**
-     * 用户编号
-     */
-    private Long userId;
-    /**
-     * 用户类型
-     */
-    private Integer userType;
-    /**
-     * 过期时间
-     */
-    private LocalDateTime expiresTime;
+ /**
+     * access token
+ */
+ private String accessToken;
+ /**
+     * refresh token
+ */
+ private String refreshToken;
+ /**
+     * User ID
+ */
+ private Long userId;
+ /**
+     * User type
+ */
+ private Integer userType;
+ /**
+     * Expiration time
+ */
+ private LocalDateTime expiresTime;
 
 }

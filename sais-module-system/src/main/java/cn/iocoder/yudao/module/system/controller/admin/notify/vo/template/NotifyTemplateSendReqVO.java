@@ -7,23 +7,23 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.util.Map;
 
-@Schema(description = "管理后台 - 站内信模板的发送 Request VO")
+@Schema(description = "Management backend - sending internal letter templates Request VO")
 @Data
 public class NotifyTemplateSendReqVO {
 
-    @Schema(description = "用户id", requiredMode = Schema.RequiredMode.REQUIRED, example = "01")
-    @NotNull(message = "用户id不能为空")
+    @Schema(description = "user id", requiredMode = Schema.RequiredMode.REQUIRED, example = "01")
+    @NotNull(message = "User id cannot be empty")
     private Long userId;
 
-    @Schema(description = "用户类型", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
-    @NotNull(message = "用户类型不能为空")
+    @Schema(description = "User type", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
+    @NotNull(message = "User type cannot be empty")
     private Integer userType;
 
-    @Schema(description = "模板编码", requiredMode = Schema.RequiredMode.REQUIRED, example = "01")
-    @NotEmpty(message = "模板编码不能为空")
+    @Schema(description = "template encoding", requiredMode = Schema.RequiredMode.REQUIRED, example = "01")
+    @NotEmpty(message = "Template encoding cannot be empty")
     private String templateCode;
 
-    @Schema(description = "模板参数")
+    @Schema(description = "template parameters")
     private Map<String, Object> templateParams;
 
 }

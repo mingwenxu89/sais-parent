@@ -13,143 +13,143 @@ import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import lombok.Data;
 
 /**
- * 代码生成 table 表定义
+ * Code generation table table definition
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @TableName(value = "infra_codegen_table", autoResultMap = true)
-@KeySequence("infra_codegen_table_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
+@KeySequence("infra_codegen_table_seq") // Primary key auto-increment for Oracle, PostgreSQL, Kingbase, DB2, H2 databases. If it is a database such as MySQL, you DO not need to write it.
 @Data
 @TenantIgnore
 public class CodegenTableDO extends BaseDO {
 
     /**
-     * ID 编号
+     * ID ID
      */
     @TableId
     private Long id;
 
     /**
-     * 数据源编号
+     * Data source ID
      *
-     * 关联 {@link DataSourceConfigDO#getId()}
+     * Association {@link DataSourceConfigDO#getId()}
      */
     private Long dataSourceConfigId;
     /**
-     * 生成场景
+     * Generate scene
      *
-     * 枚举 {@link CodegenSceneEnum}
+     * Enum {@link CodegenSceneEnum}
      */
     private Integer scene;
 
-    // ========== 表相关字段 ==========
+    // ========== Table related fields ==========
 
     /**
-     * 表名称
+     * table name
      *
-     * 关联 {@link TableInfo#getName()}
+     * Association {@link TableInfo#getName()}
      */
     private String tableName;
     /**
-     * 表描述
+     * Table description
      *
-     * 关联 {@link TableInfo#getComment()}
+     * Association {@link TableInfo#getComment()}
      */
     private String tableComment;
     /**
-     * 备注
+     * Remark
      */
     private String remark;
 
-    // ========== 类相关字段 ==========
+    // ========== Class related fields ==========
 
     /**
-     * 模块名，即一级目录
+     * Module name, i.e. first-level directory
      *
-     * 例如说，system、infra、tool 等等
+     * For example, system, infra, tool, etc.
      */
     private String moduleName;
     /**
-     * 业务名，即二级目录
+     * Business name, i.e. secondary directory
      *
-     * 例如说，user、permission、dict 等等
+     * For example, user, permission, dict, etc.
      */
     private String businessName;
     /**
-     * 类名称（首字母大写）
+     * Class name (first letter capitalized)
      *
-     * 例如说，SysUser、SysMenu、SysDictData 等等
+     * For example, SysUser, SysMenu, SysDictData, etc.
      */
     private String className;
     /**
-     * 类描述
+     * Class description
      */
     private String classComment;
     /**
-     * 作者
+     * Author
      */
     private String author;
 
-    // ========== 生成相关字段 ==========
+    // ========== Generate related fields ==========
 
     /**
-     * 模板类型
+     * template type
      *
-     * 枚举 {@link CodegenTemplateTypeEnum}
+     * Enum {@link CodegenTemplateTypeEnum}
      */
     private Integer templateType;
     /**
-     * 代码生成的前端类型
+     * Code generated frontend type
      *
-     * 枚举 {@link CodegenFrontTypeEnum}
+     * Enum {@link CodegenFrontTypeEnum}
      */
     private Integer frontType;
 
-    // ========== 菜单相关字段 ==========
+    // ========== Menu related fields ==========
 
     /**
-     * 父菜单编号
+     * Parent menu ID
      *
-     * 关联 MenuDO 的 id 属性
+     * The id attribute associated with MenuDO
      */
     private Long parentMenuId;
 
-    // ========== 主子表相关字段 ==========
+    // ========== Related fields of master and child tables ==========
 
     /**
-     * 主表的编号
+     * Main table ID
      *
-     * 关联 {@link CodegenTableDO#getId()}
+     * Association {@link CodegenTableDO#getId()}
      */
     private Long masterTableId;
     /**
-     * 【自己】子表关联主表的字段编号
+     * [Self] The field ID of the main table associated with the subtable
      *
-     * 关联 {@link CodegenColumnDO#getId()}
+     * Association {@link CodegenColumnDO#getId()}
      */
     private Long subJoinColumnId;
     /**
-     * 主表与子表是否一对多
+     * Whether the main table and sub-table are one-to-many
      *
-     * true：一对多
-     * false：一对一
+     * true: one-to-many
+     * false: one to one
      */
     private Boolean subJoinMany;
 
-    // ========== 树表相关字段 ==========
+    // ========== Tree table related fields ==========
 
     /**
-     * 树表的父字段编号
+     * The parent field ID of the tree table
      *
-     * 关联 {@link CodegenColumnDO#getId()}
+     * Association {@link CodegenColumnDO#getId()}
      */
     private Long treeParentColumnId;
     /**
-     * 树表的名字字段编号
+     * The name field ID of the tree table
      *
-     * 名字的用途：新增或修改时，select 框展示的字段
+     * The purpose of the name: when adding or modifying, the field displayed in the select box
      *
-     * 关联 {@link CodegenColumnDO#getId()}
+     * Association {@link CodegenColumnDO#getId()}
      */
     private Long treeNameColumnId;
 

@@ -4,16 +4,16 @@ import cn.idev.excel.annotation.ExcelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-@Schema(description = "管理后台 - 岗位信息的精简 Response VO")
+@Schema(description = "Management backend - simplification of job information Response VO")
 @Data
 public class PostSimpleRespVO {
 
-    @Schema(description = "岗位序号", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
-    @ExcelProperty("岗位序号")
+    @Schema(description = "Position serial ID", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
+    @ExcelProperty("Position serial ID")
     private Long id;
 
-    @Schema(description = "岗位名称", requiredMode = Schema.RequiredMode.REQUIRED, example = "小土豆")
-    @ExcelProperty("岗位名称")
+    @Schema(description = "Job title", requiredMode = Schema.RequiredMode.REQUIRED, example = "small potatoes")
+    @ExcelProperty("Job title")
     private String name;
 
 }

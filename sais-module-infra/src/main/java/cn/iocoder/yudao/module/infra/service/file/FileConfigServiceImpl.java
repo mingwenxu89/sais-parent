@@ -35,9 +35,9 @@ import static cn.iocoder.yudao.module.infra.enums.ErrorCodeConstants.FILE_CONFIG
 import static cn.iocoder.yudao.module.infra.enums.ErrorCodeConstants.FILE_CONFIG_NOT_EXISTS;
 
 /**
- * 文件配置 Service 实现类
+ * File configuration Service implementation class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Service
 @Validated
@@ -47,7 +47,7 @@ public class FileConfigServiceImpl implements FileConfigService {
     private static final Long CACHE_MASTER_ID = 0L;
 
     /**
-     * {@link FileClient} 缓存，通过它异步刷新 fileClientFactory
+     * {@link FileClient} cache, through which fileClientFactory is refreshed asynchronously
      */
     @Getter
     private final LoadingCache<Long, FileClient> clientCache = buildAsyncReloadingCache(Duration.ofSeconds(10L),
@@ -78,66 +78,66 @@ public class FileConfigServiceImpl implements FileConfigService {
     public Long createFileConfig(FileConfigSaveReqVO createReqVO) {
         FileConfigDO fileConfig = FileConfigConvert.INSTANCE.convert(createReqVO)
                 .setConfig(parseClientConfig(createReqVO.getStorage(), createReqVO.getConfig()))
-                .setMaster(false); // 默认非 master
+                .setMaster(false); // Default is not master
         fileConfigMapper.insert(fileConfig);
         return fileConfig.getId();
     }
 
     @Override
     public void updateFileConfig(FileConfigSaveReqVO updateReqVO) {
-        // 校验存在
+        // Check existence
         FileConfigDO config = validateFileConfigExists(updateReqVO.getId());
-        // 更新
+        // Update
         FileConfigDO updateObj = FileConfigConvert.INSTANCE.convert(updateReqVO)
                 .setConfig(parseClientConfig(config.getStorage(), updateReqVO.getConfig()));
         fileConfigMapper.updateById(updateObj);
 
-        // 清空缓存
+        // Clear cache
         clearCache(config.getId(), null);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateFileConfigMaster(Long id) {
-        // 校验存在
+        // Check existence
         validateFileConfigExists(id);
-        // 更新其它为非 master
+        // Update others to non-master
         fileConfigMapper.updateBatch(new FileConfigDO().setMaster(false));
-        // 更新
+        // Update
         fileConfigMapper.updateById(new FileConfigDO().setId(id).setMaster(true));
 
-        // 清空缓存
+        // Clear cache
         clearCache(null, true);
     }
 
     private FileClientConfig parseClientConfig(Integer storage, Map<String, Object> config) {
-        // 获取配置类
+        // Get configuration class
         Class<? extends FileClientConfig> configClass = FileStorageEnum.getByStorage(storage)
                 .getConfigClass();
         FileClientConfig clientConfig = JsonUtils.parseObject2(JsonUtils.toJsonString(config), configClass);
-        // 参数校验
+        // Parameter verification
         ValidationUtils.validate(validator, clientConfig);
-        // 设置参数
+        // Set parameters
         return clientConfig;
     }
 
     @Override
     public void deleteFileConfig(Long id) {
-        // 校验存在
+        // Check existence
         FileConfigDO config = validateFileConfigExists(id);
         if (Boolean.TRUE.equals(config.getMaster())) {
             throw exception(FILE_CONFIG_DELETE_FAIL_MASTER);
         }
-        // 删除
+        // Delete
         fileConfigMapper.deleteById(id);
 
-        // 清空缓存
+        // Clear cache
         clearCache(id, null);
     }
 
     @Override
     public void deleteFileConfigList(List<Long> ids) {
-        // 校验是否有主配置
+        // Verify whether there is a main configuration
         List<FileConfigDO> configs = fileConfigMapper.selectByIds(ids);
         for (FileConfigDO config : configs) {
             if (Boolean.TRUE.equals(config.getMaster())) {
@@ -145,18 +145,18 @@ public class FileConfigServiceImpl implements FileConfigService {
             }
         }
 
-        // 批量删除
+        // Batch delete
         fileConfigMapper.deleteByIds(ids);
 
-        // 清空缓存
+        // Clear cache
         ids.forEach(id -> clearCache(id, null));
     }
 
     /**
-     * 清空指定文件配置
+     * Clear the specified file configuration
      *
-     * @param id     配置编号
-     * @param master 是否主配置
+     * @param id     Configuration ID
+     * @param master Is it the main configuration?
      */
     private void clearCache(Long id, Boolean master) {
         if (id != null) {
@@ -187,9 +187,9 @@ public class FileConfigServiceImpl implements FileConfigService {
 
     @Override
     public String testFileConfig(Long id) throws Exception {
-        // 校验存在
+        // Check existence
         validateFileConfigExists(id);
-        // 上传文件
+        // Upload file
         byte[] content = ResourceUtil.readBytes("file/erweima.jpg");
         return getFileClient(id).upload(content, IdUtil.fastSimpleUUID() + ".jpg", "image/jpeg");
     }

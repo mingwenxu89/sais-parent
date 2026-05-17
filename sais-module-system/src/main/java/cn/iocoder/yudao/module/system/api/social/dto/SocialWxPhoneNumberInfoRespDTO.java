@@ -3,24 +3,24 @@ package cn.iocoder.yudao.module.system.api.social.dto;
 import lombok.Data;
 
 /**
- * 微信小程序的手机信息 Response DTO
+ * Mobile phone information of WeChat applet Response DTO
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Data
 public class SocialWxPhoneNumberInfoRespDTO {
 
     /**
-     * 用户绑定的手机号（国外手机号会有区号）
+     * The mobile phone ID bound by the user (foreign mobile phone IDs will have area codes)
      */
     private String phoneNumber;
 
     /**
-     * 没有区号的手机号
+     * Mobile phone ID without area code
      */
     private String purePhoneNumber;
     /**
-     * 区号
+     * area code
      */
     private String countryCode;
 

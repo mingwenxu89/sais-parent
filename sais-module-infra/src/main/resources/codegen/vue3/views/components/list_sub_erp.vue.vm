@@ -1,11 +1,11 @@
-#set ($subTable = $subTables.get($subIndex))##当前表
-#set ($subColumns = $subColumnsList.get($subIndex))##当前字段数组
-#set ($subJoinColumn = $subJoinColumns.get($subIndex))##当前 join 字段
+#set ($subTable = $subTables.get($subIndex))##current table
+#set ($subColumns = $subColumnsList.get($subIndex))##Current field array
+#set ($subJoinColumn = $subJoinColumns.get($subIndex))##Current join field
 #set ($subSimpleClassName = $subSimpleClassNames.get($subIndex))
-#set ($subJoinColumn = $subJoinColumns.get($subIndex))##当前 join 字段
-#set ($SubJoinColumnName = $subJoinColumn.javaField.substring(0,1).toUpperCase() + ${subJoinColumn.javaField.substring(1)})##首字母大写
+#set ($subJoinColumn = $subJoinColumns.get($subIndex))##Current join field
+#set ($SubJoinColumnName = $subJoinColumn.javaField.substring(0,1).toUpperCase() + ${subJoinColumn.javaField.substring(1)})##Capitalize first letter
 <template>
-  <!-- 列表 -->
+  <!-- List -->
   <ContentWrap>
 #if ($table.templateType == 11)
     <el-button
@@ -14,7 +14,7 @@
       @click="openForm('create')"
       v-hasPermi="['${permissionPrefix}:create']"
     >
-      <Icon icon="ep:plus" class="mr-5px" /> 新增
+      <Icon icon="ep:plus" class="mr-5px" /> Add
     </el-button>
     #if ($deleteBatchEnable)
       <el-button
@@ -24,7 +24,7 @@
           @click="handleDeleteBatch"
           v-hasPermi="['${permissionPrefix}:delete']"
       >
-        <Icon icon="ep:delete" class="mr-5px" /> 批量删除
+        <Icon icon="ep:delete" class="mr-5px" /> Batch delete
       </el-button>
     #end
 #end
@@ -47,8 +47,8 @@
         #set ($javaField = $column.javaField)
         #set ($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
         #set ($comment=$column.columnComment)
-        #if ( $column.id == $subJoinColumn.id) ## 特殊：忽略主子表的 join 字段，不用填写
-        #elseif ($column.javaType == "LocalDateTime")## 时间类型
+        #if ( $column.id == $subJoinColumn.id) ## Special: Ignore the join field of the master and child tables and DO not need to fill it in.
+        #elseif ($column.javaType == "LocalDateTime")## time type
       <el-table-column
         label="${comment}"
         align="center"
@@ -56,7 +56,7 @@
         :formatter="dateFormatter"
         width="180px"
       />
-        #elseif($column.dictType && "" != $column.dictType)## 数据字典
+        #elseif($column.dictType && "" != $column.dictType)## data dict
       <el-table-column label="${comment}" align="center" prop="${javaField}">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.$dictType.toUpperCase()" :value="scope.row.${column.javaField}" />
@@ -68,7 +68,7 @@
       #end
     #end
     #if ($table.templateType == 11)
-      <el-table-column label="操作" align="center">
+      <el-table-column label="Operation" align="center">
         <template #default="scope">
           <el-button
             link
@@ -76,7 +76,7 @@
             @click="openForm('update', scope.row.id)"
             v-hasPermi="['${permissionPrefix}:update']"
           >
-            编辑
+            Edit
           </el-button>
           <el-button
             link
@@ -84,14 +84,14 @@
             @click="handleDelete(scope.row.id)"
             v-hasPermi="['${permissionPrefix}:delete']"
           >
-            删除
+            Delete
           </el-button>
         </template>
       </el-table-column>
     #end
     </el-table>
     #if ($table.templateType == 11)
-    <!-- 分页 -->
+    <!-- Pagination -->
     <Pagination
       :total="total"
       v-model:page="queryParams.pageNo"
@@ -101,7 +101,7 @@
     #end
   </ContentWrap>
 #if ($table.templateType == 11)
-    <!-- 表单弹窗：添加/修改 -->
+    <!-- Form pop-up window: add/modify -->
     <${subSimpleClassName}Form ref="formRef" @success="getList" />
 #end
 </template>
@@ -117,28 +117,28 @@ import ${subSimpleClassName}Form from './${subSimpleClassName}Form.vue'
 #end
 
 #if ($table.templateType == 11)
-const { t } = useI18n() // 国际化
-const message = useMessage() // 消息弹窗
+const { t } = useI18n() // internationalization
+const message = useMessage() // Message pop-up window
 #end
 const props = defineProps<{
-  ${subJoinColumn.javaField}?: number // ${subJoinColumn.columnComment}（主表的关联字段）
+  ${subJoinColumn.javaField}?: number // ${subJoinColumn.columnComment}（Related fields of the main table)
 }>()
-const loading = ref(false) // 列表的加载中
-const list = ref([]) // 列表的数据
+const loading = ref(false) // List is loading
+const list = ref([]) // list data
 #if ($table.templateType == 11)
-const total = ref(0) // 列表的总页数
+const total = ref(0) // Total ID of pages in the list
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   ${subJoinColumn.javaField}: undefined as unknown
 })
 
-/** 监听主表的关联字段的变化，加载对应的子表数据 */
+/** Monitor changes in the associated fields of the main table and load the corresponding sub-table data */
 watch(
   () => props.${subJoinColumn.javaField},
   (val: number) => {
     if (!val) {
-      list.value = [] // 清空列表
+      list.value = [] // Clear list
       return
     }
     queryParams.${subJoinColumn.javaField} = val
@@ -148,7 +148,7 @@ watch(
 )
 #end
 
-/** 查询列表 */
+/** query list */
 const getList = async () => {
   loading.value = true
   try {
@@ -173,40 +173,40 @@ const getList = async () => {
 }
 
 #if ($table.templateType == 11)
-/** 搜索按钮操作 */
+/** Search button action */
 const handleQuery = () => {
   queryParams.pageNo = 1
   getList()
 }
 
-/** 添加/修改操作 */
+/** Add/modify operations */
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
   if (!props.${subJoinColumn.javaField}) {
-    message.error('请选择一个${table.classComment}')
+    message.error('Please select a ${table.classComment}')
     return
   }
   formRef.value.open(type, id, props.${subJoinColumn.javaField})
 }
 
-/** 删除按钮操作 */
+/** Delete button action */
 const handleDelete = async (id: number) => {
   try {
-    // 删除的二次确认
+    // Secondary confirmation of deletion
     await message.delConfirm()
-    // 发起删除
+    // Initiate deletion
     await ${simpleClassName}Api.delete${subSimpleClassName}(id)
     message.success(t('common.delSuccess'))
-    // 刷新列表
+    // Refresh list
     await getList()
   } catch {}
 }
 
 #if ($table.templateType == 11 && $deleteBatchEnable)
-/** 批量删除${subTable.classComment} */
+/** Batch delete ${subTable.classComment} */
 const handleDeleteBatch = async () => {
   try {
-    // 删除的二次确认
+    // Secondary confirmation of deletion
     await message.delConfirm()
     await ${simpleClassName}Api.delete${subSimpleClassName}List(checkedIds.value);
     checkedIds.value = [];
@@ -223,7 +223,7 @@ const handleRowCheckboxChange = (records: ${subSimpleClassName}[]) => {
 #end
 #if ($table.templateType != 11)
 
-/** 初始化 **/
+/** initialization **/
 onMounted(() => {
   getList()
 })

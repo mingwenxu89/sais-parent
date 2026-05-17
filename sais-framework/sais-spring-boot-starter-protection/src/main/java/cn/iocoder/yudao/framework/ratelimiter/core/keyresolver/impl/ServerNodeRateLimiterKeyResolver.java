@@ -8,11 +8,11 @@ import cn.iocoder.yudao.framework.ratelimiter.core.keyresolver.RateLimiterKeyRes
 import org.aspectj.lang.JoinPoint;
 
 /**
- * Server 节点级别的限流 Key 解析器，使用方法名 + 方法参数 + IP，组装成一个 Key
+ * Server node-level current-limiting Key parser uses method name + method parameter + IP to assemble a Key
  *
- * 为了避免 Key 过长，使用 MD5 进行“压缩”
+ * In order to avoID the Key being too long, use MD5 for "compression"
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public class ServerNodeRateLimiterKeyResolver implements RateLimiterKeyResolver {
 

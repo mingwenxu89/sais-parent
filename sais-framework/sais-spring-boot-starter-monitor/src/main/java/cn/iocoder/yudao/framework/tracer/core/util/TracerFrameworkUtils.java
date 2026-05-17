@@ -9,16 +9,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 链路追踪 Util
+ * Link Tracking Util
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public class TracerFrameworkUtils {
 
     /**
-     * 将异常记录到 Span 中，参考自 com.aliyuncs.utils.TraceUtils
+     * Record exceptions into Span, referenced from com.aliyuncs.utils.TraceUtils
      *
-     * @param throwable 异常
+     * @param throwable abnormal
      * @param span Span
      */
     public static void onError(Throwable throwable, Span span) {

@@ -11,120 +11,120 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * 角色 Service 接口
+ * Role Service API
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface RoleService {
 
     /**
-     * 创建角色
+     * Create a role
      *
-     * @param createReqVO 创建角色信息
-     * @param type 角色类型
-     * @return 角色编号
+     * @param createReqVO Create role information
+     * @param type role type
+     * @return role ID
      */
     Long createRole(@Valid RoleSaveReqVO createReqVO, Integer type);
 
     /**
-     * 更新角色
+     * Update role
      *
-     * @param updateReqVO 更新角色信息
+     * @param updateReqVO Update role information
      */
     void updateRole(@Valid RoleSaveReqVO updateReqVO);
 
     /**
-     * 删除角色
+     * Delete role
      *
-     * @param id 角色编号
+     * @param id role ID
      */
     void deleteRole(Long id);
 
     /**
-     * 批量删除角色
+     * Delete roles in batches
      *
-     * @param ids 角色编号数组
+     * @param ids Role ID array
      */
     void deleteRoleList(List<Long> ids);
 
     /**
-     * 设置角色的数据权限
+     * Set data permissions for roles
      *
-     * @param id 角色编号
-     * @param dataScope 数据范围
-     * @param dataScopeDeptIds 部门编号数组
+     * @param id role ID
+     * @param dataScope data range
+     * @param dataScopeDeptIds Department ID array
      */
     void updateRoleDataScope(Long id, Integer dataScope, Set<Long> dataScopeDeptIds);
 
     /**
-     * 获得角色
+     * Get a role
      *
-     * @param id 角色编号
-     * @return 角色
+     * @param id role ID
+     * @return Role
      */
     RoleDO getRole(Long id);
 
     /**
-     * 获得角色，从缓存中
+     * Get the role from the cache
      *
-     * @param id 角色编号
-     * @return 角色
+     * @param id role ID
+     * @return Role
      */
     RoleDO getRoleFromCache(Long id);
 
     /**
-     * 获得角色列表
+     * Get a list of roles
      *
-     * @param ids 角色编号数组
-     * @return 角色列表
+     * @param ids Role ID array
+     * @return role list
      */
     List<RoleDO> getRoleList(Collection<Long> ids);
 
     /**
-     * 获得角色数组，从缓存中
+     * Get the role array, from cache
      *
-     * @param ids 角色编号数组
-     * @return 角色数组
+     * @param ids Role ID array
+     * @return role array
      */
     List<RoleDO> getRoleListFromCache(Collection<Long> ids);
 
     /**
-     * 获得角色列表
+     * Get a list of roles
      *
-     * @param statuses 筛选的状态
-     * @return 角色列表
+     * @param statuses filter status
+     * @return role list
      */
     List<RoleDO> getRoleListByStatus(Collection<Integer> statuses);
 
     /**
-     * 获得所有角色列表
+     * Get a list of all roles
      *
-     * @return 角色列表
+     * @return role list
      */
     List<RoleDO> getRoleList();
 
     /**
-     * 获得角色分页
+     * Get role pagination
      *
-     * @param reqVO 角色分页查询
-     * @return 角色分页结果
+     * @param reqVO Role paging query
+     * @return Role paging results
      */
     PageResult<RoleDO> getRolePage(RolePageReqVO reqVO);
 
     /**
-     * 判断角色编号数组中，是否有管理员
+     * Determine whether there is an administrator in the role ID array
      *
-     * @param ids 角色编号数组
-     * @return 是否有管理员
+     * @param ids Role ID array
+     * @return Is there an administrator
      */
     boolean hasAnySuperAdmin(Collection<Long> ids);
 
     /**
-     * 校验角色们是否有效。如下情况，视为无效：
-     * 1. 角色编号不存在
-     * 2. 角色被禁用
+     * Verify that the characters are valid. The following situations will be deemed invalid:
+     * 1. The character ID does not exist
+     * 2. The character is disabled
      *
-     * @param ids 角色编号数组
+     * @param ids Role ID array
      */
     void validateRoleList(Collection<Long> ids);
 

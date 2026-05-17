@@ -7,9 +7,9 @@ import jakarta.annotation.Resource;
 import java.util.Collection;
 
 /**
- * 角色 API 实现类
+ * Role API implementation class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Service
 public class RoleApiImpl implements RoleApi {

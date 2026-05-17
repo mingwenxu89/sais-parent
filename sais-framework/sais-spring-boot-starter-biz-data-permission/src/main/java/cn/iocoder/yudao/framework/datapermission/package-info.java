@@ -1,4 +1,4 @@
 /**
- * 基于 JSqlParser 解析 SQL，增加数据权限的 WHERE 条件
+ * Parse SQL based on JSqlParser and add WHERE conditions for data permissions
  */
 package cn.iocoder.yudao.framework.datapermission;

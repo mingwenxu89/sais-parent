@@ -25,7 +25,7 @@ import java.util.function.Function;
 import static cn.iocoder.yudao.framework.common.util.collection.CollectionUtils.convertList;
 
 /**
- * 七牛云短信客户端的实现类
+ * Implementation class of Qiniu Cloud SMS client
  *
  * @author scholar
  * @since 2024/08/26 15:35
@@ -37,14 +37,14 @@ public class QiniuSmsClient extends AbstractSmsClient {
 
     public QiniuSmsClient(SmsChannelProperties properties) {
         super(properties);
-        Assert.notEmpty(properties.getApiKey(), "apiKey 不能为空");
-        Assert.notEmpty(properties.getApiSecret(), "apiSecret 不能为空");
+        Assert.notEmpty(properties.getApiKey(), "apiKey cannot be empty");
+        Assert.notEmpty(properties.getApiSecret(), "apiSecret cannot be empty");
     }
 
     public SmsSendRespDTO sendSms(Long sendLogId, String mobile, String apiTemplateId,
                                   List<KeyValue<String, Object>> templateParams) throws Throwable {
-        // 1. 执行请求
-        // 参考链接 https://developer.qiniu.com/sms/5824/through-the-api-send-text-messages
+        // 1. Execute the request
+        // Reference link https://developer.qiniu.com/SMS/5824/through-the-API-send-text-messages
         LinkedHashMap<String, Object> body = new LinkedHashMap<>();
         body.put("template_id", apiTemplateId);
         body.put("mobile", mobile);
@@ -52,9 +52,9 @@ public class QiniuSmsClient extends AbstractSmsClient {
         body.put("seq", Long.toString(sendLogId));
         JSONObject response = request("POST", body, "/v1/message/single");
 
-        // 2. 解析请求
+        // 2. Parse the request
         if (ObjectUtil.isNotEmpty(response.getStr("error"))) {
-            // 短信请求失败
+            // SMS request failed
             return new SmsSendRespDTO().setSuccess(false)
                     .setApiCode(response.getStr("error"))
                     .setApiRequestId(response.getStr("request_id"))
@@ -65,24 +65,24 @@ public class QiniuSmsClient extends AbstractSmsClient {
     }
 
     /**
-     * 请求七牛云短信
+     * Request Qiniu Cloud SMS
      *
      * @see <a href="https://developer.qiniu.com/sms/5842/sms-api-authentication"</>
-     * @param httpMethod http请求方法
-     * @param body http请求消息体
+     * @param httpMethod http request method
+     * @param body http request message body
      * @param path URL path
-     * @return 请求结果
+     * @return Request result
      */
     private JSONObject request(String httpMethod, LinkedHashMap<String, Object> body, String path) {
         String signDate = DateUtil.date().setTimeZone(TimeZone.getTimeZone("UTC")).toString("yyyyMMdd'T'HHmmss'Z'");
-        // 1. 请求头
+        // 1. Request header
         Map<String, String> header = new HashMap<>(4);
         header.put("HOST", HOST);
         header.put("Authorization", getSignature(httpMethod, path, body != null ? JSONUtil.toJsonStr(body) : "", signDate));
         header.put("Content-Type", "application/json");
         header.put("X-Qiniu-Date", signDate);
 
-        // 2. 发起请求
+        // 2. Initiate a request
         String responseBody;
         if (Objects.equals(httpMethod, "POST")){
             responseBody = HttpUtils.post("https://" + HOST + path, header, JSONUtil.toJsonStr(body));
@@ -110,19 +110,19 @@ public class QiniuSmsClient extends AbstractSmsClient {
     @Override
     public List<SmsReceiveRespDTO> parseSmsReceiveStatus(String text) {
         JSONObject status = JSONUtil.parseObj(text);
-        // 字段参考 https://developer.qiniu.com/sms/5910/message-push
+        // Field reference https://developer.qiniu.com/SMS/5910/message-push
         return convertList(status.getJSONArray("items"), new Function<Object, SmsReceiveRespDTO>() {
 
             @Override
             public SmsReceiveRespDTO apply(Object item) {
                 JSONObject statusObj = (JSONObject) item;
                 return new SmsReceiveRespDTO()
-                        .setSuccess("DELIVRD".equals(statusObj.getStr("status"))) // 是否接收成功
-                        .setErrorMsg(statusObj.getStr("status")) // 状态报告编码
-                        .setMobile(statusObj.getStr("mobile")) // 手机号
-                        .setReceiveTime(LocalDateTimeUtil.of(statusObj.getLong("delivrd_at") * 1000L)) // 状态报告时间
-                        .setSerialNo(statusObj.getStr("message_id")) // 发送序列号
-                        .setLogId(statusObj.getLong("seq")); // 用户序列号
+                        .setSuccess("DELIVRD".equals(statusObj.getStr("status"))) // Whether the reception is successful
+                        .setErrorMsg(statusObj.getStr("status")) // status report code
+                        .setMobile(statusObj.getStr("mobile")) // Mobile phone ID
+                        .setReceiveTime(LocalDateTimeUtil.of(statusObj.getLong("delivrd_at") * 1000L)) // status report time
+                        .setSerialNo(statusObj.getStr("message_id")) // Send serial ID
+                        .setLogId(statusObj.getLong("seq")); // User serial ID
             }
 
         });
@@ -130,11 +130,11 @@ public class QiniuSmsClient extends AbstractSmsClient {
 
     @Override
     public SmsTemplateRespDTO getSmsTemplate(String apiTemplateId) throws Throwable {
-        // 1. 执行请求
-        // 参考链接 https://developer.qiniu.com/sms/5969/query-a-single-template
+        // 1. Execute the request
+        // Reference link https://developer.qiniu.com/SMS/5969/query-a-single-template
         JSONObject response = request("GET", null, "/v1/template/" + apiTemplateId);
 
-        // 2.2 解析请求
+        // 2.2 Parse the request
         return new SmsTemplateRespDTO()
                 .setId(response.getStr("id"))
                 .setContent(response.getStr("template"))
@@ -149,7 +149,7 @@ public class QiniuSmsClient extends AbstractSmsClient {
             case "reviewing": return SmsTemplateAuditStatusEnum.CHECKING.getStatus();
             case "rejected": return SmsTemplateAuditStatusEnum.FAIL.getStatus();
             default:
-                throw new IllegalArgumentException(String.format("未知审核状态(%str)", templateStatus));
+                throw new IllegalArgumentException(String.format("Unknown review status (%str)", templateStatus));
         }
     }
 }

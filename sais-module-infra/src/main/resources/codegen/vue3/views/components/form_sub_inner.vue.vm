@@ -1,2 +1,2 @@
-## 主表的 normal 和 inner 使用相同的 form 表单
+## The normal and inner of the main table use the same form
 #parse("codegen/vue3/views/components/form_sub_normal.vue.vm")

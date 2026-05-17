@@ -5,108 +5,108 @@ import cn.iocoder.yudao.module.system.dal.dataobject.oauth2.OAuth2AccessTokenDO;
 import java.util.List;
 
 /**
- * OAuth2 授予 Service 接口
+ * OAuth2 grant Service API
  *
- * 从功能上，和 Spring Security OAuth 的 TokenGranter 的功能，提供访问令牌、刷新令牌的操作
+ * Functionally, it is similar to the function of Spring Security OAuth's TokenGranter, providing access token and refresh token operations.
  *
- * 将自身的 AdminUser 用户，授权给第三方应用，采用 OAuth2.0 的协议。
+ * Authorize your own AdminUser user to third-party applications, using the OAuth2.0 protocol.
  *
- * 问题：为什么自身也作为一个第三方应用，也走这套流程呢？
- * 回复：当然可以这么做，采用 password 模式。考虑到大多数开发者使用不到这个特性，OAuth2.0 毕竟有一定学习成本，所以暂时没有采取这种方式。
+ * Question: Why does it also go through this process as a third-party application?
+ * Reply: Of course you can DO this, using password mode. Considering that most developers cannot use this feature and OAuth2.0 has a certain learning cost, this approach has not been adopted for the time being.
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface OAuth2GrantService {
 
     /**
-     * 简化模式
+     * Simplified mode
      *
-     * 对应 Spring Security OAuth2 的 ImplicitTokenGranter 功能
+     * Corresponds to the ImplicitTokenGranter function of Spring Security OAuth2
      *
-     * @param userId 用户编号
-     * @param userType 用户类型
-     * @param clientId 客户端编号
-     * @param scopes 授权范围
-     * @return 访问令牌
+     * @param userId User ID
+     * @param userType User type
+     * @param clientId client ID
+     * @param scopes Authorization scope
+     * @return Access Token
      */
     OAuth2AccessTokenDO grantImplicit(Long userId, Integer userType,
                                       String clientId, List<String> scopes);
 
     /**
-     * 授权码模式，第一阶段，获得 code 授权码
+     * Authorization code mode, the first stage, obtain the code authorization code
      *
-     * 对应 Spring Security OAuth2 的 AuthorizationEndpoint 的 generateCode 方法
+     * Corresponds to the generateCode method of AuthorizationEndpoint of Spring Security OAuth2
      *
-     * @param userId 用户编号
-     * @param userType 用户类型
-     * @param clientId 客户端编号
-     * @param scopes 授权范围
-     * @param redirectUri 重定向 URI
-     * @param state 状态
-     * @return 授权码
+     * @param userId User ID
+     * @param userType User type
+     * @param clientId client ID
+     * @param scopes Authorization scope
+     * @param redirectUri Redirect URI
+     * @param state Status
+     * @return Authorization code
      */
     String grantAuthorizationCodeForCode(Long userId, Integer userType,
                                          String clientId, List<String> scopes,
                                          String redirectUri, String state);
 
     /**
-     * 授权码模式，第二阶段，获得 accessToken 访问令牌
+     * Authorization code mode, second stage, obtain accessToken access token
      *
-     * 对应 Spring Security OAuth2 的 AuthorizationCodeTokenGranter 功能
+     * Corresponds to the AuthorizationCodeTokenGranter function of Spring Security OAuth2
      *
-     * @param clientId 客户端编号
-     * @param code 授权码
-     * @param redirectUri 重定向 URI
-     * @param state 状态
-     * @return 访问令牌
+     * @param clientId client ID
+     * @param code Authorization code
+     * @param redirectUri Redirect URI
+     * @param state Status
+     * @return Access Token
      */
     OAuth2AccessTokenDO grantAuthorizationCodeForAccessToken(String clientId, String code,
                                                              String redirectUri, String state);
 
     /**
-     * 密码模式
+     * password mode
      *
-     * 对应 Spring Security OAuth2 的 ResourceOwnerPasswordTokenGranter 功能
+     * Corresponds to the ResourceOwnerPasswordTokenGranter function of Spring Security OAuth2
      *
-     * @param username 账号
-     * @param password 密码
-     * @param clientId 客户端编号
-     * @param scopes 授权范围
-     * @return 访问令牌
+     * @param username Account
+     * @param password Password
+     * @param clientId client ID
+     * @param scopes Authorization scope
+     * @return Access Token
      */
     OAuth2AccessTokenDO grantPassword(String username, String password,
                                       String clientId, List<String> scopes);
 
     /**
-     * 刷新模式
+     * refresh mode
      *
-     * 对应 Spring Security OAuth2 的 ResourceOwnerPasswordTokenGranter 功能
+     * Corresponds to the ResourceOwnerPasswordTokenGranter function of Spring Security OAuth2
      *
-     * @param refreshToken 刷新令牌
-     * @param clientId 客户端编号
-     * @return 访问令牌
+     * @param refreshToken Refresh Token
+     * @param clientId client ID
+     * @return Access Token
      */
     OAuth2AccessTokenDO grantRefreshToken(String refreshToken, String clientId);
 
     /**
-     * 客户端模式
+     * client mode
      *
-     * 对应 Spring Security OAuth2 的 ClientCredentialsTokenGranter 功能
+     * Corresponds to the ClientCredentialsTokenGranter function of Spring Security OAuth2
      *
-     * @param clientId 客户端编号
-     * @param scopes 授权范围
-     * @return 访问令牌
+     * @param clientId client ID
+     * @param scopes Authorization scope
+     * @return Access Token
      */
     OAuth2AccessTokenDO grantClientCredentials(String clientId, List<String> scopes);
 
     /**
-     * 移除访问令牌
+     * Remove access token
      *
-     * 对应 Spring Security OAuth2 的 ConsumerTokenServices 的 revokeToken 方法
+     * Corresponds to the revokeToken method of ConsumerTokenServices of Spring Security OAuth2
      *
-     * @param accessToken 访问令牌
-     * @param clientId 客户端编号
-     * @return 是否移除到
+     * @param accessToken Access Token
+     * @param clientId client ID
+     * @return Whether to remove to
      */
     boolean revokeToken(String clientId, String accessToken);
 

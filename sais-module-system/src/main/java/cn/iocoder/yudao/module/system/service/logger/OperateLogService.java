@@ -7,40 +7,40 @@ import cn.iocoder.yudao.module.system.controller.admin.logger.vo.operatelog.Oper
 import cn.iocoder.yudao.module.system.dal.dataobject.logger.OperateLogDO;
 
 /**
- * 操作日志 Service 接口
+ * Operation log Service API
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface OperateLogService {
 
     /**
-     * 记录操作日志
+     * Record operation log
      *
-     * @param createReqDTO 创建请求
+     * @param createReqDTO Create request
      */
     void createOperateLog(OperateLogCreateReqDTO createReqDTO);
 
     /**
-     * 获得操作日志
+     * Get operation log
      *
-     * @param id 编号
-     * @return 操作日志
+     * @param id ID
+     * @return Operation log
      */
     OperateLogDO getOperateLog(Long id);
 
     /**
-     * 获得操作日志分页列表
+     * Get the paging list of operation logs
      *
-     * @param pageReqVO 分页条件
-     * @return 操作日志分页列表
+     * @param pageReqVO Paging conditions
+     * @return Operation log paging list
      */
     PageResult<OperateLogDO> getOperateLogPage(OperateLogPageReqVO pageReqVO);
 
     /**
-     * 获得操作日志分页列表
+     * Get the paging list of operation logs
      *
-     * @param pageReqVO 分页条件
-     * @return 操作日志分页列表
+     * @param pageReqVO Paging conditions
+     * @return Operation log paging list
      */
     PageResult<OperateLogDO> getOperateLogPage(OperateLogPageReqDTO pageReqVO);
 

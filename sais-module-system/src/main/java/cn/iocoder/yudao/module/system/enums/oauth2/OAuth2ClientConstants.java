@@ -1,9 +1,9 @@
 package cn.iocoder.yudao.module.system.enums.oauth2;
 
 /**
- * OAuth2.0 客户端的通用枚举
+ * Generic enumeration for OAuth2.0 clients
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface OAuth2ClientConstants {
 

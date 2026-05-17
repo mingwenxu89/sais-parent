@@ -10,9 +10,9 @@
     <modules>
         <module>sais-dependencies</module>
         <module>sais-framework</module>
-        <!-- Server 主项目 -->
+        <!-- Main Server project -->
         <module>sais-server</module>
-        <!-- 各种 module 拓展 -->
+        <!-- Various module extensions -->
         <module>sais-module-system</module>
         <module>sais-module-infra</module>
         <module>sais-module-agri</module>
@@ -25,24 +25,24 @@
 <!--        <module>sais-module-crm</module>-->
 <!--        <module>sais-module-erp</module>-->
 <!--        <module>sais-module-iot</module>-->
-        <!-- AI 大模型的开启，请参考 https://doc.iocoder.cn/ai/build/ 文档，对 JDK 版本要要求！ -->
+        <!-- To enable the AI large model module, see https://doc.iocoder.cn/ai/build/. It has JDK version requirements. -->
 <!--        <module>sais-module-ai</module>-->
     </modules>
 
     <name>${project.artifactId}</name>
-    <description>芋道项目基础脚手架</description>
+    <description>Yudao project base scaffold</description>
     <url>https://github.com/YunaiV/ruoyi-vue-pro</url>
 
     <properties>
         <revision>2026.01-jdk21-SNAPSHOT</revision>
-        <!-- Maven 相关 -->
+        <!-- Maven related -->
         <java.version>21</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
         <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
         <flatten-maven-plugin.version>1.7.2</flatten-maven-plugin.version>
-        <!-- maven-surefire-plugin 暂时无法通过 bom 的依赖读取（兼容老版本 IDEA 2024 及以前版本） -->
+        <!-- maven-surefire-plugin cannot currently be read through BOM dependencies. Compatible with older IDEA 2024 and earlier versions. -->
         <lombok.version>1.18.42</lombok.version>
         <spring.boot.version>3.3.6</spring.boot.version>
         <mapstruct.version>1.6.3</mapstruct.version>
@@ -64,14 +64,14 @@
     <build>
         <pluginManagement>
             <plugins>
-                <!-- maven-surefire-plugin 插件，用于运行单元测试。 -->
-                <!-- 注意，需要使用 3.0.X+，因为要支持 Junit 5 版本 -->
+                <!-- maven-surefire-plugin, used to run unit tests. -->
+                <!-- Note: 3.0.X+ is required to support JUnit 5. -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${maven-surefire-plugin.version}</version>
                 </plugin>
-                <!-- maven-compiler-plugin 插件，解决 spring-boot-configuration-processor + Lombok + MapStruct 组合 -->
+                <!-- maven-compiler-plugin, used to handle the spring-boot-configuration-processor + Lombok + MapStruct combination. -->
                 <!-- https://stackoverflow.com/questions/33483697/re-run-spring-boot-configuration-annotation-processor-to-update-generated-metada -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -90,8 +90,8 @@
                                 <version>${lombok.version}</version>
                             </path>
                             <path>
-                                <!-- 确保 Lombok 生成的 getter/setter 方法能被 MapStruct 正确识别，
-                                     避免出现 No property named “xxx" exists 的编译错误 -->
+                                <!-- Ensure MapStruct correctly recognizes Lombok-generated getter/setter methods,
+                                     avoiding compilation errors like No property named "xxx" exists. -->
                                 <groupId>org.projectlombok</groupId>
                                 <artifactId>lombok-mapstruct-binding</artifactId>
                                 <version>0.2.0</version>
@@ -102,7 +102,7 @@
                                 <version>${mapstruct.version}</version>
                             </path>
                         </annotationProcessorPaths>
-                        <!-- 编译参数写在 arg 内，解决 Spring Boot 3.2 的 Parameter Name Discovery 问题 -->
+                        <!-- Put compiler parameters in arg to solve Spring Boot 3.2 Parameter Name Discovery issues. -->
                         <debug>false</debug>
                         <compilerArgs>
                             <arg>-parameters</arg>
@@ -117,7 +117,7 @@
         </pluginManagement>
 
         <plugins>
-            <!-- 统一 revision 版本 -->
+            <!-- Unify the revision version -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
@@ -146,7 +146,7 @@
         </plugins>
     </build>
 
-    <!-- 使用 huawei / aliyun 的 Maven 源，提升下载速度 -->
+    <!-- Use Huawei / Aliyun Maven repositories to improve download speed -->
     <repositories>
         <repository>
             <id>huaweicloud</id>

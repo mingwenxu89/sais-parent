@@ -8,42 +8,42 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 部门 API 接口
+ * Department API API
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface DeptApi {
 
     /**
-     * 获得部门信息
+     * Get department information
      *
-     * @param id 部门编号
-     * @return 部门信息
+     * @param id Department ID
+     * @return Department information
      */
     DeptRespDTO getDept(Long id);
 
     /**
-     * 获得部门信息数组
+     * Get department information array
      *
-     * @param ids 部门编号数组
-     * @return 部门信息数组
+     * @param ids Department ID array
+     * @return Department information array
      */
     List<DeptRespDTO> getDeptList(Collection<Long> ids);
 
     /**
-     * 校验部门们是否有效。如下情况，视为无效：
-     * 1. 部门编号不存在
-     * 2. 部门被禁用
+     * Check whether the departments are valid. The following situations will be deemed invalid:
+     * 1. The department ID does not exist
+     * 2. Department is disabled
      *
-     * @param ids 角色编号数组
+     * @param ids Role ID array
      */
     void validateDeptList(Collection<Long> ids);
 
     /**
-     * 获得指定编号的部门 Map
+     * Get the department map with the specified ID
      *
-     * @param ids 部门编号数组
-     * @return 部门 Map
+     * @param ids Department ID array
+     * @return Department Map
      */
     default Map<Long, DeptRespDTO> getDeptMap(Collection<Long> ids) {
         List<DeptRespDTO> list = getDeptList(ids);
@@ -51,10 +51,10 @@ public interface DeptApi {
     }
 
     /**
-     * 获得指定部门的所有子部门
+     * Get all sub-departments of the specified department
      *
-     * @param id 部门编号
-     * @return 子部门列表
+     * @param id Department ID
+     * @return List of subdepartments
      */
     List<DeptRespDTO> getChildDeptList(Long id);
 

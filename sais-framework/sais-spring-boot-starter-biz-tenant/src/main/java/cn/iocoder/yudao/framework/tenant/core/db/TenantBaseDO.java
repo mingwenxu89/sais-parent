@@ -5,17 +5,17 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * 拓展多租户的 BaseDO 基类
+ * Extend the BaseDO base class for multi-tenancy
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
 public abstract class TenantBaseDO extends BaseDO {
 
-    /**
-     * 多租户编号
-     */
-    private Long tenantId;
+ /**
+     * multi-tenant ID
+ */
+ private Long tenantId;
 
 }

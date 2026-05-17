@@ -13,9 +13,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * 文件类型 Utils
+ * File TypeUtils
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Slf4j
 public class FileTypeUtils {
@@ -23,10 +23,10 @@ public class FileTypeUtils {
     private static final Tika TIKA = new Tika();
 
     /**
-     * 获得文件的 mineType，对于 doc，jar 等文件会有误差
+     * Obtain the mineType of the file. There will be errors for doc, jar and other files.
      *
-     * @param data 文件内容
-     * @return mineType 无法识别时会返回“application/octet-stream”
+     * @param data File content
+     * @return When mineType is not recognized, "application/octet-stream" will be returned.
      */
     @SneakyThrows
     public static String getMineType(byte[] data) {
@@ -34,75 +34,75 @@ public class FileTypeUtils {
     }
 
     /**
-     * 已知文件名，获取文件类型，在某些情况下比通过字节数组准确，例如使用 jar 文件时，通过名字更为准确
+     * Knowing the file name, obtaining the file type is more accurate than passing the byte array in some cases. For example, when using jar files, passing the name is more accurate.
      *
-     * @param name 文件名
-     * @return mineType 无法识别时会返回“application/octet-stream”
+     * @param name file name
+     * @return When mineType is not recognized, "application/octet-stream" will be returned.
      */
     public static String getMineType(String name) {
         return TIKA.detect(name);
     }
 
     /**
-     * 在拥有文件和数据的情况下，最好使用此方法，最为准确
+     * This method is best and most accurate when you have files and data
      *
-     * @param data 文件内容
-     * @param name 文件名
-     * @return mineType 无法识别时会返回“application/octet-stream”
+     * @param data File content
+     * @param name file name
+     * @return When mineType is not recognized, "application/octet-stream" will be returned.
      */
     public static String getMineType(byte[] data, String name) {
         return TIKA.detect(data, name);
     }
 
     /**
-     * 根据 mineType 获得文件后缀
+     * Get file suffix based on mineType
      *
-     * 注意：如果获取不到，或者发生异常，都返回 null
+     * Note: If it cannot be obtained or an exception occurs, null will be returned.
      *
-     * @param mineType 类型
-     * @return 后缀，例如说 .pdf
+     * @param mineType Type
+     * @return suffix, for example .pdf
      */
     public static String getExtension(String mineType) {
         try {
             return MimeTypes.getDefaultMimeTypes().forName(mineType).getExtension();
         } catch (MimeTypeException e) {
-            log.warn("[getExtension][获取文件后缀({}) 失败]", mineType, e);
+            log.warn("[getExtension][Failed to obtain file suffix ({})]", mineType, e);
             return null;
         }
     }
 
     /**
-     * 返回附件
+     * Return to attachment
      *
-     * @param response 响应
-     * @param filename 文件名
-     * @param content  附件内容
+     * @param response response
+     * @param filename file name
+     * @param content  Attachment content
      */
     public static void writeAttachment(HttpServletResponse response, String filename, byte[] content) throws IOException {
-        // 设置 header 和 contentType
+        // Set header and contentType
         String mineType = getMineType(content, filename);
         response.setContentType(mineType);
-        // 设置内容显示、下载文件名：https://www.cnblogs.com/wq-9/articles/12165056.html
+        // Set content display and download file name: https://www.cnblogs.com/wq-9/articles/12165056.html
         if (isImage(mineType)) {
-            // 参见 https://github.com/YunaiV/ruoyi-vue-pro/issues/692 讨论
+            // See https://github.com/YunaiV/ruoyi-vue-pro/issues/692 for discussion
             response.setHeader("Content-Disposition", "inline;filename=" + HttpUtils.encodeUtf8(filename));
         } else {
             response.setHeader("Content-Disposition", "attachment;filename=" + HttpUtils.encodeUtf8(filename));
         }
-        // 针对 video 的特殊处理，解决视频地址在移动端播放的兼容性问题
+        // Special processing for video to solve the compatibility problem of video addresses played on mobile terminals
         if (StrUtil.containsIgnoreCase(mineType, "video")) {
             response.setHeader("Accept-Ranges", "bytes");
             response.setHeader("Content-Length", String.valueOf(content.length));
         }
-        // 输出附件
+        // Output attachment
         IoUtil.write(response.getOutputStream(), false, content);
     }
 
     /**
-     * 判断是否是图片
+     * Determine whether it is a picture
      *
-     * @param mineType 类型
-     * @return 是否是图片
+     * @param mineType Type
+     * @return Is it a picture
      */
     public static boolean isImage(String mineType) {
         return StrUtil.startWith(mineType, "image/");

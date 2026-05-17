@@ -16,43 +16,43 @@ import java.util.Collection;
 public class CodegenProperties {
 
     /**
-     * 生成的 Java 代码的基础包
+     * Base package for generated Java code
      */
-    @NotNull(message = "Java 代码的基础包不能为空")
+    @NotNull(message = "Java code base package cannot be empty")
     private String basePackage;
 
     /**
-     * 数据库名数组
+     * Database name array
      */
-    @NotEmpty(message = "数据库不能为空")
+    @NotEmpty(message = "database cannot be empty")
     private Collection<String> dbSchemas;
 
     /**
-     * 代码生成的前端类型（默认）
+     * Frontend type for code generation (default)
      *
-     * 枚举 {@link CodegenFrontTypeEnum#getType()}
+     * Enum {@link CodegenFrontTypeEnum#getType()}
      */
-    @NotNull(message = "代码生成的前端类型不能为空")
+    @NotNull(message = "code generation frontend type cannot be empty")
     private Integer frontType;
 
     /**
-     * 代码生成的 VO 类型
+     * Code generated VO type
      *
-     * 枚举 {@link CodegenVOTypeEnum#getType()}
+     * Enum {@link CodegenVOTypeEnum#getType()}
      */
-    @NotNull(message = "代码生成的 VO 类型不能为空")
+    @NotNull(message = "code generation VO type cannot be empty")
     private Integer voType;
 
     /**
-     * 是否生成批量删除接口
+     * Whether to generate a batch deletion API
      */
-    @NotNull(message = "是否生成批量删除接口不能为空")
+    @NotNull(message = "whether to generate batch delete API cannot be empty")
     private Boolean deleteBatchEnable;
 
     /**
-     * 是否生成单元测试
+     * Whether to generate unit tests
      */
-    @NotNull(message = "是否生成单元测试不能为空")
+    @NotNull(message = "whether to generate unit tests cannot be empty")
     private Boolean unitTestEnable;
 
 }

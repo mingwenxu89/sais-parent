@@ -1,6 +1,6 @@
-#set ($subColumns = $subColumnsList.get($subIndex))##当前字段数组
+#set ($subColumns = $subColumnsList.get($subIndex))##Current field array
 #set ($subSimpleClassName = $subSimpleClassNames.get($subIndex))
-#set ($subJoinColumn = $subJoinColumns.get($subIndex))##当前 join 字段
+#set ($subJoinColumn = $subJoinColumns.get($subIndex))##Current join field
 <template>
   <Dialog :title="dialogTitle" v-model="dialogVisible">
     <el-form
@@ -17,7 +17,7 @@
         #set ($javaType = $column.javaType)
         #set ($AttrName = $column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
         #set ($comment = $column.columnComment)
-        #set ($dictMethod = "getDictOptions")## 计算使用哪个 dict 字典方法
+        #set ($dictMethod = "getDictOptions")## Calculate which dict dict method to use
         #if ($javaType == "Integer" || $javaType == "Long" || $javaType == "Byte" || $javaType == "Short")
             #set ($dictMethod = "getIntDictOptions")
         #elseif ($javaType == "String")
@@ -25,57 +25,57 @@
         #elseif ($javaType == "Boolean")
             #set ($dictMethod = "getBoolDictOptions")
         #end
-        #if ( $column.id == $subJoinColumn.id) ## 特殊：忽略主子表的 join 字段，不用填写
-        #elseif ($column.htmlType == "input" && !$column.primaryKey)## 忽略主键，不用在表单里
+        #if ( $column.id == $subJoinColumn.id) ## Special: Ignore the join field of the master and child tables and DO not need to fill it in.
+        #elseif ($column.htmlType == "input" && !$column.primaryKey)## Ignore the primary key, DO not use it in the form
       <el-form-item label="${comment}" prop="${javaField}">
-        <el-input v-model="formData.${javaField}" placeholder="请输入${comment}" />
+        <el-input v-model="formData.${javaField}" placeholder="Please enter ${comment}" />
       </el-form-item>
-        #elseif($column.htmlType == "imageUpload")## 图片上传
+        #elseif($column.htmlType == "imageUpload")## Image upload
       <el-form-item label="${comment}" prop="${javaField}">
         <UploadImg v-model="formData.${javaField}" />
       </el-form-item>
-        #elseif($column.htmlType == "fileUpload")## 文件上传
+        #elseif($column.htmlType == "fileUpload")## File upload
       <el-form-item label="${comment}" prop="${javaField}">
         <UploadFile v-model="formData.${javaField}" />
       </el-form-item>
-        #elseif($column.htmlType == "editor")## 文本编辑器
+        #elseif($column.htmlType == "editor")## text editor
       <el-form-item label="${comment}" prop="${javaField}">
         <Editor v-model="formData.${javaField}" height="150px" />
       </el-form-item>
-        #elseif($column.htmlType == "select")## 下拉框
+        #elseif($column.htmlType == "select")## Select box
       <el-form-item label="${comment}" prop="${javaField}">
-        <el-select v-model="formData.${javaField}" placeholder="请选择${comment}">
-                #if ("" != $dictType)## 有数据字典
+        <el-select v-model="formData.${javaField}" placeholder="Please select ${comment}">
+                #if ("" != $dictType)## There is a data dict
           <el-option
             v-for="dict in $dictMethod(DICT_TYPE.$dictType.toUpperCase())"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
           />
-                #else##没数据字典
-          <el-option label="请选择字典生成" value="" />
+                #else##No data dict
+          <el-option label="Please select dict generation" value="" />
                 #end
         </el-select>
       </el-form-item>
-        #elseif($column.htmlType == "checkbox")## 多选框
+        #elseif($column.htmlType == "checkbox")## checkbox
       <el-form-item label="${comment}" prop="${javaField}">
         <el-checkbox-group v-model="formData.${javaField}">
-                #if ("" != $dictType)## 有数据字典
+                #if ("" != $dictType)## There is a data dict
           <el-checkbox
             v-for="dict in $dictMethod(DICT_TYPE.$dictType.toUpperCase())"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
           />
-                #else##没数据字典
-          <el-checkbox label="请选择字典生成" />
+                #else##No data dict
+          <el-checkbox label="Please select dict generation" />
                 #end
         </el-checkbox-group>
       </el-form-item>
-        #elseif($column.htmlType == "radio")## 单选框
+        #elseif($column.htmlType == "radio")## Radio button
       <el-form-item label="${comment}" prop="${javaField}">
         <el-radio-group v-model="formData.${javaField}">
-                #if ("" != $dictType)## 有数据字典
+                #if ("" != $dictType)## There is a data dict
           <el-radio
             v-for="dict in $dictMethod(DICT_TYPE.$dictType.toUpperCase())"
             :key="dict.value"
@@ -83,31 +83,31 @@
           >
             {{ dict.label }}
           </el-radio>
-                #else##没数据字典
-          <el-radio value="1">请选择字典生成</el-radio>
+                #else##No data dict
+          <el-radio value="1">Please select dict generation</el-radio>
                 #end
         </el-radio-group>
       </el-form-item>
-        #elseif($column.htmlType == "datetime")## 时间框
+        #elseif($column.htmlType == "datetime")## time box
       <el-form-item label="${comment}" prop="${javaField}">
         <el-date-picker
           v-model="formData.${javaField}"
           type="date"
           value-format="x"
-          placeholder="选择${comment}"
+          placeholder="Select ${comment}"
         />
       </el-form-item>
-        #elseif($column.htmlType == "textarea")## 文本框
+        #elseif($column.htmlType == "textarea")## Text input
       <el-form-item label="${comment}" prop="${javaField}">
-        <el-input v-model="formData.${javaField}" type="textarea" placeholder="请输入${comment}" />
+        <el-input v-model="formData.${javaField}" type="textarea" placeholder="Please enter ${comment}" />
       </el-form-item>
         #end
     #end
 #end
     </el-form>
     <template #footer>
-      <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
-      <el-button @click="dialogVisible = false">取 消</el-button>
+      <el-button @click="submitForm" type="primary" :disabled="formLoading">OK</el-button>
+      <el-button @click="dialogVisible = false">Cancel</el-button>
     </template>
   </Dialog>
 </template>
@@ -115,13 +115,13 @@
 import { getIntDictOptions, getStrDictOptions, getBoolDictOptions, DICT_TYPE } from '@/utils/dict'
 import { ${simpleClassName}Api, ${subSimpleClassName} } from '@/api/${table.moduleName}/${table.businessName}'
 
-const { t } = useI18n() // 国际化
-const message = useMessage() // 消息弹窗
+const { t } = useI18n() // internationalization
+const message = useMessage() // Message pop-up window
 
-const dialogVisible = ref(false) // 弹窗的是否展示
-const dialogTitle = ref('') // 弹窗的标题
-const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
-const formType = ref('') // 表单的类型：create - 新增；update - 修改
+const dialogVisible = ref(false) // Whether to display the pop-up window
+const dialogTitle = ref('') // The title of the pop-up window
+const formLoading = ref(false) // The form is loading: 1) Data loading during modification; 2) Submit button disabled
+const formType = ref('') // Type of form: create - new；update - Modify
 const formData = ref({
 #foreach ($column in $subColumns)
     #if ($column.createOperation || $column.updateOperation)
@@ -135,22 +135,22 @@ const formData = ref({
 })
 const formRules = reactive({
 #foreach ($column in $subColumns)
-    #if (($column.createOperation || $column.updateOperation) && !$column.nullable && !${column.primaryKey})## 创建或者更新操作 && 要求非空 && 非主键
+    #if (($column.createOperation || $column.updateOperation) && !$column.nullable && !${column.primaryKey})## Create or update operations && Requires non-empty && non-primary key
         #set($comment=$column.columnComment)
-  $column.javaField: [{ required: true, message: '${comment}不能为空', trigger: #if($column.htmlType == 'select')'change'#else'blur'#end }],
+  $column.javaField: [{ required: true, message: '${comment} cannot be empty', trigger: #if($column.htmlType == 'select')'change'#else'blur'#end }],
     #end
 #end
 })
-const formRef = ref() // 表单 Ref
+const formRef = ref() // Form Ref
 
-/** 打开弹窗 */
+/** Open pop-up window */
 const open = async (type: string, id?: number, ${subJoinColumn.javaField}?: number) => {
   dialogVisible.value = true
   dialogTitle.value = t('action.' + type)
   formType.value = type
   resetForm()
   formData.value.${subJoinColumn.javaField} = ${subJoinColumn.javaField}  as any
-  // 修改时，设置数据
+  // When modifying, set data
   if (id) {
     formLoading.value = true
     try {
@@ -160,14 +160,14 @@ const open = async (type: string, id?: number, ${subJoinColumn.javaField}?: numb
     }
   }
 }
-defineExpose({ open }) // 提供 open 方法，用于打开弹窗
+defineExpose({ open }) // Provide the open method for opening pop-up windows
 
-/** 提交表单 */
-const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
+/** Submit form */
+const emit = defineEmits(['success']) // Define the success event for callback after successful operation
 const submitForm = async () => {
-  // 校验表单
+  // Validation form
   await formRef.value.validate()
-  // 提交请求
+  // Submit a request
   formLoading.value = true
   try {
     const data = formData.value as unknown as ${subSimpleClassName}
@@ -179,14 +179,14 @@ const submitForm = async () => {
       message.success(t('common.updateSuccess'))
     }
     dialogVisible.value = false
-    // 发送操作成功的事件
+    // Send event of successful operation
     emit('success')
   } finally {
     formLoading.value = false
   }
 }
 
-/** 重置表单 */
+/** Reset form */
 const resetForm = () => {
   formData.value = {
 #foreach ($column in $subColumns)

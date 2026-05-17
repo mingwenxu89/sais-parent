@@ -5,28 +5,28 @@ import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import java.util.List;
 
 /**
- * 数据库表 Service
+ * Database table service
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface DatabaseTableService {
 
     /**
-     * 获得表列表，基于表名称 + 表描述进行模糊匹配
+     * Get the table list and perform fuzzy matching based on table name + table description
      *
-     * @param dataSourceConfigId 数据源配置的编号
-     * @param nameLike           表名称，模糊匹配
-     * @param commentLike        表描述，模糊匹配
-     * @return 表列表
+     * @param dataSourceConfigId Data source configuration ID
+     * @param nameLike           Table name, fuzzy match
+     * @param commentLike        Table description, fuzzy matching
+     * @return table list
      */
     List<TableInfo> getTableList(Long dataSourceConfigId, String nameLike, String commentLike);
 
     /**
-     * 获得指定表名
+     * Get the specified table name
      *
-     * @param dataSourceConfigId 数据源配置的编号
-     * @param tableName          表名称
-     * @return 表
+     * @param dataSourceConfigId Data source configuration ID
+     * @param tableName          table name
+     * @return table
      */
     TableInfo getTable(Long dataSourceConfigId, String tableName);
 

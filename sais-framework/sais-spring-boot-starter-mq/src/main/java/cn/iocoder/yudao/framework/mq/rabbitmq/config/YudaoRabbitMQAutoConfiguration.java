@@ -8,21 +8,21 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 
 /**
- * RabbitMQ 消息队列配置类
+ * RabbitMQ message queue configuration class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @AutoConfiguration
 @Slf4j
 @ConditionalOnClass(name = "org.springframework.amqp.rabbit.core.RabbitTemplate")
 public class YudaoRabbitMQAutoConfiguration {
 
-    /**
-     * Jackson2JsonMessageConverter Bean：使用 jackson 序列化消息
-     */
-    @Bean
-    public MessageConverter createMessageConverter() {
-        return new Jackson2JsonMessageConverter();
-    }
+ /**
+     * Jackson2JSONMessageConverter Bean: Serialize messages using jackson
+ */
+ @Bean
+ public MessageConverter createMessageConverter() {
+ return new Jackson2JsonMessageConverter();
+ }
 
 }

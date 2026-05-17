@@ -17,9 +17,9 @@ import java.util.concurrent.TimeUnit;
 import static cn.iocoder.yudao.module.system.dal.redis.RedisKeyConstants.OAUTH2_ACCESS_TOKEN;
 
 /**
- * {@link OAuth2AccessTokenDO} 的 RedisDAO
+ * RedisDAO for {@link OAuth2AccessTokenDO}
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Repository
 public class OAuth2AccessTokenRedisDAO {
@@ -34,7 +34,7 @@ public class OAuth2AccessTokenRedisDAO {
 
     public void set(OAuth2AccessTokenDO accessTokenDO) {
         String redisKey = formatKey(accessTokenDO.getAccessToken());
-        // 清理多余字段，避免缓存
+        // Clean up redundant fields to avoid caching
         accessTokenDO.setUpdater(null).setUpdateTime(null).setCreateTime(null).setCreator(null).setDeleted(null);
         long time = LocalDateTimeUtil.between(LocalDateTime.now(), accessTokenDO.getExpiresTime(), ChronoUnit.SECONDS);
         if (time > 0) {

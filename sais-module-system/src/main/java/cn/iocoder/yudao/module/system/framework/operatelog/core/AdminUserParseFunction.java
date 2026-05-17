@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import jakarta.annotation.Resource;
 
 /**
- * 管理员名字的 {@link IParseFunction} 实现类
+ * {@link IParseFunction} implementation class for administrator name
  *
  * @author HUIHUI
  */
@@ -35,13 +35,13 @@ public class AdminUserParseFunction implements IParseFunction {
             return "";
         }
 
-        // 获取用户信息
+        // Get user information
         AdminUserDO user = adminUserService.getUser(Convert.toLong(value));
         if (user == null) {
-            log.warn("[apply][获取用户{{}}为空", value);
+            log.warn("[apply][Get user{{}} is empty", value);
             return "";
         }
-        // 返回格式 芋道源码(13888888888)
+        // Return format taro source code (13888888888)
         String nickname = user.getNickname();
         if (StrUtil.isEmpty(user.getMobile())) {
             return nickname;

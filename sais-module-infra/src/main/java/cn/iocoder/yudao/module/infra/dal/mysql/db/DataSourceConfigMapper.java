@@ -5,9 +5,9 @@ import cn.iocoder.yudao.module.infra.dal.dataobject.db.DataSourceConfigDO;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
- * 数据源配置 Mapper
+ * Data source configuration Mapper
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Mapper
 public interface DataSourceConfigMapper extends BaseMapperX<DataSourceConfigDO> {

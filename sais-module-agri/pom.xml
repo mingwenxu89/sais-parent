@@ -33,8 +33,9 @@
 
     <name>${project.artifactId}</name>
     <description>
-        agri 模块，提供农业灌溉系统功能：
-        作物管理、地块管理、IoT设备管理、传感器数据、灌溉记录、天气数据、告警信息
+        Agri module, providing agricultural irrigation system features:
+        crop management, plot management, IoT device management, sensor data,
+        irrigation records, weather data, and alert information
     </description>
 
     <dependencies>
@@ -45,25 +46,25 @@
             <version>${revision}</version>
         </dependency>
 
-        <!-- 业务组件 -->
+        <!-- Business components -->
         <dependency>
             <groupId>cn.iocoder.boot</groupId>
             <artifactId>sais-spring-boot-starter-biz-tenant</artifactId>
         </dependency>
 
-        <!-- Web 相关 -->
+        <!-- Web related -->
         <dependency>
             <groupId>cn.iocoder.boot</groupId>
             <artifactId>sais-spring-boot-starter-security</artifactId>
         </dependency>
 
-        <!-- DB 相关 -->
+        <!-- DB related -->
         <dependency>
             <groupId>cn.iocoder.boot</groupId>
             <artifactId>sais-spring-boot-starter-mybatis</artifactId>
         </dependency>
 
-        <!-- 工具类相关 -->
+        <!-- Utility related -->
         <dependency>
             <groupId>cn.iocoder.boot</groupId>
             <artifactId>sais-spring-boot-starter-excel</artifactId>

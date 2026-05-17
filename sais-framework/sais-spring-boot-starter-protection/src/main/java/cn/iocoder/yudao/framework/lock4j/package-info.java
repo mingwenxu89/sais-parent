@@ -1,4 +1,4 @@
 /**
- * 分布式锁组件，使用 https://gitee.com/baomidou/lock4j 开源项目
+ * Distributed lock component, using https://gitee.com/baomidou/lock4j open source project
  */
 package cn.iocoder.yudao.framework.lock4j;

@@ -1,10 +1,10 @@
 <template>
-  <!-- 搜索框入口 -->
+  <!-- Search box entrance -->
   <view @click="visible = true">
     <wd-search :placeholder="placeholder" hide-cancel disabled />
   </view>
 
-  <!-- 搜索弹窗 -->
+  <!-- Search popup -->
   <wd-popup v-model="visible" position="top" @close="visible = false">
     <view class="yd-search-form-container" :style="{ paddingTop: `#[[${]]#getNavbarHeight()#[[}]]#px` }">
 #set ($hasDict = 0)
@@ -35,7 +35,7 @@
         </view>
         <wd-input
           v-model="formData.${javaField}"
-          placeholder="请输入${comment}"
+          placeholder="Please enter ${comment}"
           clearable
         />
       </view>
@@ -48,32 +48,32 @@
         <view class="yd-search-form-date-range-container">
           <view @click="visible${AttrName}[0] = true">
             <view class="yd-search-form-date-range-picker">
-              {{ formatDate(formData.${javaField}?.[0]) || '开始日期' }}
+              {{ formatDate(formData.${javaField}?.[0]) || 'start date' }}
             </view>
           </view>
           -
           <view @click="visible${AttrName}[1] = true">
             <view class="yd-search-form-date-range-picker">
-              {{ formatDate(formData.${javaField}?.[1]) || '结束日期' }}
+              {{ formatDate(formData.${javaField}?.[1]) || 'end date' }}
             </view>
           </view>
         </view>
         <wd-datetime-picker-view v-if="visible${AttrName}[0]" v-model="temp${AttrName}[0]" type="date" />
         <view v-if="visible${AttrName}[0]" class="yd-search-form-date-range-actions">
           <wd-button size="small" plain @click="visible${AttrName}[0] = false">
-            取消
+            Cancel
           </wd-button>
           <wd-button size="small" type="primary" @click="handle${AttrName}0Confirm">
-            确定
+            OK
           </wd-button>
         </view>
         <wd-datetime-picker-view v-if="visible${AttrName}[1]" v-model="temp${AttrName}[1]" type="date" />
         <view v-if="visible${AttrName}[1]" class="yd-search-form-date-range-actions">
           <wd-button size="small" plain @click="visible${AttrName}[1] = false">
-            取消
+            Cancel
           </wd-button>
           <wd-button size="small" type="primary" @click="handle${AttrName}1Confirm">
-            确定
+            OK
           </wd-button>
         </view>
       </view>
@@ -84,7 +84,7 @@
         </view>
         <wd-radio-group v-model="formData.${javaField}" shape="button">
           <wd-radio :value="-1">
-            全部
+            All
           </wd-radio>
           <wd-radio
             v-for="dict in $dictMethod(DICT_TYPE.$dictType.toUpperCase())"
@@ -102,7 +102,7 @@
         </view>
         <wd-input
           v-model="formData.${javaField}"
-          placeholder="请输入${comment}"
+          placeholder="Please enter ${comment}"
           clearable
         />
       </view>
@@ -111,10 +111,10 @@
 #end
       <view class="yd-search-form-actions">
         <wd-button class="flex-1" plain @click="handleReset">
-          重置
+          reset
         </wd-button>
         <wd-button class="flex-1" type="primary" @click="handleSearch">
-          搜索
+          Search
         </wd-button>
       </view>
     </view>
@@ -186,11 +186,11 @@ const formData = reactive({
   ${column.javaField}: [undefined, undefined] as [number | undefined, number | undefined],
     #elseif ($column.dictType && "" != $column.dictType)
       #if(${javaType} == "string")
-  ${column.javaField}: -1 as -1 | string, // -1 表示全部
+  ${column.javaField}: -1 as -1 | string, // -1 means all
       #elseif(${javaType} == "boolean")
-  ${column.javaField}: -1 as -1 | boolean, // -1 表示全部
+  ${column.javaField}: -1 as -1 | boolean, // -1 means all
       #else
-  ${column.javaField}: -1, // -1 表示全部
+  ${column.javaField}: -1, // -1 means all
       #end
     #elseif(${javaType} == "long" || ${javaType} == "integer" || ${javaType} == "short" || ${javaType} == "double" || ${javaType} == "bigdecimal" || ${javaType} == "byte")
   ${column.javaField}: undefined as number | undefined,
@@ -203,7 +203,7 @@ const formData = reactive({
 #end
 })
 
-/** 搜索条件 placeholder 拼接 */
+/** Search criteria placeholder splicing */
 const placeholder = computed(() => {
   const conditions: string[] = []
 #foreach($column in $columns)
@@ -233,11 +233,11 @@ const placeholder = computed(() => {
     #end
   #end
 #end
-  return conditions.length > 0 ? conditions.join(' | ') : '搜索${table.classComment}'
+  return conditions.length > 0 ? conditions.join(' | ') : 'Search ${table.classComment}'
 })
 
 #if ($hasDateTimeBetween == 1)
-// 时间范围选择器状态
+// time range selector state
 #foreach($column in $columns)
   #if ($column.listOperation && $column.htmlType == "datetime" && $column.listOperationCondition == "BETWEEN")
     #set ($javaField = $column.javaField)
@@ -245,13 +245,13 @@ const placeholder = computed(() => {
 const visible${AttrName} = ref<[boolean, boolean]>([false, false])
 const temp${AttrName} = ref<[number, number]>([Date.now(), Date.now()])
 
-/** ${column.columnComment}[0]确认 */
+/** ${column.columnComment}[0]Confirm */
 function handle${AttrName}0Confirm() {
   formData.${javaField} = [temp${AttrName}.value[0], formData.${javaField}?.[1]]
   visible${AttrName}.value[0] = false
 }
 
-/** ${column.columnComment}[1]确认 */
+/** ${column.columnComment}[1]Confirm */
 function handle${AttrName}1Confirm() {
   formData.${javaField} = [formData.${javaField}?.[0], temp${AttrName}.value[1]]
   visible${AttrName}.value[1] = false
@@ -260,7 +260,7 @@ function handle${AttrName}1Confirm() {
 #end
 #end
 
-/** 搜索 */
+/** Search */
 function handleSearch() {
   visible.value = false
   emit('search', {
@@ -277,7 +277,7 @@ function handleSearch() {
   })
 }
 
-/** 重置 */
+/** reset */
 function handleReset() {
 #foreach($column in $columns)
   #if ($column.listOperation)

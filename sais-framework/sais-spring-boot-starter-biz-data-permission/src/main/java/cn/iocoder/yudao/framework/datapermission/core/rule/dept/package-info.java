@@ -1,6 +1,6 @@
 /**
- * 基于部门的数据权限规则
+ * Department-based data permission rules
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 package cn.iocoder.yudao.framework.datapermission.core.rule.dept;

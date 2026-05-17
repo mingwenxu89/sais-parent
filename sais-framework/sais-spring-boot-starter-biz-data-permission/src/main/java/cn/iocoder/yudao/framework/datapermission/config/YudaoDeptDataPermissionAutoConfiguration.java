@@ -12,23 +12,23 @@ import org.springframework.context.annotation.Bean;
 import java.util.List;
 
 /**
- * 基于部门的数据权限 AutoConfiguration
+ * Department-based data permissions AutoConfiguration
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @AutoConfiguration
 @ConditionalOnClass(LoginUser.class)
 @ConditionalOnBean(value = {DeptDataPermissionRuleCustomizer.class})
 public class YudaoDeptDataPermissionAutoConfiguration {
 
-    @Bean
-    public DeptDataPermissionRule deptDataPermissionRule(PermissionCommonApi permissionApi,
-                                                         List<DeptDataPermissionRuleCustomizer> customizers) {
-        // 创建 DeptDataPermissionRule 对象
-        DeptDataPermissionRule rule = new DeptDataPermissionRule(permissionApi);
-        // 补全表配置
-        customizers.forEach(customizer -> customizer.customize(rule));
-        return rule;
-    }
+ @Bean
+ public DeptDataPermissionRule deptDataPermissionRule(PermissionCommonApi permissionApi,
+ List<DeptDataPermissionRuleCustomizer> customizers) {
+        // Create a DeptDataPermissionRule object
+ DeptDataPermissionRule rule = new DeptDataPermissionRule(permissionApi);
+        // Completion table configuration
+ customizers.forEach(customizer -> customizer.customize(rule));
+ return rule;
+ }
 
 }

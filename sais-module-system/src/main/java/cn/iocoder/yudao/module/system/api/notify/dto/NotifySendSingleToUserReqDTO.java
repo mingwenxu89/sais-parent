@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import java.util.Map;
 
 /**
- * 站内信发送给 Admin 或者 Member 用户
+ * In-site messages are sent to Admin or Member users
  *
  * @author xrcoder
  */
@@ -15,19 +15,19 @@ import java.util.Map;
 public class NotifySendSingleToUserReqDTO {
 
     /**
-     * 用户编号
+     * User ID
      */
-    @NotNull(message = "用户编号不能为空")
+    @NotNull(message = "User ID cannot be empty")
     private Long userId;
 
     /**
-     * 站内信模板编号
+     * Site letter template ID
      */
-    @NotEmpty(message = "站内信模板编号不能为空")
+    @NotEmpty(message = "The site letter template ID cannot be empty")
     private String templateCode;
 
     /**
-     * 站内信模板参数
+     * Site letter template parameters
      */
     private Map<String, Object> templateParams;
 }

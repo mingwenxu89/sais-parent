@@ -25,133 +25,133 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * MyBatis 工具类
+ * MyBatis tool class
  */
 public class MyBatisUtils {
 
-    private static final String MYSQL_ESCAPE_CHARACTER = "`";
+ private static final String MYSQL_ESCAPE_CHARACTER = "`";
 
-    public static <T> Page<T> buildPage(PageParam pageParam) {
-        return buildPage(pageParam, null);
-    }
+ public static <T> Page<T> buildPage(PageParam pageParam) {
+ return buildPage(pageParam, null);
+ }
 
-    public static <T> Page<T> buildPage(PageParam pageParam, Collection<SortingField> sortingFields) {
-        // 页码 + 数量
-        Page<T> page = new Page<>(pageParam.getPageNo(), pageParam.getPageSize());
-        page.setOptimizeJoinOfCountSql(false); // 关联 issue：https://gitee.com/zhijiantianya/sar-cloud/issues/ID2QLL
-        // 排序字段
-        if (CollUtil.isNotEmpty(sortingFields)) {
-            for (SortingField sortingField : sortingFields) {
-                page.addOrder(new OrderItem().setAsc(SortingField.ORDER_ASC.equals(sortingField.getOrder()))
-                        .setColumn(StrUtil.toUnderlineCase(sortingField.getField())));
-            }
-        }
-        return page;
-    }
+ public static <T> Page<T> buildPage(PageParam pageParam, Collection<SortingField> sortingFields) {
+        // Page number + quantity
+ Page<T> page = new Page<>(pageParam.getPageNo(), pageParam.getPageSize());
+        page.setOptimizeJoinOfCountSql(false); // Related issue: https://gitee.com/zhijiantianya/yudao-cloud/issues/ID2QLL
+        // sort field
+ if (CollUtil.isNotEmpty(sortingFields)) {
+ for (SortingField sortingField: sortingFields) {
+ page.addOrder(new OrderItem().setAsc(SortingField.ORDER_ASC.equals(sortingField.getOrder()))
+.setColumn(StrUtil.toUnderlineCase(sortingField.getField())));
+ }
+ }
+ return page;
+ }
 
-    @SuppressWarnings("PatternVariableCanBeUsed")
-    public static <T> void addOrder(Wrapper<T> wrapper, Collection<SortingField> sortingFields) {
-        if (CollUtil.isEmpty(sortingFields)) {
-            return;
-        }
-        if (wrapper instanceof QueryWrapper) {
-            QueryWrapper<T> query = (QueryWrapper<T>) wrapper;
-            for (SortingField sortingField : sortingFields) {
-                query.orderBy(true,
-                        SortingField.ORDER_ASC.equals(sortingField.getOrder()),
-                        StrUtil.toUnderlineCase(sortingField.getField()));
-            }
-        } else if (wrapper instanceof LambdaQueryWrapper) {
-            // LambdaQueryWrapper 不直接支持字符串字段排序，使用 last 方法拼接 ORDER BY
-            LambdaQueryWrapper<T> lambdaQuery = (LambdaQueryWrapper<T>) wrapper;
-            StringBuilder orderBy = new StringBuilder();
-            for (SortingField sortingField : sortingFields) {
-                if (StrUtil.isNotEmpty(orderBy)) {
-                    orderBy.append(", ");
-                }
-                orderBy.append(StrUtil.toUnderlineCase(sortingField.getField()))
-                       .append(" ")
-                       .append(SortingField.ORDER_ASC.equals(sortingField.getOrder()) ? "ASC" : "DESC");
-            }
-            lambdaQuery.last("ORDER BY " + orderBy);
-            // 另外个思路：https://blog.csdn.net/m0_59084856/article/details/138450913
-        } else {
-            throw new IllegalArgumentException("Unsupported wrapper type: " + wrapper.getClass().getName());
-        }
+ @SuppressWarnings("PatternVariableCanBeUsed")
+ public static <T> void addOrder(Wrapper<T> wrapper, Collection<SortingField> sortingFields) {
+ if (CollUtil.isEmpty(sortingFields)) {
+ return;
+ }
+ if (wrapper instanceof QueryWrapper) {
+ QueryWrapper<T> query = (QueryWrapper<T>) wrapper;
+ for (SortingField sortingField: sortingFields) {
+ query.orderBy(true,
+ SortingField.ORDER_ASC.equals(sortingField.getOrder()),
+ StrUtil.toUnderlineCase(sortingField.getField()));
+ }
+ } else if (wrapper instanceof LambdaQueryWrapper) {
+            // LambdaQueryWrapper does not directly support string field sorting, use the last method to splice ORDER BY
+ LambdaQueryWrapper<T> lambdaQuery = (LambdaQueryWrapper<T>) wrapper;
+ StringBuilder orderBy = new StringBuilder();
+ for (SortingField sortingField: sortingFields) {
+ if (StrUtil.isNotEmpty(orderBy)) {
+ orderBy.append(", ");
+ }
+ orderBy.append(StrUtil.toUnderlineCase(sortingField.getField()))
+.append(" ")
+.append(SortingField.ORDER_ASC.equals(sortingField.getOrder()) ? "ASC": "DESC");
+ }
+ lambdaQuery.last("ORDER BY " + orderBy);
+            // Another idea: https://blog.csdn.net/m0_59084856/article/details/138450913
+ } else {
+ throw new IllegalArgumentException("Unsupported wrapper type: " + wrapper.getClass().getName());
+ }
 
-    }
+ }
 
-    /**
-     * 将拦截器添加到链中
-     * 由于 MybatisPlusInterceptor 不支持添加拦截器，所以只能全量设置
-     *
-     * @param interceptor 链
-     * @param inner       拦截器
-     * @param index       位置
-     */
-    public static void addInterceptor(MybatisPlusInterceptor interceptor, InnerInterceptor inner, int index) {
-        List<InnerInterceptor> inners = new ArrayList<>(interceptor.getInterceptors());
-        inners.add(index, inner);
-        interceptor.setInterceptors(inners);
-    }
+ /**
+     * Add interceptor to chain
+     * Since MybatisPlusInterceptor does not support adding interceptors, it can only be set in full
+ *
+     * @param interceptor chain
+     * @param inner Interceptor
+     * @param index Location
+ */
+ public static void addInterceptor(MybatisPlusInterceptor interceptor, InnerInterceptor inner, int index) {
+ List<InnerInterceptor> inners = new ArrayList<>(interceptor.getInterceptors());
+ inners.add(index, inner);
+ interceptor.setInterceptors(inners);
+ }
 
-    /**
-     * 获得 Table 对应的表名
-     * <p>
-     * 兼容 MySQL 转义表名 `t_xxx`
-     *
-     * @param table 表
-     * @return 去除转移字符后的表名
-     */
-    public static String getTableName(Table table) {
-        String tableName = table.getName();
-        if (tableName.startsWith(MYSQL_ESCAPE_CHARACTER) && tableName.endsWith(MYSQL_ESCAPE_CHARACTER)) {
-            tableName = tableName.substring(1, tableName.length() - 1);
-        }
-        return tableName;
-    }
+ /**
+     * Get the table name corresponding to Table
+ * <p>
+     * Compatible with MySQL escaped table name `t_xxx`
+ *
+     * @param table surface
+     * @return Table name after removing transfer characters
+ */
+ public static String getTableName(Table table) {
+ String tableName = table.getName();
+ if (tableName.startsWith(MYSQL_ESCAPE_CHARACTER) && tableName.endsWith(MYSQL_ESCAPE_CHARACTER)) {
+ tableName = tableName.substring(1, tableName.length() - 1);
+ }
+ return tableName;
+ }
 
-    /**
-     * 构建 Column 对象
-     *
-     * @param tableName  表名
-     * @param tableAlias 别名
-     * @param column     字段名
-     * @return Column 对象
-     */
-    public static Column buildColumn(String tableName, Alias tableAlias, String column) {
-        if (tableAlias != null) {
-            tableName = tableAlias.getName();
-        }
-        return new Column(tableName + StringPool.DOT + column);
-    }
+ /**
+     * Construct Column object
+ *
+     * @param tableName table name
+     * @param tableAlias Alias
+     * @param column Field name
+     * @return Column object
+ */
+ public static Column buildColumn(String tableName, Alias tableAlias, String column) {
+ if (tableAlias != null) {
+ tableName = tableAlias.getName();
+ }
+ return new Column(tableName + StringPool.DOT + column);
+ }
 
-    /**
-     * 跨数据库的 find_in_set 实现
-     *
-     * @param column 字段名称
-     * @param value  查询值(不带单引号)
-     * @return sql
-     */
-    public static String findInSet(String column, Object value) {
-        DbType dbType = JdbcUtils.getDbType();
-        return DbTypeEnum.getFindInSetTemplate(dbType)
-                .replace("#{column}", column)
-                .replace("#{value}", StrUtil.toString(value));
-    }
+ /**
+     * Cross-database find_in_set implementation
+ *
+     * @param column Field name
+     * @param value Query value (without single quotes)
+ * @return sql
+ */
+ public static String findInSet(String column, Object value) {
+ DbType dbType = JdbcUtils.getDbType();
+ return DbTypeEnum.getFindInSetTemplate(dbType)
+.replace("#{column}", column)
+.replace("#{value}", StrUtil.toString(value));
+ }
 
-    /**
-     * 将驼峰命名转换为下划线命名
-     *
-     * 使用场景：
-     * 1. <a href="https://gitee.com/zhijiantianya/ruoyi-vue-pro/pulls/1357/files">fix:修复"商品统计聚合函数的别名与排序字段不符"导致的 SQL 异常</a>
-     *
-     * @param func 字段名函数(驼峰命名)
-     * @return 字段名(下划线命名)
-     */
-    public static <T> String toUnderlineCase(Func1<T, ?> func) {
-        String fieldName = LambdaUtil.getFieldName(func);
-        return StrUtil.toUnderlineCase(fieldName);
-    }
+ /**
+     * Convert camelCase naming to underscore naming
+ *
+     * Usage scenarios:
+     * 1. <a href="https://gitee.com/zhijiantianya/ruoyi-vue-pro/pulls/1357/files">fix: Fix the SQL exception caused by "The alias of the product statistics aggregate function does not match the sorting field"</a>
+ *
+     * @param func Field name function (camel case naming)
+     * @return Field name (underlined naming)
+ */
+ public static <T> String toUnderlineCase(Func1<T, ?> func) {
+ String fieldName = LambdaUtil.getFieldName(func);
+ return StrUtil.toUnderlineCase(fieldName);
+ }
 
 }

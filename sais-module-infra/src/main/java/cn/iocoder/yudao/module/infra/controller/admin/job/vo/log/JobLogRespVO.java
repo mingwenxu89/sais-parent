@@ -10,54 +10,54 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-@Schema(description = "管理后台 - 定时任务日志 Response VO")
+@Schema(description = "Management background - scheduled task log Response VO")
 @Data
 @ExcelIgnoreUnannotated
 public class JobLogRespVO {
 
-    @Schema(description = "日志编号", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
-    @ExcelProperty("日志编号")
+    @Schema(description = "Log ID", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
+    @ExcelProperty("Log ID")
     private Long id;
 
-    @Schema(description = "任务编号", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
-    @ExcelProperty("任务编号")
+    @Schema(description = "Task ID", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
+    @ExcelProperty("Task ID")
     private Long jobId;
 
-    @Schema(description = "处理器的名字", requiredMode = Schema.RequiredMode.REQUIRED, example = "sysUserSessionTimeoutJob")
-    @ExcelProperty("处理器的名字")
+    @Schema(description = "processor name", requiredMode = Schema.RequiredMode.REQUIRED, example = "sysUserSessionTimeoutJob")
+    @ExcelProperty("processor name")
     private String handlerName;
 
-    @Schema(description = "处理器的参数", example = "yudao")
-    @ExcelProperty("处理器的参数")
+    @Schema(description = "Processor parameters", example = "yudao")
+    @ExcelProperty("Processor parameters")
     private String handlerParam;
 
-    @Schema(description = "第几次执行", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
-    @ExcelProperty("第几次执行")
+    @Schema(description = "How many times to execute", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
+    @ExcelProperty("How many times to execute")
     private Integer executeIndex;
 
-    @Schema(description = "开始执行时间", requiredMode = Schema.RequiredMode.REQUIRED)
-    @ExcelProperty("开始执行时间")
+    @Schema(description = "Start execution time", requiredMode = Schema.RequiredMode.REQUIRED)
+    @ExcelProperty("Start execution time")
     private LocalDateTime beginTime;
 
-    @Schema(description = "结束执行时间")
-    @ExcelProperty("结束执行时间")
+    @Schema(description = "end execution time")
+    @ExcelProperty("end execution time")
     private LocalDateTime endTime;
 
-    @Schema(description = "执行时长", example = "123")
-    @ExcelProperty("执行时长")
+    @Schema(description = "Execution time", example = "123")
+    @ExcelProperty("Execution time")
     private Integer duration;
 
-    @Schema(description = "任务状态，参见 JobLogStatusEnum 枚举", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
-    @ExcelProperty(value = "任务状态", converter = DictConvert.class)
+    @Schema(description = "Task status, see JobLogStatusEnum enumeration", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
+    @ExcelProperty(value = "Task status", converter = DictConvert.class)
     @DictFormat(DictTypeConstants.JOB_LOG_STATUS)
     private Integer status;
 
-    @Schema(description = "结果数据", example = "执行成功")
-    @ExcelProperty("结果数据")
+    @Schema(description = "Result data", example = "Executed successfully")
+    @ExcelProperty("Result data")
     private String result;
 
-    @Schema(description = "创建时间", requiredMode = Schema.RequiredMode.REQUIRED)
-    @ExcelProperty("创建时间")
+    @Schema(description = "Create Time", requiredMode = Schema.RequiredMode.REQUIRED)
+    @ExcelProperty("Create Time")
     private LocalDateTime createTime;
 
 }

@@ -8,52 +8,52 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 /**
- * Ftp 文件客户端的配置类
+ * Configuration class for FTP file client
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Data
 public class FtpFileClientConfig implements FileClientConfig {
 
     /**
-     * 基础路径
+     * base path
      */
-    @NotEmpty(message = "基础路径不能为空")
+    @NotEmpty(message = "The base path cannot be empty")
     private String basePath;
 
     /**
-     * 自定义域名
+     * Custom domain name
      */
-    @NotEmpty(message = "domain 不能为空")
-    @URL(message = "domain 必须是 URL 格式")
+    @NotEmpty(message = "domain cannot be empty")
+    @URL(message = "domain must be in URL format")
     private String domain;
 
     /**
-     * 主机地址
+     * host address
      */
-    @NotEmpty(message = "host 不能为空")
+    @NotEmpty(message = "host cannot be empty")
     private String host;
     /**
-     * 主机端口
+     * host port
      */
-    @NotNull(message = "port 不能为空")
+    @NotNull(message = "port cannot be empty")
     private Integer port;
     /**
-     * 用户名
+     * Username
      */
-    @NotEmpty(message = "用户名不能为空")
+    @NotEmpty(message = "Username cannot be empty")
     private String username;
     /**
-     * 密码
+     * Password
      */
-    @NotEmpty(message = "密码不能为空")
+    @NotEmpty(message = "Password cannot be empty")
     private String password;
     /**
-     * 连接模式
+     * connection mode
      *
-     * 使用 {@link  cn.hutool.extra.ftp.FtpMode} 对应的字符串
+     * Use the string corresponding to {@link cn.hutool.extra.FTP.FtpMode}
      */
-    @NotEmpty(message = "连接模式不能为空")
+    @NotEmpty(message = "Connection mode cannot be empty")
     private String mode;
 
 }

@@ -11,32 +11,32 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
 
 /**
- * WebSocket 示例：单发消息
+ * WebSocket example: single message
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Component
 public class DemoWebSocketMessageListener implements WebSocketMessageListener<DemoSendMessage> {
 
     @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
-    @Autowired(required = false) // 由于 yudao.websocket.enable 配置项，可以关闭 WebSocket 的功能，所以这里只能不强制注入
+    @Autowired(required = false) // Since the yudao.WebSocket.enable configuration item can turn off the WebSocket function, we can only force the injection here.
     private WebSocketMessageSender webSocketMessageSender;
 
     @Override
     public void onMessage(WebSocketSession session, DemoSendMessage message) {
         Long fromUserId = WebSocketFrameworkUtils.getLoginUserId(session);
-        // 情况一：单发
+        // Situation 1: Single shot
         if (message.getToUserId() != null) {
             DemoReceiveMessage toMessage = new DemoReceiveMessage().setFromUserId(fromUserId)
                     .setText(message.getText()).setSingle(true);
-            webSocketMessageSender.sendObject(UserTypeEnum.ADMIN.getValue(), message.getToUserId(), // 给指定用户
+            webSocketMessageSender.sendObject(UserTypeEnum.ADMIN.getValue(), message.getToUserId(), // to specified user
                     "demo-message-receive", toMessage);
             return;
         }
-        // 情况二：群发
+        // Situation 2: Mass sending
         DemoReceiveMessage toMessage = new DemoReceiveMessage().setFromUserId(fromUserId)
                 .setText(message.getText()).setSingle(false);
-        webSocketMessageSender.sendObject(UserTypeEnum.ADMIN.getValue(), // 给所有用户
+        webSocketMessageSender.sendObject(UserTypeEnum.ADMIN.getValue(), // to all users
                 "demo-message-receive", toMessage);
     }
 

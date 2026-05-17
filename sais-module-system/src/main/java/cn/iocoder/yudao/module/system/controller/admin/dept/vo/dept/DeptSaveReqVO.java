@@ -10,40 +10,40 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-@Schema(description = "管理后台 - 部门创建/修改 Request VO")
+@Schema(description = "Management backend - department creation/modification Request VO")
 @Data
 public class DeptSaveReqVO {
 
-    @Schema(description = "部门编号", example = "1024")
+    @Schema(description = "Department ID", example = "1024")
     private Long id;
 
-    @Schema(description = "部门名称", requiredMode = Schema.RequiredMode.REQUIRED, example = "芋道")
-    @NotBlank(message = "部门名称不能为空")
-    @Size(max = 30, message = "部门名称长度不能超过 30 个字符")
+    @Schema(description = "Department name", requiredMode = Schema.RequiredMode.REQUIRED, example = "taro road")
+    @NotBlank(message = "Department name cannot be empty")
+    @Size(max = 30, message = "Department name cannot exceed 30 characters in length")
     private String name;
 
-    @Schema(description = "父部门 ID", example = "1024")
+    @Schema(description = "Parent department ID", example = "1024")
     private Long parentId;
 
-    @Schema(description = "显示顺序", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
-    @NotNull(message = "显示顺序不能为空")
+    @Schema(description = "Display order", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
+    @NotNull(message = "Display order cannot be empty")
     private Integer sort;
 
-    @Schema(description = "负责人的用户编号", example = "2048")
+    @Schema(description = "User ID of the person in charge", example = "2048")
     private Long leaderUserId;
 
-    @Schema(description = "联系电话", example = "15601691000")
-    @Size(max = 11, message = "联系电话长度不能超过11个字符")
+    @Schema(description = "Contact ID", example = "15601691000")
+    @Size(max = 11, message = "Contact ID cannot exceed 11 characters in length")
     private String phone;
 
-    @Schema(description = "邮箱", example = "yudao@iocoder.cn")
-    @Email(message = "邮箱格式不正确")
-    @Size(max = 50, message = "邮箱长度不能超过 50 个字符")
+    @Schema(description = "Email", example = "yudao@iocoder.cn")
+    @Email(message = "Email format is incorrect")
+    @Size(max = 50, message = "Email length cannot exceed 50 characters")
     private String email;
 
-    @Schema(description = "状态,见 CommonStatusEnum 枚举", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
-    @NotNull(message = "状态不能为空")
-    @InEnum(value = CommonStatusEnum.class, message = "修改状态必须是 {value}")
+    @Schema(description = "Status, see CommonStatusEnum enumeration", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
+    @NotNull(message = "Status cannot be empty")
+    @InEnum(value = CommonStatusEnum.class, message = "Modification status must be {value}")
     private Integer status;
 
 }

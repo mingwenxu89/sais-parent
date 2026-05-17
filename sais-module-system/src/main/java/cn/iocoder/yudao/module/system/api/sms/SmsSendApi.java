@@ -5,29 +5,29 @@ import cn.iocoder.yudao.module.system.api.sms.dto.send.SmsSendSingleToUserReqDTO
 import jakarta.validation.Valid;
 
 /**
- * 短信发送 API 接口
+ * SMS sending API API
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface SmsSendApi {
 
     /**
-     * 发送单条短信给 Admin 用户
+     * Send a single text message to Admin user
      *
-     * 在 mobile 为空时，使用 userId 加载对应 Admin 的手机号
+     * When mobile is empty, use userId to load the mobile phone ID corresponding to Admin.
      *
-     * @param reqDTO 发送请求
-     * @return 发送日志编号
+     * @param reqDTO Send request
+     * @return Send log ID
      */
     Long sendSingleSmsToAdmin(@Valid SmsSendSingleToUserReqDTO reqDTO);
 
     /**
-     * 发送单条短信给 Member 用户
+     * Send a single text message to Member users
      *
-     * 在 mobile 为空时，使用 userId 加载对应 Member 的手机号
+     * When mobile is empty, use userId to load the mobile phone ID corresponding to the Member.
      *
-     * @param reqDTO 发送请求
-     * @return 发送日志编号
+     * @param reqDTO Send request
+     * @return Send log ID
      */
     Long sendSingleSmsToMember(@Valid SmsSendSingleToUserReqDTO reqDTO);
 

@@ -1,16 +1,16 @@
 package cn.iocoder.yudao.framework.xss.core.clean;
 
 /**
- * 对 html 文本中的有 Xss 风险的数据进行清理
+ * Clean data with Xss risk in html text
  */
 public interface XssCleaner {
 
-    /**
-     * 清理有 Xss 风险的文本
-     *
-     * @param html 原 html
-     * @return 清理后的 html
-     */
-    String clean(String html);
+ /**
+     * Clean text at risk of Xss
+ *
+     * @param html original html
+     * @return Cleaned html
+ */
+ String clean(String html);
 
 }

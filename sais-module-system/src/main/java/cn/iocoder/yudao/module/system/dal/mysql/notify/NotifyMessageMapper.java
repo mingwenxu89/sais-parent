@@ -53,7 +53,7 @@ public interface NotifyMessageMapper extends BaseMapperX<NotifyMessageDO> {
     }
 
     default List<NotifyMessageDO> selectUnreadListByUserIdAndUserType(Long userId, Integer userType, Integer size) {
-        return selectList(new QueryWrapperX<NotifyMessageDO>() // 由于要使用 limitN 语句，所以只能用 QueryWrapperX
+        return selectList(new QueryWrapperX<NotifyMessageDO>() // Since you need to use the limitN statement, you can only use QueryWrapperX
                 .eq("user_id", userId)
                 .eq("user_type", userType)
                 .eq("read_status", false)

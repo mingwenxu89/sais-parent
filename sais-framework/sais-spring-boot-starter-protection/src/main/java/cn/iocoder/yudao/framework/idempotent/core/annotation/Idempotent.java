@@ -12,52 +12,52 @@ import java.lang.annotation.Target;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 幂等注解
+ * Idempotent annotation
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Idempotent {
 
-    /**
-     * 幂等的超时时间，默认为 1 秒
-     *
-     * 注意，如果执行时间超过它，请求还是会进来
-     */
-    int timeout() default 1;
-    /**
-     * 时间单位，默认为 SECONDS 秒
-     */
-    TimeUnit timeUnit() default TimeUnit.SECONDS;
+ /**
+     * Idempotent timeout, default is 1 second
+ *
+     * Note that if the execution time exceeds this, the request will still come in
+ */
+ int timeout() default 1;
+ /**
+     * Time unit, default is SECONDS seconds
+ */
+ TimeUnit timeUnit() default TimeUnit.SECONDS;
 
-    /**
-     * 提示信息，正在执行中的提示
-     */
-    String message() default "重复请求，请稍后重试";
+ /**
+     * Prompt information, prompts during execution
+ */
+    String message() default "Repeat request, please try again later";
 
-    /**
-     * 使用的 Key 解析器
-     *
-     * @see DefaultIdempotentKeyResolver 全局级别
-     * @see UserIdempotentKeyResolver 用户级别
-     * @see ExpressionIdempotentKeyResolver 自定义表达式，通过 {@link #keyArg()} 计算
-     */
-    Class<? extends IdempotentKeyResolver> keyResolver() default DefaultIdempotentKeyResolver.class;
-    /**
-     * 使用的 Key 参数
-     */
-    String keyArg() default "";
+ /**
+     * Key parser used
+ *
+     * @see DefaultIdempotentKeyResolver global level
+     * @see UserIdempotentKeyResolver user level
+     * @see ExpressionIdempotentKeyResolver Custom expression, calculated through {@link #keyArg()}
+ */
+ Class<? extends IdempotentKeyResolver> keyResolver() default DefaultIdempotentKeyResolver.class;
+ /**
+     * Key parameter used
+ */
+ String keyArg() default "";
 
-    /**
-     * 删除 Key，当发生异常时候
-     *
-     * 问题：为什么发生异常时，需要删除 Key 呢？
-     * 回答：发生异常时，说明业务发生错误，此时需要删除 Key，避免下次请求无法正常执行。
-     *
-     * 问题：为什么不搞 deleteWhenSuccess 执行成功时，需要删除 Key 呢？
-     * 回答：这种情况下，本质上是分布式锁，推荐使用 @Lock4j 注解
-     */
-    boolean deleteKeyWhenException() default true;
+ /**
+     * Delete Key when an exception occurs
+ *
+     * Question: Why do we need to delete the Key when an exception occurs?
+     * Answer: When an exception occurs, it means that an error has occurred in the business. At this time, the Key needs to be deleted to prevent the next request from being executed normally.
+ *
+     * Question: Why don't you delete the Key when deleteWhenSuccess is executed successfully?
+     * Answer: In this case, it is essentially a distributed lock, and it is recommended to use the @Lock4j annotation
+ */
+ boolean deleteKeyWhenException() default true;
 
 }

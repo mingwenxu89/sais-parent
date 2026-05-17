@@ -4,18 +4,18 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 短信的接收状态枚举
+ * SMS receiving status enumeration
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  * @date 2021/2/1 13:39
  */
 @Getter
 @AllArgsConstructor
 public enum SmsReceiveStatusEnum {
 
-    INIT(0), // 初始化
-    SUCCESS(10), // 接收成功
-    FAILURE(20), // 接收失败
+    INIT(0), // initialization
+    SUCCESS(10), // Received successfully
+    FAILURE(20), // Reception failed
     ;
 
     private final int status;

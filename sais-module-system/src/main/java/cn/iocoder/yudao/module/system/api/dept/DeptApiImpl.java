@@ -11,9 +11,9 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * 部门 API 实现类
+ * Department API implementation class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Service
 public class DeptApiImpl implements DeptApi {

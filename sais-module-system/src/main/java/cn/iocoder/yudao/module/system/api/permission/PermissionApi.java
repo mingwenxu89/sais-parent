@@ -6,17 +6,17 @@ import java.util.Collection;
 import java.util.Set;
 
 /**
- * 权限 API 接口
+ * Permission API API
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface PermissionApi extends PermissionCommonApi {
 
     /**
-     * 获得拥有多个角色的用户编号集合
+     * Get a collection of user IDs with multiple roles
      *
-     * @param roleIds 角色编号集合
-     * @return 用户编号集合
+     * @param roleIds role ID collection
+     * @return User ID set
      */
     Set<Long> getUserRoleIdListByRoleIds(Collection<Long> roleIds);
 

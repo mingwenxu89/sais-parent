@@ -1,10 +1,10 @@
-#set ($subTable = $subTables.get($subIndex))##当前表
-#set ($subColumns = $subColumnsList.get($subIndex))##当前字段数组
-#set ($subJoinColumn = $subJoinColumns.get($subIndex))##当前 join 字段
+#set ($subTable = $subTables.get($subIndex))##current table
+#set ($subColumns = $subColumnsList.get($subIndex))##Current field array
+#set ($subJoinColumn = $subJoinColumns.get($subIndex))##Current join field
 #set ($subSimpleClassName = $subSimpleClassNames.get($subIndex))
-#set ($subJoinColumn = $subJoinColumns.get($subIndex))##当前 join 字段
+#set ($subJoinColumn = $subJoinColumns.get($subIndex))##Current join field
 #set ($subSimpleClassName_strikeCase = $subSimpleClassName_strikeCases.get($subIndex))
-#set ($SubJoinColumnName = $subJoinColumn.javaField.substring(0,1).toUpperCase() + ${subJoinColumn.javaField.substring(1)})##首字母大写
+#set ($SubJoinColumnName = $subJoinColumn.javaField.substring(0,1).toUpperCase() + ${subJoinColumn.javaField.substring(1)})##Capitalize first letter
 <script lang="ts" setup>
 import type { ${simpleClassName}Api } from '#/api/${table.moduleName}/${table.businessName}';
 import type { VxeTableInstance } from '#/adapter/vxe-table';
@@ -34,7 +34,7 @@ import { $t } from '#/locales';
 import { delete${subSimpleClassName},#if ($deleteBatchEnable) delete${subSimpleClassName}List,#end get${subSimpleClassName}Page } from '#/api/${table.moduleName}/${table.businessName}';
 import { isEmpty, cloneDeep } from '@vben/utils';
 #else
-#if ($subTable.subJoinMany) ## 一对多
+#if ($subTable.subJoinMany) ## one to many
 import { get${subSimpleClassName}ListBy${SubJoinColumnName} } from '#/api/${table.moduleName}/${table.businessName}';
 #else
 import { get${subSimpleClassName}By${SubJoinColumnName} } from '#/api/${table.moduleName}/${table.businessName}';
@@ -42,7 +42,7 @@ import { get${subSimpleClassName}By${SubJoinColumnName} } from '#/api/${table.mo
 #end
 
 const props = defineProps<{
-  ${subJoinColumn.javaField}?: number // ${subJoinColumn.columnComment}（主表的关联字段）
+  ${subJoinColumn.javaField}?: number // ${subJoinColumn.columnComment}（Related fields of the main table)
 }>()
 
 #if ($table.templateType == 11) ## erp
@@ -51,21 +51,21 @@ const [FormModal, formModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
-/** 创建${subTable.classComment} */
+/** Create ${subTable.classComment} */
 function handleCreate() {
   if (!props.${subJoinColumn.javaField}){
-    message.warning("请先选择一个${table.classComment}!")
+    message.warning("Please select a ${table.classComment} first!")
     return
   }
   formModalApi.setData({${subJoinColumn.javaField}: props.${subJoinColumn.javaField}}).open();
 }
 
-/** 编辑${subTable.classComment} */
+/** Edit${subTable.classComment} */
 function handleEdit(row: ${simpleClassName}Api.${subSimpleClassName}) {
   formModalApi.setData(row).open();
 }
 
-/** 删除${subTable.classComment} */
+/** Delete ${subTable.classComment} */
 async function handleDelete(row: ${simpleClassName}Api.${subSimpleClassName}) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.id]),
@@ -81,7 +81,7 @@ async function handleDelete(row: ${simpleClassName}Api.${subSimpleClassName}) {
 }
 
 #if ($deleteBatchEnable)
-/** 批量删除${subTable.classComment} */
+/** Batch delete ${subTable.classComment} */
 async function handleDeleteBatch() {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting'),
@@ -108,13 +108,13 @@ function handleRowCheckboxChange({
 #end
 #end
 
-const loading = ref(true) // 列表的加载中
-const list = ref<${simpleClassName}Api.${subSimpleClassName}[]>([]) // 列表的数据
+const loading = ref(true) // List is loading
+const list = ref<${simpleClassName}Api.${subSimpleClassName}[]>([]) // list data
 #if ($table.templateType == 11) ## erp
-const total = ref(0) // 列表的总页数
+const total = ref(0) // Total ID of pages in the list
 #end
 #if ($table.templateType == 11) ## erp
-const queryFormRef = ref() // 搜索的表单
+const queryFormRef = ref() // search form
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
@@ -130,26 +130,26 @@ const queryParams = reactive({
   #end
 })
 
-/** 搜索按钮操作 */
+/** Search button action */
 function handleQuery() {
   queryParams.pageNo = 1
   getList()
 }
 
-/** 重置按钮操作 */
+/** reset button action */
 function resetQuery() {
   queryFormRef.value.resetFields()
   handleQuery()
 }
 #end
-  /** 查询列表 */
+  /** query list */
 async function getList() {
   loading.value = true
   try {
     if (!props.${subJoinColumn.javaField}){
       return []
     }
-      ## 特殊：树表专属逻辑（树不需要分页接口）
+      ## Special: Exclusive logic for tree tables (trees DO not require paging API)
       #if ($table.templateType == 11) ## erp
         const params = cloneDeep(queryParams) as any;
           #foreach ($column in $columns)
@@ -166,7 +166,7 @@ async function getList() {
         list.value = data.list
         total.value = data.total
       #else
-          #if ($subTable.subJoinMany) ## 一对多
+          #if ($subTable.subJoinMany) ## one to many
            list.value = await get${subSimpleClassName}ListBy${SubJoinColumnName}(props.${subJoinColumn.javaField}!);
           #else
            list.value = [await get${subSimpleClassName}By${SubJoinColumnName}(props.${subJoinColumn.javaField}!)];
@@ -177,7 +177,7 @@ async function getList() {
   }
 }
 
-/** 监听主表的关联字段的变化，加载对应的子表数据 */
+/** Monitor changes in the associated fields of the main table and load the corresponding sub-table data */
 watch(
   () => props.${subJoinColumn.javaField},
   async (val) => {
@@ -191,7 +191,7 @@ watch(
 );
 
 #if ($table.templateType == 11) ## erp
-/** 初始化 */
+/** initialization */
 const { hiddenSearchBar, tableToolbarRef, tableRef } = useTableToolbar();
 onMounted(() => {
   getList();
@@ -204,7 +204,7 @@ onMounted(() => {
       <FormModal @success="getList" />
       <div class="h-[600px]">
         <Card v-if="!hiddenSearchBar" class="mb-4">
-          <!-- 搜索工作栏 -->
+          <!-- Search workbar -->
           <Form
               :model="queryParams"
               ref="queryFormRef"
@@ -227,7 +227,7 @@ onMounted(() => {
                         <Form.Item label="${comment}" name="${javaField}">
                           <Input
                               v-model:value="queryParams.${javaField}"
-                              placeholder="请输入${comment}"
+                              placeholder="Please enter ${comment}"
                               allowClear
                               @pressEnter="handleQuery"
                               class="w-full"
@@ -237,11 +237,11 @@ onMounted(() => {
                         <Form.Item label="${comment}" name="${javaField}">
                           <Select
                               v-model:value="queryParams.${javaField}"
-                              placeholder="请选择${comment}"
+                              placeholder="Please select ${comment}"
                               allowClear
                               class="w-full"
                           >
-                              #if ("" != $dictType)## 设置了 dictType 数据字典的情况
+                              #if ("" != $dictType)## When the dictType data dict is set
                                 <Select.Option
                                     v-for="dict in getDictOptions(DICT_TYPE.$dictType.toUpperCase(), '$dictMethod')"
                                     :key="dict.value"
@@ -249,23 +249,23 @@ onMounted(() => {
                                 >
                                   {{ dict.label }}
                                 </Select.Option>
-                              #else## 未设置 dictType 数据字典的情况
-                                <Select.Option label="请选择字典生成" value="" />
+                              #else## When the dictType data dict is not set
+                                <Select.Option label="Please select dict generation" value="" />
                               #end
                           </Select>
                         </Form.Item>
                       #elseif($column.htmlType == "datetime")
-                          #if ($column.listOperationCondition != "BETWEEN")## 非范围
+                          #if ($column.listOperationCondition != "BETWEEN")## out of scope
                             <Form.Item label="${comment}" name="${javaField}">
                               <DatePicker
                                   v-model:value="queryParams.${javaField}"
                                   valueFormat="YYYY-MM-DD"
-                                  placeholder="选择${comment}"
+                                  placeholder="Select ${comment}"
                                   allowClear
                                   class="w-full"
                               />
                             </Form.Item>
-                          #else## 范围
+                          #else## scope
                             <Form.Item label="${comment}" name="${javaField}">
                               <RangePicker
                                   v-model:value="queryParams.${javaField}"
@@ -278,15 +278,15 @@ onMounted(() => {
                   #end
               #end
             <Form.Item>
-              <Button class="ml-2" @click="resetQuery"> 重置 </Button>
+              <Button class="ml-2" @click="resetQuery"> reset </Button>
               <Button class="ml-2" @click="handleQuery" type="primary">
-                搜索
+                Search
               </Button>
             </Form.Item>
           </Form>
         </Card>
 
-        <!-- 列表 -->
+        <!-- List -->
         <Card title="${table.classComment}">
           <template #extra>
             <VbenVxeTableToolbar
@@ -312,7 +312,7 @@ onMounted(() => {
                       @click="handleDeleteBatch"
                       v-access:code="['${table.moduleName}:${simpleClassName_strikeCase}:delete']"
                   >
-                    批量删除
+                    Batch delete
                   </Button>
                 #end
             </VbenVxeTableToolbar>
@@ -335,13 +335,13 @@ onMounted(() => {
                       #set ($dictType=$column.dictType)
                       #set ($javaField = $column.javaField)
                       #set ($comment=$column.columnComment)
-                      #if ($column.javaType == "LocalDateTime")## 时间类型
+                      #if ($column.javaType == "LocalDateTime")## time type
                         <VxeColumn field="${javaField}" title="${comment}" align="center">
                           <template #default="{row}">
                             {{formatDateTime(row.${javaField})}}
                           </template>
                         </VxeColumn>
-                      #elseif($column.dictType && "" != $column.dictType)## 数据字典
+                      #elseif($column.dictType && "" != $column.dictType)## data dict
                         <VxeColumn field="${javaField}" title="${comment}" align="center">
                           <template #default="{row}">
                             <dict-tag :type="DICT_TYPE.$dictType.toUpperCase()" :value="row.${javaField}" />
@@ -354,7 +354,7 @@ onMounted(() => {
                       #end
                   #end
               #end
-            <VxeColumn field="operation" title="操作" align="center">
+            <VxeColumn field="operation" title="Operation" align="center">
               <template #default="{row}">
                 <Button
                     size="small"
@@ -377,7 +377,7 @@ onMounted(() => {
               </template>
             </VxeColumn>
           </VxeTable>
-          <!-- 分页 -->
+          <!-- Pagination -->
           <div class="mt-2 flex justify-end">
             <Pagination
                 :total="total"
@@ -390,7 +390,7 @@ onMounted(() => {
         </Card>
       </div>
     #else
-    <Card title="${subTable.classComment}列表">
+    <Card title="${subTable.classComment} list">
       <VxeTable
           :data="list"
           show-overflow
@@ -401,13 +401,13 @@ onMounted(() => {
                   #set ($dictType=$column.dictType)
                   #set ($javaField = $column.javaField)
                   #set ($comment=$column.columnComment)
-                  #if ($column.javaType == "LocalDateTime")## 时间类型
+                  #if ($column.javaType == "LocalDateTime")## time type
                     <VxeColumn field="${javaField}" title="${comment}" align="center">
                       <template #default="{row}">
                         {{formatDateTime(row.${javaField})}}
                       </template>
                     </VxeColumn>
-                  #elseif($column.dictType && "" != $column.dictType)## 数据字典
+                  #elseif($column.dictType && "" != $column.dictType)## data dict
                     <VxeColumn field="${javaField}" title="${comment}" align="center">
                       <template #default="{row}">
                         <dict-tag :type="DICT_TYPE.$dictType.toUpperCase()" :value="row.${javaField}" />

@@ -7,30 +7,30 @@ import org.apache.rocketmq.client.hook.SendMessageHook;
 import static cn.iocoder.yudao.framework.web.core.util.WebFrameworkUtils.HEADER_TENANT_ID;
 
 /**
- * RocketMQ 消息队列的多租户 {@link SendMessageHook} 实现类
+ * Multi-tenant {@link SendMessageHook} implementation class of RocketMQ message queue
  *
- * Producer 发送消息时，将 {@link TenantContextHolder} 租户编号，添加到消息的 Header 中
+ * When the Producer sends a message, it adds the {@link TenantContextHolder} tenant ID to the Header of the message.
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public class TenantRocketMQSendMessageHook implements SendMessageHook {
 
-    @Override
-    public String hookName() {
-        return getClass().getSimpleName();
-    }
+ @Override
+ public String hookName() {
+ return getClass().getSimpleName();
+ }
 
-    @Override
-    public void sendMessageBefore(SendMessageContext sendMessageContext) {
-        Long tenantId = TenantContextHolder.getTenantId();
-        if (tenantId == null) {
-            return;
-        }
-        sendMessageContext.getMessage().putUserProperty(HEADER_TENANT_ID, tenantId.toString());
-    }
+ @Override
+ public void sendMessageBefore(SendMessageContext sendMessageContext) {
+ Long tenantId = TenantContextHolder.getTenantId();
+ if (tenantId == null) {
+ return;
+ }
+ sendMessageContext.getMessage().putUserProperty(HEADER_TENANT_ID, tenantId.toString());
+ }
 
-    @Override
-    public void sendMessageAfter(SendMessageContext sendMessageContext) {
-    }
+ @Override
+ public void sendMessageAfter(SendMessageContext sendMessageContext) {
+ }
 
 }

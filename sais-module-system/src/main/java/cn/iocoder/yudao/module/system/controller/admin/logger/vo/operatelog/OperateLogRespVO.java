@@ -14,62 +14,62 @@ import lombok.Data;
 import jakarta.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 
-@Schema(description = "管理后台 - 操作日志 Response VO")
+@Schema(description = "Management background - operation log Response VO")
 @Data
 @ExcelIgnoreUnannotated
 public class OperateLogRespVO implements VO {
 
-    @Schema(description = "日志编号", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
-    @ExcelProperty("日志编号")
+    @Schema(description = "Log ID", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
+    @ExcelProperty("Log ID")
     private Long id;
 
-    @Schema(description = "链路追踪编号", requiredMode = Schema.RequiredMode.REQUIRED, example = "89aca178-a370-411c-ae02-3f0d672be4ab")
+    @Schema(description = "link tracking ID", requiredMode = Schema.RequiredMode.REQUIRED, example = "89aca178-a370-411c-ae02-3f0d672be4ab")
     private String traceId;
 
-    @Schema(description = "用户编号", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
+    @Schema(description = "User ID", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
     @Trans(type = TransType.SIMPLE, target = AdminUserDO.class, fields = "nickname", ref = "userName")
     private Long userId;
-    @Schema(description = "用户昵称", requiredMode = Schema.RequiredMode.REQUIRED, example = "芋艿")
-    @ExcelProperty("操作人")
+    @Schema(description = "User nickname", requiredMode = Schema.RequiredMode.REQUIRED, example = "Yunai")
+    @ExcelProperty("operator")
     private String userName;
 
-    @Schema(description = "用户类型", requiredMode = Schema.RequiredMode.REQUIRED, example = "1", implementation = Integer.class)
-    @ExcelProperty("用户类型")
+    @Schema(description = "User type", requiredMode = Schema.RequiredMode.REQUIRED, example = "1", implementation = Integer.class)
+    @ExcelProperty("User type")
     @DictFormat(DictTypeConstants.USER_TYPE)
     private Integer userType;
 
-    @Schema(description = "操作模块类型", requiredMode = Schema.RequiredMode.REQUIRED, example = "订单")
-    @ExcelProperty("操作模块类型")
+    @Schema(description = "Operation module type", requiredMode = Schema.RequiredMode.REQUIRED, example = "Order")
+    @ExcelProperty("Operation module type")
     private String type;
 
-    @Schema(description = "操作名", requiredMode = Schema.RequiredMode.REQUIRED, example = "创建订单")
-    @ExcelProperty("操作名")
+    @Schema(description = "Operation name", requiredMode = Schema.RequiredMode.REQUIRED, example = "Create order")
+    @ExcelProperty("Operation name")
     private String subType;
 
-    @Schema(description = "操作模块业务编号", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
-    @ExcelProperty("操作模块业务编号")
+    @Schema(description = "Operation module business ID", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
+    @ExcelProperty("Operation module business ID")
     private Long bizId;
 
-    @Schema(description = "操作明细", example = "修改编号为 1 的用户信息，将性别从男改成女，将姓名从芋道改成源码。")
+    @Schema(description = "Operation details", example = "Modify the user information IDed 1, change the gender from male to female, and change the name from Yudao to Yuandao.")
     private String action;
 
-    @Schema(description = "拓展字段", example = "{'orderId': 1}")
+    @Schema(description = "Extend fields", example = "{'orderId': 1}")
     private String extra;
 
-    @Schema(description = "请求方法名", requiredMode = Schema.RequiredMode.REQUIRED, example = "GET")
-    @NotEmpty(message = "请求方法名不能为空")
+    @Schema(description = "Request method name", requiredMode = Schema.RequiredMode.REQUIRED, example = "GET")
+    @NotEmpty(message = "The request method name cannot be empty")
     private String requestMethod;
 
-    @Schema(description = "请求地址", requiredMode = Schema.RequiredMode.REQUIRED, example = "/xxx/yyy")
+    @Schema(description = "Request address", requiredMode = Schema.RequiredMode.REQUIRED, example = "/xxx/yyy")
     private String requestUrl;
 
-    @Schema(description = "用户 IP", requiredMode = Schema.RequiredMode.REQUIRED, example = "127.0.0.1")
+    @Schema(description = "User IP", requiredMode = Schema.RequiredMode.REQUIRED, example = "127.0.0.1")
     private String userIp;
 
-    @Schema(description = "浏览器 UserAgent", requiredMode = Schema.RequiredMode.REQUIRED, example = "Mozilla/5.0")
+    @Schema(description = "Browser UserAgent", requiredMode = Schema.RequiredMode.REQUIRED, example = "Mozilla/5.0")
     private String userAgent;
 
-    @Schema(description = "创建时间", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "Create Time", requiredMode = Schema.RequiredMode.REQUIRED)
     private LocalDateTime createTime;
 
 }

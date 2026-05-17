@@ -10,7 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 用户 Excel 导入 VO
+ * User Excel import VO
  */
 @Data
 @Builder
@@ -18,26 +18,26 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserImportExcelVO {
 
-    @ExcelProperty("登录名称")
+    @ExcelProperty("Login name")
     private String username;
 
-    @ExcelProperty("用户名称")
+    @ExcelProperty("Username")
     private String nickname;
 
-    @ExcelProperty("部门编号")
+    @ExcelProperty("Department ID")
     private Long deptId;
 
-    @ExcelProperty("用户邮箱")
+    @ExcelProperty("User email")
     private String email;
 
-    @ExcelProperty("手机号码")
+    @ExcelProperty("Mobile phone ID")
     private String mobile;
 
-    @ExcelProperty(value = "用户性别", converter = DictConvert.class)
+    @ExcelProperty(value = "User gender", converter = DictConvert.class)
     @DictFormat(DictTypeConstants.USER_SEX)
     private Integer sex;
 
-    @ExcelProperty(value = "账号状态", converter = DictConvert.class)
+    @ExcelProperty(value = "Account status", converter = DictConvert.class)
     @DictFormat(DictTypeConstants.COMMON_STATUS)
     private Integer status;
 

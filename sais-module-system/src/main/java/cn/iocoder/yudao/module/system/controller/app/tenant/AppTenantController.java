@@ -20,7 +20,7 @@ import jakarta.annotation.security.PermitAll;
 
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 
-@Tag(name = "用户 App - 租户")
+@Tag(name = "User App - Tenant")
 @RestController
 @RequestMapping("/system/tenant")
 public class AppTenantController {
@@ -31,8 +31,8 @@ public class AppTenantController {
     @GetMapping("/get-by-website")
     @PermitAll
     @TenantIgnore
-    @Operation(summary = "使用域名，获得租户信息", description = "根据用户的域名，获得租户信息")
-    @Parameter(name = "website", description = "域名", required = true, example = "www.iocoder.cn")
+    @Operation(summary = "Use domain name to obtain tenant information", description = "Obtain tenant information based on the user's domain name")
+    @Parameter(name = "website", description = "domain name", required = true, example = "www.iocoder.cn")
     public CommonResult<AppTenantRespVO> getTenantByWebsite(@RequestParam("website") String website) {
         TenantDO tenant = tenantService.getTenantByWebsite(website);
         if (tenant == null || CommonStatusEnum.isDisable(tenant.getStatus())) {

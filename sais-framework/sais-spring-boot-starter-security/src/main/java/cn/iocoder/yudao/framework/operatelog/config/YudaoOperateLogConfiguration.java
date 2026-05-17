@@ -9,19 +9,19 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 
 /**
- * 操作日志配置类
+ * Operation log configuration class
  *
  * @author HUIHUI
  */
-@EnableLogRecord(tenant = "") // 貌似用不上 tenant 这玩意给个空好啦
+@EnableLogRecord(tenant = "") // It seems that there is no need for tenant. Please leave this thing empty.
 @AutoConfiguration
 @Slf4j
 public class YudaoOperateLogConfiguration {
 
-    @Bean
-    @Primary
-    public ILogRecordService iLogRecordServiceImpl() {
-        return new LogRecordServiceImpl();
-    }
+ @Bean
+ @Primary
+ public ILogRecordService iLogRecordServiceImpl() {
+ return new LogRecordServiceImpl();
+ }
 
 }

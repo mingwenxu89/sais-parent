@@ -11,7 +11,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 邮箱脱敏注解
+ * Email desensitization notes
  *
  * @author gaibu
  */
@@ -22,23 +22,23 @@ import java.lang.annotation.Target;
 @DesensitizeBy(handler = EmailDesensitizationHandler.class)
 public @interface EmailDesensitize {
 
-    /**
-     * 匹配的正则表达式
-     */
-    String regex() default "(^.)[^@]*(@.*$)";
+ /**
+     * Matching regular expression
+ */
+ String regex() default "(^.)[^@]*(@.*$)";
 
-    /**
-     * 替换规则，邮箱;
-     *
-     * 比如：example@gmail.com 脱敏之后为 e****@gmail.com
-     */
-    String replacer() default "$1****$2";
+ /**
+     * Replacement rules, mailbox;
+ *
+     * For example: example@gmail.com becomes e****@gmail.com after desensitization
+ */
+ String replacer() default "$1****$2";
 
-    /**
-     * 是否禁用脱敏
-     *
-     * 支持 Spring EL 表达式，如果返回 true 则跳过脱敏
-     */
-    String disable() default "";
+ /**
+     * Whether to disable desensitization
+ *
+     * Support Spring EL expressions, skip desensitization if true is returned
+ */
+ String disable() default "";
 
 }

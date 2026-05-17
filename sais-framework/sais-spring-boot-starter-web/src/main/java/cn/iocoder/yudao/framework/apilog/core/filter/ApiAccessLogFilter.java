@@ -22,14 +22,14 @@ import cn.iocoder.yudao.framework.web.core.util.WebFrameworkUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.method.HandlerMethod;
-
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.method.HandlerMethod;
+
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -40,11 +40,11 @@ import static cn.iocoder.yudao.framework.apilog.core.interceptor.ApiAccessLogInt
 import static cn.iocoder.yudao.framework.common.util.json.JsonUtils.toJsonString;
 
 /**
- * API 访问日志 Filter
+ * API access log Filter
  *
- * 目的：记录 API 访问日志到数据库中
+ * Purpose: Record API access logs to the database
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Slf4j
 public class ApiAccessLogFilter extends ApiRequestFilter {
@@ -65,19 +65,19 @@ public class ApiAccessLogFilter extends ApiRequestFilter {
     @SuppressWarnings("NullableProblems")
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        // 获得开始时间
+        // Get start time
         LocalDateTime beginTime = LocalDateTime.now();
-        // 提前获得参数，避免 XssFilter 过滤处理
+        // Obtain parameters in advance to avoid XssFilter filtering processing
         Map<String, String> queryString = ServletUtils.getParamMap(request);
         String requestBody = ServletUtils.isJsonRequest(request) ? ServletUtils.getBody(request) : null;
 
         try {
-            // 继续过滤器
+            // continue filter
             filterChain.doFilter(request, response);
-            // 正常执行，记录日志
+            // Execute normally and record logs
             createApiAccessLog(request, beginTime, queryString, requestBody, null);
         } catch (Exception ex) {
-            // 异常执行，记录日志
+            // Abnormal execution and logging
             createApiAccessLog(request, beginTime, queryString, requestBody, ex);
             throw ex;
         }
@@ -93,13 +93,13 @@ public class ApiAccessLogFilter extends ApiRequestFilter {
             }
             apiAccessLogApi.createApiAccessLogAsync(accessLog);
         } catch (Throwable th) {
-            log.error("[createApiAccessLog][url({}) log({}) 发生异常]", request.getRequestURI(), toJsonString(accessLog), th);
+            log.error("[createApiAccessLog][URL({}) log({}) exception occurred]", request.getRequestURI(), toJsonString(accessLog), th);
         }
     }
 
     private boolean buildApiAccessLog(ApiAccessLogCreateReqDTO accessLog, HttpServletRequest request, LocalDateTime beginTime,
                                       Map<String, String> queryString, String requestBody, Exception ex) {
-        // 判断：是否要记录操作日志
+        // Judgment: Whether to record operation logs
         HandlerMethod handlerMethod = (HandlerMethod) request.getAttribute(ATTRIBUTE_HANDLER_METHOD);
         ApiAccessLog accessLogAnnotation = null;
         if (handlerMethod != null) {
@@ -109,10 +109,10 @@ public class ApiAccessLogFilter extends ApiRequestFilter {
             }
         }
 
-        // 处理用户信息
+        // Process user information
         accessLog.setUserId(WebFrameworkUtils.getLoginUserId(request))
                 .setUserType(WebFrameworkUtils.getLoginUserType(request));
-        // 设置访问结果
+        // Set access results
         CommonResult<?> result = WebFrameworkUtils.getCommonResult(request);
         if (result != null) {
             accessLog.setResultCode(result.getCode()).setResultMsg(result.getMsg());
@@ -122,27 +122,27 @@ public class ApiAccessLogFilter extends ApiRequestFilter {
         } else {
             accessLog.setResultCode(GlobalErrorCodeConstants.SUCCESS.getCode()).setResultMsg("");
         }
-        // 设置请求字段
+        // Set request fields
         accessLog.setTraceId(TracerUtils.getTraceId()).setApplicationName(applicationName)
                 .setRequestUrl(request.getRequestURI()).setRequestMethod(request.getMethod())
                 .setUserAgent(ServletUtils.getUserAgent(request)).setUserIp(ServletUtils.getClientIP(request));
         String[] sanitizeKeys = accessLogAnnotation != null ? accessLogAnnotation.sanitizeKeys() : null;
         Boolean requestEnable = accessLogAnnotation != null ? accessLogAnnotation.requestEnable() : Boolean.TRUE;
-        if (!BooleanUtil.isFalse(requestEnable)) { // 默认记录，所以判断 !false
+        if (!BooleanUtil.isFalse(requestEnable)) { // Recorded by default, so judge !false
             Map<String, Object> requestParams = MapUtil.<String, Object>builder()
                     .put("query", sanitizeMap(queryString, sanitizeKeys))
                     .put("body", sanitizeJson(requestBody, sanitizeKeys)).build();
             accessLog.setRequestParams(toJsonString(requestParams));
         }
         Boolean responseEnable = accessLogAnnotation != null ? accessLogAnnotation.responseEnable() : Boolean.FALSE;
-        if (BooleanUtil.isTrue(responseEnable)) { // 默认不记录，默认强制要求 true
+        if (BooleanUtil.isTrue(responseEnable)) { // Not logged by default, forced to true by default
             accessLog.setResponseBody(sanitizeJson(result, sanitizeKeys));
         }
-        // 持续时间
+        // duration
         accessLog.setBeginTime(beginTime).setEndTime(LocalDateTime.now())
                 .setDuration((int) LocalDateTimeUtil.between(accessLog.getBeginTime(), accessLog.getEndTime(), ChronoUnit.MILLIS));
 
-        // 操作模块
+        // Operation module
         if (handlerMethod != null) {
             Tag tagAnnotation = handlerMethod.getBeanType().getAnnotation(Tag.class);
             Operation operationAnnotation = handlerMethod.getMethodAnnotation(Operation.class);
@@ -159,11 +159,10 @@ public class ApiAccessLogFilter extends ApiRequestFilter {
         return true;
     }
 
-    // ========== 解析 @ApiAccessLog、@Swagger 注解  ==========
+    // ========== Parsing @ApiAccessLog, @Swagger annotations ==========
 
     private static OperateTypeEnum parseOperateLogType(HttpServletRequest request) {
-        RequestMethod requestMethod = ArrayUtil.firstMatch(method ->
-                StrUtil.equalsAnyIgnoreCase(method.name(), request.getMethod()), RequestMethod.values());
+        RequestMethod requestMethod = RequestMethod.resolve(request.getMethod());
         if (requestMethod == null) {
             return OperateTypeEnum.OTHER;
         }
@@ -181,7 +180,7 @@ public class ApiAccessLogFilter extends ApiRequestFilter {
         }
     }
 
-    // ========== 请求和响应的脱敏逻辑，移除类似 password、token 等敏感字段 ==========
+    // ========== Desensitization logic for requests and responses, removing sensitive fields such as password and token ==========
 
     private static String sanitizeMap(Map<String, ?> map, String[] sanitizeKeys) {
         if (CollUtil.isEmpty(map)) {
@@ -203,8 +202,8 @@ public class ApiAccessLogFilter extends ApiRequestFilter {
             sanitizeJson(rootNode, sanitizeKeys);
             return JsonUtils.toJsonString(rootNode);
         } catch (Exception e) {
-            // 脱敏失败的情况下，直接忽略异常，避免影响用户请求
-            log.error("[sanitizeJson][脱敏({}) 发生异常]", jsonString, e);
+            // If desensitization fails, ignore the exception directly to avoid affecting user requests.
+            log.error("[sanitizeJson][An exception occurred in desensitization ({})]", jsonString, e);
             return jsonString;
         }
     }
@@ -216,29 +215,29 @@ public class ApiAccessLogFilter extends ApiRequestFilter {
         String jsonString = toJsonString(commonResult);
         try {
             JsonNode rootNode = JsonUtils.parseTree(jsonString);
-            sanitizeJson(rootNode.get("data"), sanitizeKeys); // 只处理 data 字段，不处理 code、msg 字段，避免错误被脱敏掉
+            sanitizeJson(rootNode.get("data"), sanitizeKeys); // Only the data field is processed, and the code and msg fields are not processed to avoid errors being desensitized.
             return JsonUtils.toJsonString(rootNode);
         } catch (Exception e) {
-            // 脱敏失败的情况下，直接忽略异常，避免影响用户请求
-            log.error("[sanitizeJson][脱敏({}) 发生异常]", jsonString, e);
+            // If desensitization fails, ignore the exception directly to avoid affecting user requests.
+            log.error("[sanitizeJson][An exception occurred in desensitization ({})]", jsonString, e);
             return jsonString;
         }
     }
 
     private static void sanitizeJson(JsonNode node, String[] sanitizeKeys) {
-        // 情况一：数组，遍历处理
+        // Case 1: Array, traversal processing
         if (node.isArray()) {
             for (JsonNode childNode : node) {
                 sanitizeJson(childNode, sanitizeKeys);
             }
             return;
         }
-        // 情况二：非 Object，只是某个值，直接返回
+        // Case 2: Non-Object, just a certain value, returned directly
         if (!node.isObject()) {
             return;
         }
-        //  情况三：Object，遍历处理
-        Iterator<Map.Entry<String, JsonNode>> iterator = node.fields();
+        // Case 3: Object, traversal processing
+        Iterator<Map.Entry<String, JsonNode>> iterator = node.properties().iterator();
         while (iterator.hasNext()) {
             Map.Entry<String, JsonNode> entry = iterator.next();
             if (ArrayUtil.contains(sanitizeKeys, entry.getKey())

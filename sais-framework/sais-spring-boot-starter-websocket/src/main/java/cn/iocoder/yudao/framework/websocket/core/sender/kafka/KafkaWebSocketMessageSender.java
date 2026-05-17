@@ -9,59 +9,59 @@ import org.springframework.kafka.core.KafkaTemplate;
 import java.util.concurrent.ExecutionException;
 
 /**
- * 基于 Kafka 的 {@link WebSocketMessageSender} 实现类
+ * Kafka-based {@link WebSocketMessageSender} implementation class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Slf4j
 public class KafkaWebSocketMessageSender extends AbstractWebSocketMessageSender {
 
-    private final KafkaTemplate<Object, Object> kafkaTemplate;
+ private final KafkaTemplate<Object, Object> kafkaTemplate;
 
-    private final String topic;
+ private final String topic;
 
-    public KafkaWebSocketMessageSender(WebSocketSessionManager sessionManager,
-                                       KafkaTemplate<Object, Object> kafkaTemplate,
-                                       String topic) {
-        super(sessionManager);
-        this.kafkaTemplate = kafkaTemplate;
-        this.topic = topic;
-    }
+ public KafkaWebSocketMessageSender(WebSocketSessionManager sessionManager,
+ KafkaTemplate<Object, Object> kafkaTemplate,
+ String topic) {
+ super(sessionManager);
+ this.kafkaTemplate = kafkaTemplate;
+ this.topic = topic;
+ }
 
-    @Override
-    public void send(Integer userType, Long userId, String messageType, String messageContent) {
-        sendKafkaMessage(null, userId, userType, messageType, messageContent);
-    }
+ @Override
+ public void send(Integer userType, Long userId, String messageType, String messageContent) {
+ sendKafkaMessage(null, userId, userType, messageType, messageContent);
+ }
 
-    @Override
-    public void send(Integer userType, String messageType, String messageContent) {
-        sendKafkaMessage(null, null, userType, messageType, messageContent);
-    }
+ @Override
+ public void send(Integer userType, String messageType, String messageContent) {
+ sendKafkaMessage(null, null, userType, messageType, messageContent);
+ }
 
-    @Override
-    public void send(String sessionId, String messageType, String messageContent) {
-        sendKafkaMessage(sessionId, null, null, messageType, messageContent);
-    }
+ @Override
+ public void send(String sessionId, String messageType, String messageContent) {
+ sendKafkaMessage(sessionId, null, null, messageType, messageContent);
+ }
 
-    /**
-     * 通过 Kafka 广播消息
-     *
-     * @param sessionId Session 编号
-     * @param userId 用户编号
-     * @param userType 用户类型
-     * @param messageType 消息类型
-     * @param messageContent 消息内容
-     */
-    private void sendKafkaMessage(String sessionId, Long userId, Integer userType,
-                                  String messageType, String messageContent) {
-        KafkaWebSocketMessage mqMessage = new KafkaWebSocketMessage()
-                .setSessionId(sessionId).setUserId(userId).setUserType(userType)
-                .setMessageType(messageType).setMessageContent(messageContent);
-        try {
-            kafkaTemplate.send(topic, mqMessage).get();
-        } catch (InterruptedException | ExecutionException e) {
-            log.error("[sendKafkaMessage][发送消息({}) 到 Kafka 失败]", mqMessage, e);
-        }
-    }
+ /**
+     * Broadcast messages through Kafka
+ *
+     * @param sessionId Session number
+     * @param userId User ID
+     * @param userType User type
+     * @param messageType Message type
+     * @param messageContent Message content
+ */
+ private void sendKafkaMessage(String sessionId, Long userId, Integer userType,
+ String messageType, String messageContent) {
+ KafkaWebSocketMessage mqMessage = new KafkaWebSocketMessage()
+.setSessionId(sessionId).setUserId(userId).setUserType(userType)
+.setMessageType(messageType).setMessageContent(messageContent);
+ try {
+ kafkaTemplate.send(topic, mqMessage).get();
+ } catch (InterruptedException | ExecutionException e) {
+            log.error("[sendKafkaMessage][Failed to send message ({}) to Kafka]", mqMessage, e);
+ }
+ }
 
 }

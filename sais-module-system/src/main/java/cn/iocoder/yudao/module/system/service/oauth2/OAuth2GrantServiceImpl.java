@@ -17,9 +17,9 @@ import java.util.List;
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
 
 /**
- * OAuth2 授予 Service 实现类
+ * OAuth2 grant Service implementation class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Service
 public class OAuth2GrantServiceImpl implements OAuth2GrantService {
@@ -49,33 +49,33 @@ public class OAuth2GrantServiceImpl implements OAuth2GrantService {
     public OAuth2AccessTokenDO grantAuthorizationCodeForAccessToken(String clientId, String code,
                                                                     String redirectUri, String state) {
         OAuth2CodeDO codeDO = oauth2CodeService.consumeAuthorizationCode(code);
-        Assert.notNull(codeDO, "授权码不能为空"); // 防御性编程
-        // 校验 clientId 是否匹配
+        Assert.notNull(codeDO, "Authorization code cannot be empty"); // defensive programming
+        // Verify clientId matches
         if (!StrUtil.equals(clientId, codeDO.getClientId())) {
             throw exception(ErrorCodeConstants.OAUTH2_GRANT_CLIENT_ID_MISMATCH);
         }
-        // 校验 redirectUri 是否匹配
+        // Verify whether redirectUri matches
         if (!StrUtil.equals(redirectUri, codeDO.getRedirectUri())) {
             throw exception(ErrorCodeConstants.OAUTH2_GRANT_REDIRECT_URI_MISMATCH);
         }
-        // 校验 state 是否匹配
-        state = StrUtil.nullToDefault(state, ""); // 数据库 state 为 null 时，会设置为 "" 空串
+        // Verify whether state matches
+        state = StrUtil.nullToDefault(state, ""); // When the database state is null, it will be set to "" empty string
         if (!StrUtil.equals(state, codeDO.getState())) {
             throw exception(ErrorCodeConstants.OAUTH2_GRANT_STATE_MISMATCH);
         }
 
-        // 创建访问令牌
+        // Create access token
         return oauth2TokenService.createAccessToken(codeDO.getUserId(), codeDO.getUserType(),
                 codeDO.getClientId(), codeDO.getScopes());
     }
 
     @Override
     public OAuth2AccessTokenDO grantPassword(String username, String password, String clientId, List<String> scopes) {
-        // 使用账号 + 密码进行登录
+        // Log in using account + password
         AdminUserDO user = adminAuthService.authenticate(username, password);
-        Assert.notNull(user, "用户不能为空！"); // 防御性编程
+        Assert.notNull(user, "User cannot be empty!"); // defensive programming
 
-        // 创建访问令牌
+        // Create access token
         return oauth2TokenService.createAccessToken(user.getId(), UserTypeEnum.ADMIN.getValue(), clientId, scopes);
     }
 
@@ -86,18 +86,18 @@ public class OAuth2GrantServiceImpl implements OAuth2GrantService {
 
     @Override
     public OAuth2AccessTokenDO grantClientCredentials(String clientId, List<String> scopes) {
-        // 特殊：https://yuanbao.tencent.com/bot/app/share/chat/wFj642xSZHHx
+        // Special: https://yuanbao.tencent.com/bot/app/share/chat/wFj642xSZHHx
         return oauth2TokenService.createAccessToken(0L, UserTypeEnum.ADMIN.getValue(), clientId, scopes);
     }
 
     @Override
     public boolean revokeToken(String clientId, String accessToken) {
-        // 先查询，保证 clientId 时匹配的
+        // Query first to ensure that the clientId matches
         OAuth2AccessTokenDO accessTokenDO = oauth2TokenService.getAccessToken(accessToken);
         if (accessTokenDO == null || ObjectUtil.notEqual(clientId, accessTokenDO.getClientId())) {
             return false;
         }
-        // 再删除
+        // Delete again
         return oauth2TokenService.removeAccessToken(accessToken) != null;
     }
 

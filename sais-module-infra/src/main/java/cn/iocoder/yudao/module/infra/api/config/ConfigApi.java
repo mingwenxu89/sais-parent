@@ -1,17 +1,17 @@
 package cn.iocoder.yudao.module.infra.api.config;
 
 /**
- * 参数配置 API 接口
+ * Parameter configuration API API
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface ConfigApi {
 
     /**
-     * 根据参数键查询参数值
+     * Query parameter value based on parameter key
      *
-     * @param key 参数键
-     * @return 参数值
+     * @param key parameter key
+     * @return Parameter value
      */
     String getConfigValueByKey(String key);
 

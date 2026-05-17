@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 代码生成器的字段过滤条件枚举
+ * Code generator field filter enum
  */
 @AllArgsConstructor
 @Getter
@@ -20,7 +20,7 @@ public enum CodegenColumnListConditionEnum {
     BETWEEN("BETWEEN");
 
     /**
-     * 条件
+     * Conditions
      */
     private final String condition;
 

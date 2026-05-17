@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
 import jakarta.annotation.Resource;
 
 /**
- * OAuth2.0 Token API 实现类
+ * OAuth2.0 Token API implementation class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Service
 public class OAuth2TokenApiImpl implements OAuth2TokenCommonApi {

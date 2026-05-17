@@ -1,4 +1,4 @@
 /**
- * 占位符，无特殊逻辑
+ * Placeholder, no special logic
  */
 package cn.iocoder.yudao.framework.mq.rabbitmq.core;

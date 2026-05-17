@@ -9,70 +9,70 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 /**
- * 租户套餐 Service 接口
+ * Tenant package service API
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface TenantPackageService {
 
     /**
-     * 创建租户套餐
+     * Create a tenant package
      *
-     * @param createReqVO 创建信息
-     * @return 编号
+     * @param createReqVO Create information
+     * @return ID
      */
     Long createTenantPackage(@Valid TenantPackageSaveReqVO createReqVO);
 
     /**
-     * 更新租户套餐
+     * Update tenant package
      *
-     * @param updateReqVO 更新信息
+     * @param updateReqVO Update information
      */
     void updateTenantPackage(@Valid TenantPackageSaveReqVO updateReqVO);
 
     /**
-     * 删除租户套餐
+     * Delete tenant package
      *
-     * @param id 编号
+     * @param id ID
      */
     void deleteTenantPackage(Long id);
 
     /**
-     * 批量删除租户套餐
+     * Delete tenant packages in batches
      *
-     * @param ids 编号数组
+     * @param ids IDed array
      */
     void deleteTenantPackageList(List<Long> ids);
 
     /**
-     * 获得租户套餐
+     * Get a tenant package
      *
-     * @param id 编号
-     * @return 租户套餐
+     * @param id ID
+     * @return Tenant package
      */
     TenantPackageDO getTenantPackage(Long id);
 
     /**
-     * 获得租户套餐分页
+     * Get Tenant Packages Pagination
      *
-     * @param pageReqVO 分页查询
-     * @return 租户套餐分页
+     * @param pageReqVO Page query
+     * @return Tenant Package Pagination
      */
     PageResult<TenantPackageDO> getTenantPackagePage(TenantPackagePageReqVO pageReqVO);
 
     /**
-     * 校验租户套餐
+     * Verify tenant package
      *
-     * @param id 编号
-     * @return 租户套餐
+     * @param id ID
+     * @return Tenant package
      */
     TenantPackageDO validTenantPackage(Long id);
 
     /**
-     * 获得指定状态的租户套餐列表
+     * Get a list of tenant packages in a specified status
      *
-     * @param status 状态
-     * @return 租户套餐
+     * @param status Status
+     * @return Tenant package
      */
     List<TenantPackageDO> getTenantPackageListByStatus(Integer status);
 

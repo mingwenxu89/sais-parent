@@ -11,12 +11,12 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 /**
- * 字典类型表
+ * Dict type table
  *
  * @author ruoyi
  */
 @TableName("system_dict_type")
-@KeySequence("system_dict_type_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
+@KeySequence("system_dict_type_seq") // Primary key auto-increment for Oracle, PostgreSQL, Kingbase, DB2, H2 databases. If it is a database such as MySQL, you DO not need to write it.
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
@@ -27,31 +27,31 @@ import java.time.LocalDateTime;
 public class DictTypeDO extends BaseDO {
 
     /**
-     * 字典主键
+     * dict primary key
      */
     @TableId
     private Long id;
     /**
-     * 字典名称
+     * Dict name
      */
     private String name;
     /**
-     * 字典类型
+     * Dict Type
      */
     private String type;
     /**
-     * 状态
+     * Status
      *
-     * 枚举 {@link CommonStatusEnum}
+     * Enum {@link CommonStatusEnum}
      */
     private Integer status;
     /**
-     * 备注
+     * Remark
      */
     private String remark;
 
     /**
-     * 删除时间
+     * Delete Time
      */
     private LocalDateTime deletedTime;
 

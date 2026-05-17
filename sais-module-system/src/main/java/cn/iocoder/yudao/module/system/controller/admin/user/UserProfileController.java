@@ -29,7 +29,7 @@ import java.util.List;
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 import static cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils.getLoginUserId;
 
-@Tag(name = "管理后台 - 用户个人中心")
+@Tag(name = "Management backend - User personal center")
 @RestController
 @RequestMapping("/system/user/profile")
 @Validated
@@ -48,29 +48,29 @@ public class UserProfileController {
     private RoleService roleService;
 
     @GetMapping("/get")
-    @Operation(summary = "获得登录用户信息")
-    @DataPermission(enable = false) // 关闭数据权限，避免只查看自己时，查询不到部门。
+    @Operation(summary = "Get logged in user information")
+    @DataPermission(enable = false) // Turn off data permissions to avoid not being able to query departments when you only view yourself.
     public CommonResult<UserProfileRespVO> getUserProfile() {
-        // 获得用户基本信息
+        // Obtain basic user information
         AdminUserDO user = userService.getUser(getLoginUserId());
-        // 获得用户角色
+        // Get user role
         List<RoleDO> userRoles = roleService.getRoleListFromCache(permissionService.getUserRoleIdListByUserId(user.getId()));
-        // 获得部门信息
+        // Get department information
         DeptDO dept = user.getDeptId() != null ? deptService.getDept(user.getDeptId()) : null;
-        // 获得岗位信息
+        // Get job information
         List<PostDO> posts = CollUtil.isNotEmpty(user.getPostIds()) ? postService.getPostList(user.getPostIds()) : null;
         return success(UserConvert.INSTANCE.convert(user, userRoles, dept, posts));
     }
 
     @PutMapping("/update")
-    @Operation(summary = "修改用户个人信息")
+    @Operation(summary = "Modify user personal information")
     public CommonResult<Boolean> updateUserProfile(@Valid @RequestBody UserProfileUpdateReqVO reqVO) {
         userService.updateUserProfile(getLoginUserId(), reqVO);
         return success(true);
     }
 
     @PutMapping("/update-password")
-    @Operation(summary = "修改用户个人密码")
+    @Operation(summary = "Modify user personal password")
     public CommonResult<Boolean> updateUserProfilePassword(@Valid @RequestBody UserProfileUpdatePasswordReqVO reqVO) {
         userService.updateUserPassword(getLoginUserId(), reqVO);
         return success(true);

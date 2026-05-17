@@ -1,25 +1,25 @@
 package cn.iocoder.yudao.module.system.service.member;
 
 /**
- * Member Service 接口
+ * Member Service API
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface MemberService {
 
     /**
-     * 获得会员用户的手机号码
+     * Obtain the mobile phone ID of the member user
      *
-     * @param id 会员用户编号
-     * @return 手机号码
+     * @param id Member user ID
+     * @return Mobile phone ID
      */
     String getMemberUserMobile(Long id);
 
     /**
-     * 获得会员用户的邮箱
+     * Obtain member user's email address
      *
-     * @param id 会员用户编号
-     * @return 邮箱
+     * @param id Member user ID
+     * @return Email
      */
     String getMemberUserEmail(Long id);
 

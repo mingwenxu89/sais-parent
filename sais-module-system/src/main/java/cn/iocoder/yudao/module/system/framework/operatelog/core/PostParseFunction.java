@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import jakarta.annotation.Resource;
 
 /**
- * 岗位名字的 {@link IParseFunction} 实现类
+ * {@link IParseFunction} implementation class of job name
  *
  * @author HUIHUI
  */
@@ -35,10 +35,10 @@ public class PostParseFunction implements IParseFunction {
             return "";
         }
 
-        // 获取岗位信息
+        // Get job information
         PostDO post = postService.getPost(Convert.toLong(value));
         if (post == null) {
-            log.warn("[apply][获取岗位{{}}为空", value);
+            log.warn("[apply][Get position{{}} is empty", value);
             return "";
         }
         return post.getName();

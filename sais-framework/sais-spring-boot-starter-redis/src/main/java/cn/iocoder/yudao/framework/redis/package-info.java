@@ -1,4 +1,4 @@
 /**
- * 采用 Spring Data Redis 操作 Redis，底层使用 Redisson 作为客户端
+ * Use Spring Data Redis to operate Redis, and the underlying layer uses Redisson as the client
  */
 package cn.iocoder.yudao.framework.redis;

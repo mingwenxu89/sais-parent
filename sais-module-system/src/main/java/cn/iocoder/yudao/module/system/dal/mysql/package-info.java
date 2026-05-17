@@ -1,9 +1,9 @@
 /**
- * DAL = Data Access Layer 数据访问层
- * 1. data object：数据对象
- * 2. redis：Redis 的 CRUD 操作
- * 3. mysql：MySQL 的 CRUD 操作
+ * DAL = Data Access Layer data access layer
+ * 1. data object: data object
+ * 2. Redis: CRUD operation of Redis
+ * 3. MySQL: MySQL CRUD operations
  *
- * 其中，MySQL 的表以 system_ 作为前缀
+ * Among them, MySQL tables are prefixed with system_
  */
 package cn.iocoder.yudao.module.system.dal.mysql;

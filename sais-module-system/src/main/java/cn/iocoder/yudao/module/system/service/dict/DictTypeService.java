@@ -8,69 +8,69 @@ import cn.iocoder.yudao.module.system.dal.dataobject.dict.DictTypeDO;
 import java.util.List;
 
 /**
- * 字典类型 Service 接口
+ * Dict type Service API
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface DictTypeService {
 
     /**
-     * 创建字典类型
+     * Create dict type
      *
-     * @param createReqVO 字典类型信息
-     * @return 字典类型编号
+     * @param createReqVO Dict type information
+     * @return Dict type ID
      */
     Long createDictType(DictTypeSaveReqVO createReqVO);
 
     /**
-     * 更新字典类型
+     * Update dict type
      *
-     * @param updateReqVO 字典类型信息
+     * @param updateReqVO Dict type information
      */
     void updateDictType(DictTypeSaveReqVO updateReqVO);
 
     /**
-     * 删除字典类型
+     * Delete dict type
      *
-     * @param id 字典类型编号
+     * @param id Dict type ID
      */
     void deleteDictType(Long id);
 
     /**
-     * 批量删除字典类型
+     * Delete dict types in batches
      *
-     * @param ids 字典类型编号列表
+     * @param ids Dict type IDed list
      */
     void deleteDictTypeList(List<Long> ids);
 
     /**
-     * 获得字典类型分页列表
+     * Get a paginated list of dict types
      *
-     * @param pageReqVO 分页请求
-     * @return 字典类型分页列表
+     * @param pageReqVO Pagination request
+     * @return Dict type paginated list
      */
     PageResult<DictTypeDO> getDictTypePage(DictTypePageReqVO pageReqVO);
 
     /**
-     * 获得字典类型详情
+     * Get dict type details
      *
-     * @param id 字典类型编号
-     * @return 字典类型
+     * @param id Dict type ID
+     * @return Dict Type
      */
     DictTypeDO getDictType(Long id);
 
     /**
-     * 获得字典类型详情
+     * Get dict type details
      *
-     * @param type 字典类型
-     * @return 字典类型详情
+     * @param type Dict Type
+     * @return Dict type details
      */
     DictTypeDO getDictType(String type);
 
     /**
-     * 获得全部字典类型列表
+     * Get a list of all dict types
      *
-     * @return 字典类型列表
+     * @return List of dict types
      */
     List<DictTypeDO> getDictTypeList();
 

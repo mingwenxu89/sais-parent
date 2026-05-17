@@ -1,4 +1,4 @@
 /**
- * 使用 Hibernate Validator 实现参数校验
+ * Use Hibernate Validator to implement parameter verification
  */
 package cn.iocoder.yudao.framework.common.validation;

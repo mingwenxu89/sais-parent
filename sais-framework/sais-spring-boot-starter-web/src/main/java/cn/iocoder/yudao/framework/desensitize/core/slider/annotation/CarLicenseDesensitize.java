@@ -11,7 +11,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 车牌号
+ * license plate number
  *
  * @author gaibu
  */
@@ -22,26 +22,26 @@ import java.lang.annotation.Target;
 @DesensitizeBy(handler = CarLicenseDesensitization.class)
 public @interface CarLicenseDesensitize {
 
-    /**
-     * 前缀保留长度
-     */
-    int prefixKeep() default 3;
+ /**
+     * Prefix reserved length
+ */
+ int prefixKeep() default 3;
 
-    /**
-     * 后缀保留长度
-     */
-    int suffixKeep() default 1;
+ /**
+     * Suffix reserved length
+ */
+ int suffixKeep() default 1;
 
-    /**
-     * 替换规则，车牌号;比如：粤A66666 脱敏之后为粤A6***6
-     */
-    String replacer() default "*";
+ /**
+     * Replacement rules, license plate number; for example: Guangdong A66666 After desensitization, it is Guangdong A6***6
+ */
+ String replacer() default "*";
 
-    /**
-     * 是否禁用脱敏
-     *
-     * 支持 Spring EL 表达式，如果返回 true 则跳过脱敏
-     */
-    String disable() default "";
+ /**
+     * Whether to disable desensitization
+ *
+     * Support Spring EL expressions, skip desensitization if true is returned
+ */
+ String disable() default "";
 
 }

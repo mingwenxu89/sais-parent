@@ -1,17 +1,17 @@
 package cn.iocoder.yudao.framework.common.enums;
 
 /**
- * RPC 相关的枚举
+ * RPC related enumerations
  *
- * 虽然放在 sar-spring-boot-starter-rpc 会相对合适，但是每个 API 模块需要使用到，所以暂时只好放在此处
+ * Although it would be relatively appropriate to place it in yudao-spring-boot-starter-rpc, each API module needs to be used, so it has to be placed here for the time being.
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public class RpcConstants {
 
-    /**
-     * RPC API 的前缀
-     */
-    public static final String RPC_API_PREFIX = "/rpc-api";
+ /**
+     * Prefix for RPC API
+ */
+ public static final String RPC_API_PREFIX = "/rpc-api";
 
 }

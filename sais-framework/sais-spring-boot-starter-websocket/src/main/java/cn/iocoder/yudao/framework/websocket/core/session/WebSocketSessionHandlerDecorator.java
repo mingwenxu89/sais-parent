@@ -7,43 +7,43 @@ import org.springframework.web.socket.handler.ConcurrentWebSocketSessionDecorato
 import org.springframework.web.socket.handler.WebSocketHandlerDecorator;
 
 /**
- * {@link WebSocketHandler} 的装饰类，实现了以下功能：
+ * The decoration class of {@link WebSocketHandler} implements the following functions:
  *
- * 1. {@link WebSocketSession} 连接或关闭时，使用 {@link #sessionManager} 进行管理
- * 2. 封装 {@link WebSocketSession} 支持并发操作
+ * 1. Use {@link #sessionManager} to manage when {@link WebSocketSession} is connected or closed.
+ * 2. Encapsulate {@link WebSocketSession} to support concurrent operations
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public class WebSocketSessionHandlerDecorator extends WebSocketHandlerDecorator {
 
-    /**
-     * 发送时间的限制，单位：毫秒
-     */
-    private static final Integer SEND_TIME_LIMIT = 1000 * 5;
-    /**
-     * 发送消息缓冲上线，单位：bytes
-     */
-    private static final Integer BUFFER_SIZE_LIMIT = 1024 * 100;
+ /**
+     * Sending time limit, unit: milliseconds
+ */
+ private static final Integer SEND_TIME_LIMIT = 1000 * 5;
+ /**
+     * Send message buffer online, unit: bytes
+ */
+ private static final Integer BUFFER_SIZE_LIMIT = 1024 * 100;
 
-    private final WebSocketSessionManager sessionManager;
+ private final WebSocketSessionManager sessionManager;
 
-    public WebSocketSessionHandlerDecorator(WebSocketHandler delegate,
-                                            WebSocketSessionManager sessionManager) {
-        super(delegate);
-        this.sessionManager = sessionManager;
-    }
+ public WebSocketSessionHandlerDecorator(WebSocketHandler delegate,
+ WebSocketSessionManager sessionManager) {
+ super(delegate);
+ this.sessionManager = sessionManager;
+ }
 
-    @Override
-    public void afterConnectionEstablished(WebSocketSession session) {
-        // 实现 session 支持并发，可参考 https://blog.csdn.net/abu935009066/article/details/131218149
-        session = new ConcurrentWebSocketSessionDecorator(session, SEND_TIME_LIMIT, BUFFER_SIZE_LIMIT);
-        // 添加到 WebSocketSessionManager 中
-        sessionManager.addSession(session);
-    }
+ @Override
+ public void afterConnectionEstablished(WebSocketSession session) {
+        // To implement session support for concurrency, please refer to https://blog.csdn.net/abu935009066/article/details/131218149
+ session = new ConcurrentWebSocketSessionDecorator(session, SEND_TIME_LIMIT, BUFFER_SIZE_LIMIT);
+        // Add to WebSocketSessionManager
+ sessionManager.addSession(session);
+ }
 
-    @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) {
-        sessionManager.removeSession(session);
-    }
+ @Override
+ public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) {
+ sessionManager.removeSession(session);
+ }
 
 }

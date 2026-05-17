@@ -4,30 +4,30 @@ import cn.iocoder.yudao.framework.common.enums.CommonStatusEnum;
 import lombok.Data;
 
 /**
- * 字典数据 Response DTO
+ * Dictionary data Response DTO
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Data
 public class DictDataRespDTO {
 
-    /**
-     * 字典标签
-     */
-    private String label;
-    /**
-     * 字典值
-     */
-    private String value;
-    /**
-     * 字典类型
-     */
-    private String dictType;
-    /**
-     * 状态
-     *
-     * 枚举 {@link CommonStatusEnum}
-     */
-    private Integer status;
+ /**
+     * dictionary tag
+ */
+ private String label;
+ /**
+     * Dictionary value
+ */
+ private String value;
+ /**
+     * dictionary type
+ */
+ private String dictType;
+ /**
+     * state
+ *
+     * Enum {@link CommonStatusEnum}
+ */
+ private Integer status;
 
 }

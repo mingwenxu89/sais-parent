@@ -8,9 +8,9 @@ import cn.iocoder.yudao.module.infra.dal.dataobject.file.FileDO;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
- * 文件操作 Mapper
+ * File operation Mapper
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Mapper
 public interface FileMapper extends BaseMapperX<FileDO> {

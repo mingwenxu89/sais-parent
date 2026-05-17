@@ -1,4 +1,4 @@
 /**
- * 使用 Spring Boot Admin 实现简单的监控平台
+ * Implement a simple monitoring platform using Spring Boot Admin
  */
 package cn.iocoder.yudao.module.infra.framework.monitor;

@@ -6,63 +6,63 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 /**
- * 小程序订单上传购物详情
+ * Upload shopping details for miniapp orders
  *
- * @see <a href="https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/shopping-order/normal-shopping-detail/uploadShoppingInfo.html">上传购物详情</a>
- * @author 芋道源码
+ * @see <a href="https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/shopping-order/normal-shopping-detail/uploadShoppingInfo.html">Upload shopping details</a>
+ * @author Yudao Source Code
  */
 @Data
 public class SocialWxaOrderUploadShippingInfoReqDTO {
 
     /**
-     * 物流模式 - 实体物流配送采用快递公司进行实体物流配送形式
+     * Logistics model - physical logistics distribution adopts the form of physical logistics distribution by express companies
      */
     public static final Integer LOGISTICS_TYPE_EXPRESS = 1;
     /**
-     * 物流模式 - 虚拟商品，虚拟商品，例如话费充值，点卡等，无实体配送形式
+     * Logistics model - virtual goods, virtual goods, such as phone recharge, point cards, etc., no physical delivery form
      */
     public static final Integer LOGISTICS_TYPE_VIRTUAL = 3;
     /**
-     * 物流模式 - 用户自提
+     * Logistics model - user pick-up
      */
     public static final Integer LOGISTICS_TYPE_PICK_UP = 4;
 
     /**
-     * 支付者，支付者信息(openid)
+     * Payer, payer information (openid)
      */
-    @NotEmpty(message = "支付者，支付者信息(openid)不能为空")
+    @NotEmpty(message = "Payer, payer information (openid) cannot be empty")
     private String openid;
 
     /**
-     * 原支付交易对应的微信订单号
+     * WeChat order ID corresponding to the original payment transaction
      */
-    @NotEmpty(message = "原支付交易对应的微信订单号不能为空")
+    @NotEmpty(message = "The WeChat order ID corresponding to the original payment transaction cannot be empty.")
     private String transactionId;
 
     /**
-     * 物流模式
+     * Logistics model
      */
-    @NotNull(message = "物流模式不能为空")
+    @NotNull(message = "Logistics mode cannot be empty")
     private Integer logisticsType;
     /**
-     * 物流发货单号
+     * Logistics delivery order ID
      */
     private String logisticsNo;
     /**
-     * 物流公司编号
+     * Logistics company ID
      *
-     * @see <a href="https://developers.weixin.qq.com/miniprogram/dev/platform-capabilities/industry/express/business/express_search.html#%E8%8E%B7%E5%8F%96%E8%BF%90%E5%8A%9Bid%E5%88%97%E8%A1%A8get-delivery-list">物流查询插件简介</a>
+     * @see <a href="https://developers.weixin.qq.com/miniprogram/dev/platform-capabilities/industry/express/business/express_search.html#%E8%8E%B7%E5%8F%96%E8%BF%90%E5%8A%9Bid%E5%88%97%E8%A1%A8get-delivery-list">Introduction to the logistics query plug-in</a>
      */
     private String expressCompany;
     /**
-     * 商品信息
+     * Product information
      */
-    @NotEmpty(message = "商品信息不能为空")
+    @NotEmpty(message = "Product information cannot be empty")
     private String itemDesc;
     /**
-     * 收件人手机号
+     * Recipient’s mobile phone ID
      */
-    @NotEmpty(message = "收件人手机号")
+    @NotEmpty(message = "Recipient’s mobile phone ID")
     private String receiverContact;
 
 }

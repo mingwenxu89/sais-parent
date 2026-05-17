@@ -1,28 +1,27 @@
 package cn.iocoder.yudao.framework.common.biz.system.logger;
 
 import cn.iocoder.yudao.framework.common.biz.system.logger.dto.OperateLogCreateReqDTO;
+import jakarta.validation.Valid;
 import org.springframework.scheduling.annotation.Async;
 
-import jakarta.validation.Valid;
-
 /**
- * 操作日志 API 接口
+ * Operation log API API
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface OperateLogCommonApi {
 
     /**
-     * 创建操作日志
+     * Create operation log
      *
-     * @param createReqDTO 请求
+     * @param createReqDTO Request
      */
     void createOperateLog(@Valid OperateLogCreateReqDTO createReqDTO);
 
     /**
-     * 【异步】创建操作日志
+     * [Asynchronous] Create operation log
      *
-     * @param createReqDTO 请求
+     * @param createReqDTO Request
      */
     @Async
     default void createOperateLogAsync(OperateLogCreateReqDTO createReqDTO) {

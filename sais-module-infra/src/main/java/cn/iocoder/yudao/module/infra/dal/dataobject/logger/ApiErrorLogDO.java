@@ -11,9 +11,9 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 /**
- * API 异常数据
+ * API exception data
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @TableName("infra_api_error_log")
 @Data
@@ -26,135 +26,135 @@ import java.time.LocalDateTime;
 public class ApiErrorLogDO extends BaseDO {
 
     /**
-     * {@link #requestParams} 的最大长度
+     * The maximum length of {@link #requestParams}
      */
     public static final Integer REQUEST_PARAMS_MAX_LENGTH = 8000;
 
     /**
-     * 编号
+     * ID
      */
     @TableId
     private Long id;
     /**
-     * 用户编号
+     * User ID
      */
     private Long userId;
     /**
-     * 链路追踪编号
+     * link tracking ID
      *
-     * 一般来说，通过链路追踪编号，可以将访问日志，错误日志，链路追踪日志，logger 打印日志等，结合在一起，从而进行排错。
+     * Generally speaking, through the link tracking ID, access logs, error logs, link tracking logs, logger print logs, etc. can be combined together for troubleshooting.
      */
     private String traceId;
     /**
-     * 用户类型
+     * User type
      *
-     * 枚举 {@link UserTypeEnum}
+     * Enumeration {@link UserTypeEnum}
      */
     private Integer userType;
     /**
-     * 应用名
+     * Application name
      *
-     * 目前读取 spring.application.name
+     * Currently reading Spring.application.name
      */
     private String applicationName;
 
-    // ========== 请求相关字段 ==========
+    // ========== Request related fields ==========
 
     /**
-     * 请求方法名
+     * Request method name
      */
     private String requestMethod;
     /**
-     * 访问地址
+     * Access address
      */
     private String requestUrl;
     /**
-     * 请求参数
+     * Request parameters
      *
      * query: Query String
      * body: Quest Body
      */
     private String requestParams;
     /**
-     * 用户 IP
+     * User IP
      */
     private String userIp;
     /**
-     * 浏览器 UA
+     * Browser UA
      */
     private String userAgent;
 
-    // ========== 异常相关字段 ==========
+    // ========== Exception related fields ==========
 
     /**
-     * 异常发生时间
+     * Exception occurrence time
      */
     private LocalDateTime exceptionTime;
     /**
-     * 异常名
+     * Exception name
      *
-     * {@link Throwable#getClass()} 的类全名
+     * Full class name of {@link Throwable#getClass()}
      */
     private String exceptionName;
     /**
-     * 异常导致的消息
+     * Messages caused by exceptions
      *
      * {@link cn.hutool.core.exceptions.ExceptionUtil#getMessage(Throwable)}
      */
     private String exceptionMessage;
     /**
-     * 异常导致的根消息
+     * Root message caused by exception
      *
      * {@link cn.hutool.core.exceptions.ExceptionUtil#getRootCauseMessage(Throwable)}
      */
     private String exceptionRootCauseMessage;
     /**
-     * 异常的栈轨迹
+     * Exception stack trace
      *
      * {@link org.apache.commons.lang3.exception.ExceptionUtils#getStackTrace(Throwable)}
      */
     private String exceptionStackTrace;
     /**
-     * 异常发生的类全名
+     * The full name of the class where the exception occurred
      *
      * {@link StackTraceElement#getClassName()}
      */
     private String exceptionClassName;
     /**
-     * 异常发生的类文件
+     * The class file where the exception occurred
      *
      * {@link StackTraceElement#getFileName()}
      */
     private String exceptionFileName;
     /**
-     * 异常发生的方法名
+     * The method name where the exception occurred
      *
      * {@link StackTraceElement#getMethodName()}
      */
     private String exceptionMethodName;
     /**
-     * 异常发生的方法所在行
+     * The line of the method where the exception occurred
      *
      * {@link StackTraceElement#getLineNumber()}
      */
     private Integer exceptionLineNumber;
 
-    // ========== 处理相关字段 ==========
+    // ========== Process related fields ==========
 
     /**
-     * 处理状态
+     * Processing status
      *
-     * 枚举 {@link ApiErrorLogProcessStatusEnum}
+     * Enum {@link ApiErrorLogProcessStatusEnum}
      */
     private Integer processStatus;
     /**
-     * 处理时间
+     * processing time
      */
     private LocalDateTime processTime;
     /**
-     * 处理用户编号
+     * Handle user ID
      *
-     * 关联 cn.iocoder.yudao.adminserver.modules.system.dal.dataobject.user.SysUserDO.SysUserDO#getId()
+     * Association cn.iocoder.yudao.adminserver.modules.system.dal.dataobject.user.SysUserDO.SysUserDO#getId()
      */
     private Long processUserId;
 

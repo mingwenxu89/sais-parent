@@ -1,4 +1,4 @@
 /**
- * 占位
+ * Placeholder
  */
 package cn.iocoder.yudao.module.infra.framework.security.core;

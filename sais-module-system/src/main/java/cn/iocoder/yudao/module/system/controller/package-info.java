@@ -1,6 +1,6 @@
 /**
- * 提供 RESTful API 给前端：
- * 1. admin 包：提供给管理后台 sar-ui-admin 前端项目
- * 2. app 包：提供给用户 APP sar-ui-app 前端项目，它的 Controller 和 VO 都要添加 App 前缀，用于和管理后台进行区分
+ * Provide RESTful API to the front end:
+ * 1. admin package: provided to the management backend sar-ui-admin frontend project
+ * 2. App package: Provide users with the APP sar-ui-app frontend project. Its Controller and VO must add the App prefix to distinguish it from the management backend.
  */
 package cn.iocoder.yudao.module.system.controller;

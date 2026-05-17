@@ -7,18 +7,18 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
 
 /**
- * WebSocket 的权限自定义
+ * WebSocket permission customization
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @RequiredArgsConstructor
 public class WebSocketAuthorizeRequestsCustomizer extends AuthorizeRequestsCustomizer {
 
-    private final WebSocketProperties webSocketProperties;
+ private final WebSocketProperties webSocketProperties;
 
-    @Override
-    public void customize(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry) {
-        registry.requestMatchers(webSocketProperties.getPath()).permitAll();
-    }
+ @Override
+ public void customize(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry) {
+ registry.requestMatchers(webSocketProperties.getPath()).permitAll();
+ }
 
 }

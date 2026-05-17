@@ -7,9 +7,9 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 基于 Redis 实现验证码的存储
+ * Implement captcha storage based on Redis
  *
- * @author 星语
+ * @author star language
  */
 @Setter
 public class RedisCaptchaServiceImpl implements CaptchaCacheService {

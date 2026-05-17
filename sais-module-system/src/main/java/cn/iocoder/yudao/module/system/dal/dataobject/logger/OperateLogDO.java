@@ -8,77 +8,77 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 /**
- * 操作日志表
+ * Operation log table
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @TableName(value = "system_operate_log", autoResultMap = true)
-@KeySequence("system_operate_log_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
+@KeySequence("system_operate_log_seq") // Primary key auto-increment for Oracle, PostgreSQL, Kingbase, DB2, H2 databases. If it is a database such as MySQL, you DO not need to write it.
 @Data
 public class OperateLogDO extends BaseDO {
 
     /**
-     * 日志主键
+     * Log primary key
      */
     @TableId
     private Long id;
     /**
-     * 链路追踪编号
+     * link tracking ID
      *
-     * 一般来说，通过链路追踪编号，可以将访问日志，错误日志，链路追踪日志，logger 打印日志等，结合在一起，从而进行排错。
+     * Generally speaking, through the link tracking ID, access logs, error logs, link tracking logs, logger print logs, etc. can be combined together for troubleshooting.
      */
     private String traceId;
     /**
-     * 用户编号
+     * User ID
      *
-     * 关联 MemberUserDO 的 id 属性，或者 AdminUserDO 的 id 属性
+     * Associate the id attribute of MemberUserDO, or the id attribute of AdminUserDO
      */
     private Long userId;
     /**
-     * 用户类型
+     * User type
      *
-     * 关联 {@link  UserTypeEnum}
+     * Association {@link UserTypeEnum}
      */
     private Integer userType;
     /**
-     * 操作模块类型
+     * Operation module type
      */
     private String type;
     /**
-     * 操作名
+     * Operation name
      */
     private String subType;
     /**
-     * 操作模块业务编号
+     * Operation module business ID
      */
     private Long bizId;
     /**
-     * 日志内容，记录整个操作的明细
+     * Log content, recording details of the entire operation
      *
-     * 例如说，修改编号为 1 的用户信息，将性别从男改成女，将姓名从芋道改成源码。
+     * For example, modify the user information IDed 1, change the gender from male to female, and change the name from Yudao to Yuandao.
      */
     private String action;
     /**
-     * 拓展字段，有些复杂的业务，需要记录一些字段 ( JSON 格式 )
+     * Expand fields, some complex businesses need to record some fields (JSON format)
      *
-     * 例如说，记录订单编号，{ orderId: "1"}
+     * For example, record the order ID, { orderId: "1"}
      */
     private String extra;
 
     /**
-     * 请求方法名
+     * Request method name
      */
     private String requestMethod;
     /**
-     * 请求地址
+     * Request address
      */
     private String requestUrl;
     /**
-     * 用户 IP
+     * User IP
      */
     private String userIp;
     /**
-     * 浏览器 UA
+     * Browser UA
      */
     private String userAgent;
 

@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <!-- 搜索工作栏 -->
+    <!-- Search workbar -->
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
 #foreach($column in $columns)
 #if ($column.listOperation)
@@ -10,54 +10,54 @@
     #set ($comment=$column.columnComment)
 #if ($column.htmlType == "input")
       <el-form-item label="${comment}" prop="${javaField}">
-        <el-input v-model="queryParams.${javaField}" placeholder="请输入${comment}" clearable @keyup.enter.native="handleQuery"/>
+        <el-input v-model="queryParams.${javaField}" placeholder="Please enter ${comment}" clearable @keyup.enter.native="handleQuery"/>
       </el-form-item>
 #elseif ($column.htmlType == "select" || $column.htmlType == "radio")
       <el-form-item label="${comment}" prop="${javaField}">
-        <el-select v-model="queryParams.${javaField}" placeholder="请选择${comment}" clearable size="small">
-    #if ("" != $dictType)## 设置了 dictType 数据字典的情况
+        <el-select v-model="queryParams.${javaField}" placeholder="Please select ${comment}" clearable size="small">
+    #if ("" != $dictType)## When the dictType data dict is set
           <el-option v-for="dict in this.getDictDatas(DICT_TYPE.$dictType.toUpperCase())"
                        :key="dict.value" :label="dict.label" :value="dict.value"/>
-    #else## 未设置 dictType 数据字典的情况
-          <el-option label="请选择字典生成" value="" />
+    #else## When the dictType data dict is not set
+          <el-option label="Please select dict generation" value="" />
     #end
         </el-select>
       </el-form-item>
 #elseif($column.htmlType == "datetime")
-    #if ($column.listOperationCondition != "BETWEEN")## 非范围
+    #if ($column.listOperationCondition != "BETWEEN")## out of scope
       <el-form-item label="${comment}" prop="${javaField}">
-        <el-date-picker clearable v-model="queryParams.${javaField}" type="date" value-format="yyyy-MM-dd" placeholder="选择${comment}" />
+        <el-date-picker clearable v-model="queryParams.${javaField}" type="date" value-format="yyyy-MM-dd" placeholder="Select ${comment}" />
       </el-form-item>
-    #else## 范围
+    #else## scope
       <el-form-item label="${comment}" prop="${javaField}">
         <el-date-picker v-model="queryParams.${javaField}" style="width: 240px" value-format="yyyy-MM-dd HH:mm:ss" type="daterange"
-                        range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" />
+                        range-separator="-" start-placeholder="start date" end-placeholder="end date" :default-time="['00:00:00', '23:59:59']" />
       </el-form-item>
     #end
 #end
 #end
 #end
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" @click="resetQuery">重置</el-button>
+        <el-button type="primary" icon="el-icon-search" @click="handleQuery">Search</el-button>
+        <el-button icon="el-icon-refresh" @click="resetQuery">reset</el-button>
       </el-form-item>
     </el-form>
 
-    <!-- 操作工具栏 -->
+    <!-- Operation toolbar -->
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button type="primary" plain icon="el-icon-plus" size="mini" @click="openForm(undefined)"
-                   v-hasPermi="['${permissionPrefix}:create']">新增</el-button>
+                   v-hasPermi="['${permissionPrefix}:create']">Add</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button type="warning" plain icon="el-icon-download" size="mini" @click="handleExport" :loading="exportLoading"
-                   v-hasPermi="['${permissionPrefix}:export']">导出</el-button>
+                   v-hasPermi="['${permissionPrefix}:export']">Export</el-button>
       </el-col>
-    ## 特殊：树表专属逻辑
+    ## Special: tree table exclusive logic
     #if ( $table.templateType == 2 )
       <el-col :span="1.5">
         <el-button type="danger" plain icon="el-icon-sort" size="mini" @click="toggleExpandAll">
-          展开/折叠
+          expand/collapse
         </el-button>
       </el-col>
     #end
@@ -72,14 +72,14 @@
             @click="handleDeleteBatch"
             v-hasPermi="['${permissionPrefix}:delete']"
         >
-          批量删除
+          Batch delete
         </el-button>
       </el-col>
     #end
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-      ## 特殊：主子表专属逻辑
+      ## Special: Exclusive logic for master and sub-tables
       #if ( $table.templateType == 11 && $subTables && $subTables.size() > 0 )
       <el-table
         row-key="id"
@@ -93,7 +93,7 @@
         @selection-change="handleRowCheckboxChange"
         #end
       >
-          ## 特殊：树表专属逻辑
+          ## Special: tree table exclusive logic
       #elseif ( $table.templateType == 2 )
       <el-table
         v-loading="loading"
@@ -119,9 +119,9 @@
       #if ($table.templateType != 2 && $deleteBatchEnable)
         <el-table-column type="selection" width="55" />
       #end
-      ## 特殊：主子表专属逻辑
+      ## Special: Exclusive logic for master and sub-tables
       #if ( $table.templateType == 12 && $subTables && $subTables.size() > 0 )
-        <!-- 子表的列表 -->
+        <!-- List of child tables -->
         <el-table-column type="expand">
           <template #default="scope">
             <el-tabs value="$subClassNameVars.get(0)">
@@ -144,13 +144,13 @@
     #set ($javaField = $column.javaField)
     #set ($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
     #set ($comment=$column.columnComment)
-#if ($column.javaType == "LocalDateTime")## 时间类型
+#if ($column.javaType == "LocalDateTime")## time type
       <el-table-column label="${comment}" align="center" prop="${javaField}" width="180">
         <template v-slot="scope">
           <span>{{ parseTime(scope.row.${javaField}) }}</span>
         </template>
       </el-table-column>
-#elseif("" != $column.dictType)## 数据字典
+#elseif("" != $column.dictType)## data dict
       <el-table-column label="${comment}" align="center" prop="${javaField}">
         <template v-slot="scope">
           <dict-tag :type="DICT_TYPE.$dictType.toUpperCase()" :value="scope.row.${column.javaField}" />
@@ -161,26 +161,26 @@
 #end
 #end
 #end
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="Operation" align="center" class-name="small-padding fixed-width">
         <template v-slot="scope">
           <el-button size="mini" type="text" icon="el-icon-edit" @click="openForm(scope.row.${primaryColumn.javaField})"
-                     v-hasPermi="['${permissionPrefix}:update']">修改</el-button>
+                     v-hasPermi="['${permissionPrefix}:update']">Modify</el-button>
           <el-button size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)"
-                     v-hasPermi="['${permissionPrefix}:delete']">删除</el-button>
+                     v-hasPermi="['${permissionPrefix}:delete']">Delete</el-button>
         </template>
       </el-table-column>
     </el-table>
-## 特殊：树表专属逻辑（树不需要分页）
+## Special: Exclusive logic for tree tables (trees DO not require paging)
 #if ( $table.templateType != 2 )
-    <!-- 分页组件 -->
+    <!-- Pagination component -->
     <pagination v-show="total > 0" :total="total" :page.sync="queryParams.pageNo" :limit.sync="queryParams.pageSize"
                 @pagination="getList"/>
 #end
-    <!-- 对话框(添加 / 修改) -->
+    <!-- Dialog (Add/Modify) -->
     <${simpleClassName}Form ref="formRef" @success="getList" />
-  ## 特殊：主子表专属逻辑
+  ## Special: Exclusive logic for master and sub-tables
   #if ( $table.templateType == 11 && $subTables && $subTables.size() > 0 )
-    <!-- 子表的列表 -->
+    <!-- List of child tables -->
       <el-tabs v-model="subTabsName">
           #foreach ($subTable in $subTables)
               #set ($index = $foreach.count - 1)
@@ -208,7 +208,7 @@ import FileUpload from '@/components/FileUpload';
 #if ($hasEditorColumn)
 import Editor from '@/components/Editor';
 #end
-## 特殊：主子表专属逻辑
+## Special: Exclusive logic for master and sub-tables
 #if ( $table.templateType != 10 )
 #if ( $subTables && $subTables.size() > 0 )
     #foreach ($subSimpleClassName in $subSimpleClassNames)
@@ -220,7 +220,7 @@ export default {
   name: "${simpleClassName}",
   components: {
           ${simpleClassName}Form,
-## 特殊：主子表专属逻辑
+## Special: Exclusive logic for master and sub-tables
 #if ( $table.templateType != 10 )
 #if ( $subTables && $subTables.size() > 0 )
       #foreach ($subSimpleClassName in $subSimpleClassNames)
@@ -240,29 +240,29 @@ export default {
   },
   data() {
     return {
-      // 遮罩层
+      // mask layer
       loading: true,
-      // 导出遮罩层
+      // Export mask layer
       exportLoading: false,
-      // 显示搜索条件
+      // Show search criteria
       showSearch: true,
-      ## 特殊：树表专属逻辑（树不需要分页接口）
+      ## Special: Exclusive logic for tree tables (trees DO not require paging API)
       #if ( $table.templateType != 2 )
-        // 总条数
+        // Total ID of items
         total: 0,
       #end
-      // ${table.classComment}列表
+      // ${table.classComment} list
       list: [],
-      // 是否展开，默认全部展开
+      // Whether to expand, expand all by default
       isExpandAll: true,
-      // 重新渲染表格状态
+      // Re-render table state
       refreshTable: true,
-      // 选中行
+      // Select row
       currentRow: {},
       checkedIds: [],
-      // 查询参数
+      // query parameters
       queryParams: {
-        ## 特殊：树表专属逻辑（树不需要分页接口）
+        ## Special: Exclusive logic for tree tables (trees DO not require paging API)
         #if ( $table.templateType != 2 )
             pageNo: 1,
             pageSize: 10,
@@ -278,10 +278,10 @@ export default {
         #end
         #end
       },
-        ## 特殊：主子表专属逻辑-erp
+        ## Special: Exclusive logic for master and sub-tables-erp
         #if ( $table.templateType == 11)
             #if ( $subTables && $subTables.size() > 0 )
-              /** 子表的列表 */
+              /** List of child tables */
               subTabsName: '$subClassNameVars.get(0)'
             #end
         #end
@@ -291,11 +291,11 @@ export default {
     this.getList();
   },
   methods: {
-    /** 查询列表 */
+    /** query list */
     async getList() {
       try {
       this.loading = true;
-      ## 特殊：树表专属逻辑（树不需要分页接口）
+      ## Special: Exclusive logic for tree tables (trees DO not require paging API)
       #if ( $table.templateType == 2 )
        const res = await ${simpleClassName}Api.get${simpleClassName}List(this.queryParams);
        this.list = this.handleTree(res.data, 'id', '${treeParentColumn.javaField}');
@@ -308,48 +308,48 @@ export default {
         this.loading = false;
       }
     },
-    /** 搜索按钮操作 */
+    /** Search button action */
     handleQuery() {
       this.queryParams.pageNo = 1;
       this.getList();
     },
-    /** 重置按钮操作 */
+    /** reset button action */
     resetQuery() {
       this.resetForm("queryForm");
       this.handleQuery();
     },
-    /** 添加/修改操作 */
+    /** Add/modify operations */
     openForm(id) {
       this.#[[$]]#refs["formRef"].open(id);
     },
-    /** 删除按钮操作 */
+    /** Delete button action */
     async handleDelete(row) {
       const ${primaryColumn.javaField} = row.${primaryColumn.javaField};
-      await this.#[[$modal]]#.confirm('是否确认删除${table.classComment}编号为"' + ${primaryColumn.javaField} + '"的数据项?')
+      await this.#[[$modal]]#.confirm('Are you sure to delete ${table.classComment} IDed "' + ${primaryColumn.javaField} + '"data item?')
       try {
        await ${simpleClassName}Api.delete${simpleClassName}(${primaryColumn.javaField});
        await this.getList();
-       this.#[[$modal]]#.msgSuccess("删除成功");
+       this.#[[$modal]]#.msgSuccess("Delete successfully");
       } catch {}
     },
     #if ($table.templateType != 2 && $deleteBatchEnable)
-    /** 批量删除${table.classComment} */
+    /** Batch delete ${table.classComment} */
     async handleDeleteBatch() {
-      await this.#[[$modal]]#.confirm('是否确认删除?')
+      await this.#[[$modal]]#.confirm('Confirm deletion?')
       try {
         await ${simpleClassName}Api.delete${simpleClassName}List(this.checkedIds);
         this.checkedIds = [];
         await this.getList();
-        this.#[[$modal]]#.msgSuccess("删除成功");
+        this.#[[$modal]]#.msgSuccess("Delete successfully");
       } catch {}
     },
     handleRowCheckboxChange(records) {
       this.checkedIds = records.map((item) => item.id);
     },
     #end
-    /** 导出按钮操作 */
+    /** Export button action */
     async handleExport() {
-      await this.#[[$modal]]#.confirm('是否确认导出所有${table.classComment}数据项?');
+      await this.#[[$modal]]#.confirm('Are you sure to export all ${table.classComment} data items?');
       try {
         this.exportLoading = true;
         const data = await ${simpleClassName}Api.export${simpleClassName}Excel(this.queryParams);
@@ -359,20 +359,20 @@ export default {
         this.exportLoading = false;
       }
     },
-      ## 特殊：主子表专属逻辑
+      ## Special: Exclusive logic for master and sub-tables
       #if ( $table.templateType == 11 )
-        /** 选中行操作 */
+        /** Select row operation */
         handleCurrentChange(row) {
          this.currentRow = row;
         #if ( $subTables && $subTables.size() > 0 )
-          /** 子表的列表 */
+          /** List of child tables */
           this.subTabsName = '$subClassNameVars.get(0)';
         #end
         },
       #end
-      ## 特殊：树表专属逻辑
+      ## Special: tree table exclusive logic
       #if ( $table.templateType == 2 )
-        /** 展开/折叠操作 */
+        /** Expand/collapse operations */
         toggleExpandAll() {
           this.refreshTable = false
           this.isExpandAll = !this.isExpandAll

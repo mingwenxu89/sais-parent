@@ -7,9 +7,9 @@ import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 /**
- * 文件配置 Convert
+ * File configuration Convert
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Mapper
 public interface FileConfigConvert {

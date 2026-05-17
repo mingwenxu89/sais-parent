@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 /**
- * 短信渠道配置类
+ * SMS channel configuration class
  *
  * @author zzf
  * @since 2021/1/25 17:01
@@ -18,34 +18,34 @@ import jakarta.validation.constraints.NotNull;
 public class SmsChannelProperties {
 
     /**
-     * 渠道编号
+     * Channel ID
      */
-    @NotNull(message = "短信渠道 ID 不能为空")
+    @NotNull(message = "SMS channel ID cannot be empty")
     private Long id;
     /**
-     * 短信签名
+     * SMS signature
      */
-    @NotEmpty(message = "短信签名不能为空")
+    @NotEmpty(message = "SMS signature cannot be empty")
     private String signature;
     /**
-     * 渠道编码
+     * Channel code
      *
-     * 枚举 {@link SmsChannelEnum}
+     * Enum {@link SmsChannelEnum}
      */
-    @NotEmpty(message = "渠道编码不能为空")
+    @NotEmpty(message = "Channel code cannot be empty")
     private String code;
     /**
-     * 短信 API 的账号
+     * SMS API account
      */
-    @NotEmpty(message = "短信 API 的账号不能为空")
+    @NotEmpty(message = "The SMS API account cannot be empty")
     private String apiKey;
     /**
-     * 短信 API 的密钥
+     * SMS API key
      */
-    @NotEmpty(message = "短信 API 的密钥不能为空")
+    @NotEmpty(message = "SMS API key cannot be empty")
     private String apiSecret;
     /**
-     * 短信发送回调 URL
+     * SMS send callback URL
      */
     private String callbackUrl;
 

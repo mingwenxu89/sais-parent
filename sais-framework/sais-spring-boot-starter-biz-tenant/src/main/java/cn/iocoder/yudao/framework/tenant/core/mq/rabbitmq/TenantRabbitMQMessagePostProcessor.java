@@ -10,22 +10,22 @@ import org.springframework.messaging.handler.invocation.InvocableHandlerMethod;
 import static cn.iocoder.yudao.framework.web.core.util.WebFrameworkUtils.HEADER_TENANT_ID;
 
 /**
- * RabbitMQ 消息队列的多租户 {@link ProducerInterceptor} 实现类
+ * Multi-tenant {@link ProducerInterceptor} implementation class for RabbitMQ message queue
  *
- * 1. Producer 发送消息时，将 {@link TenantContextHolder} 租户编号，添加到消息的 Header 中
- * 2. Consumer 消费消息时，将消息的 Header 的租户编号，添加到 {@link TenantContextHolder} 中，通过 {@link InvocableHandlerMethod} 实现
+ * 1. When the Producer sends a message, add the {@link TenantContextHolder} tenant ID to the Header of the message.
+ * 2. When Consumer consumes a message, add the tenant ID of the message Header to {@link TenantContextHolder} and implement it through {@link InvocableHandlerMethod}
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public class TenantRabbitMQMessagePostProcessor implements MessagePostProcessor {
 
-    @Override
-    public Message postProcessMessage(Message message) throws AmqpException {
-        Long tenantId = TenantContextHolder.getTenantId();
-        if (tenantId != null) {
-            message.getMessageProperties().getHeaders().put(HEADER_TENANT_ID, tenantId);
-        }
-        return message;
-    }
+ @Override
+ public Message postProcessMessage(Message message) throws AmqpException {
+ Long tenantId = TenantContextHolder.getTenantId();
+ if (tenantId != null) {
+ message.getMessageProperties().getHeaders().put(HEADER_TENANT_ID, tenantId);
+ }
+ return message;
+ }
 
 }

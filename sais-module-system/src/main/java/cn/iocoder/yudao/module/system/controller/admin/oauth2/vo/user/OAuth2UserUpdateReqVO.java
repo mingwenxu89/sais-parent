@@ -9,26 +9,26 @@ import org.hibernate.validator.constraints.Length;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 
-@Schema(description = "管理后台 - OAuth2 更新用户基本信息 Request VO")
+@Schema(description = "Management background - OAuth2 update basic user information Request VO")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class OAuth2UserUpdateReqVO {
 
-    @Schema(description = "用户昵称", requiredMode = Schema.RequiredMode.REQUIRED, example = "芋艿")
-    @Size(max = 30, message = "用户昵称长度不能超过 30 个字符")
+    @Schema(description = "User nickname", requiredMode = Schema.RequiredMode.REQUIRED, example = "Yunai")
+    @Size(max = 30, message = "User nickname cannot exceed 30 characters in length")
     private String nickname;
 
-    @Schema(description = "用户邮箱", example = "yudao@iocoder.cn")
-    @Email(message = "邮箱格式不正确")
-    @Size(max = 50, message = "邮箱长度不能超过 50 个字符")
+    @Schema(description = "User email", example = "yudao@iocoder.cn")
+    @Email(message = "Email format is incorrect")
+    @Size(max = 50, message = "Email length cannot exceed 50 characters")
     private String email;
 
-    @Schema(description = "手机号码", example = "15601691300")
-    @Length(min = 11, max = 11, message = "手机号长度必须 11 位")
+    @Schema(description = "Mobile phone ID", example = "15601691300")
+    @Length(min = 11, max = 11, message = "Mobile phone ID must be 11 digits long")
     private String mobile;
 
-    @Schema(description = "用户性别，参见 SexEnum 枚举类", example = "1")
+    @Schema(description = "User gender, see SexEnum enumeration class", example = "1")
     private Integer sex;
 
 }

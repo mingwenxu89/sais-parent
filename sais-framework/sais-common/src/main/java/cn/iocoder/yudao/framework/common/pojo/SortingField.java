@@ -7,31 +7,31 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 /**
- * 排序字段 DTO
+ * Sort field DTO
  *
- * 类名加了 ing 的原因是，避免和 ES SortField 重名。
+ * The reason why ing is added to the class name is to avoID having the same name as ES SortField.
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class SortingField implements Serializable {
 
-    /**
-     * 顺序 - 升序
-     */
-    public static final String ORDER_ASC = "asc";
-    /**
-     * 顺序 - 降序
-     */
-    public static final String ORDER_DESC = "desc";
+ /**
+     * Order - Ascending
+ */
+ public static final String ORDER_ASC = "asc";
+ /**
+     * Order - Descending
+ */
+ public static final String ORDER_DESC = "desc";
 
-    /**
-     * 字段
-     */
-    private String field;
-    /**
-     * 顺序
-     */
-    private String order;
+ /**
+     * Field
+ */
+ private String field;
+ /**
+     * order
+ */
+ private String order;
 
 }

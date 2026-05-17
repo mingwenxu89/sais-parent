@@ -13,12 +13,12 @@ import lombok.*;
 import java.util.List;
 
 /**
- * 站内信模版 DO
+ * Site letter template DO
  *
  * @author xrcoder
  */
 @TableName(value = "system_notify_template", autoResultMap = true)
-@KeySequence("system_notify_template_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
+@KeySequence("system_notify_template_seq") // Primary key auto-increment for Oracle, PostgreSQL, Kingbase, DB2, H2 databases. If it is a database such as MySQL, you DO not need to write it.
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
@@ -34,40 +34,40 @@ public class NotifyTemplateDO extends BaseDO {
     @TableId
     private Long id;
     /**
-     * 模版名称
+     * Template name
      */
     private String name;
     /**
-     * 模版编码
+     * Template coding
      */
     private String code;
     /**
-     * 模版类型
+     * template type
      *
-     * 对应 system_notify_template_type 字典
+     * Corresponds to system_notify_template_type dict
      */
     private Integer type;
     /**
-     * 发送人名称
+     * Sender name
      */
     private String nickname;
     /**
-     * 模版内容
+     * Template content
      */
     private String content;
     /**
-     * 参数数组
+     * parameter array
      */
     @TableField(typeHandler = JacksonTypeHandler.class)
     private List<String> params;
     /**
-     * 状态
+     * Status
      *
-     * 枚举 {@link CommonStatusEnum}
+     * Enum {@link CommonStatusEnum}
      */
     private Integer status;
     /**
-     * 备注
+     * Remark
      */
     private String remark;
 

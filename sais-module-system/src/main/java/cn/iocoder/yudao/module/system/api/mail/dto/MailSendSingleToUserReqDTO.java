@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 邮件发送 Request DTO
+ * Send email Request DTO
  *
  * @author wangjingqi
  */
@@ -17,38 +17,38 @@ import java.util.Map;
 public class MailSendSingleToUserReqDTO {
 
     /**
-     * 用户编号
+     * User ID
      *
-     * 如果非空，则加载对应用户的邮箱，添加到 {@link #toMails} 中
+     * If it is not empty, load the corresponding user's mailbox and add it to {@link #toMails}
      */
     private Long userId;
 
     /**
-     * 收件邮箱
+     * Receiving email
      */
     private List<@Email String> toMails;
     /**
-     * 抄送邮箱
+     * Cc email
      */
     private List<@Email String> ccMails;
     /**
-     * 密送邮箱
+     * Bcc email
      */
     private List<@Email String> bccMails;
 
 
     /**
-     * 邮件模板编号
+     * Email template ID
      */
-    @NotNull(message = "邮件模板编号不能为空")
+    @NotNull(message = "Email template ID cannot be empty")
     private String templateCode;
     /**
-     * 邮件模板参数
+     * Email template parameters
      */
     private Map<String, Object> templateParams;
 
     /**
-     * 附件
+     * Accessories
      */
     private File[] attachments;
 

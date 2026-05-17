@@ -13,34 +13,34 @@ import java.util.List;
 import static cn.iocoder.yudao.framework.web.core.util.WebFrameworkUtils.HEADER_TENANT_ID;
 
 /**
- * RocketMQ 消息队列的多租户 {@link ConsumeMessageHook} 实现类
+ * Multi-tenant {@link ConsumeMessageHook} implementation class of RocketMQ message queue
  *
- * Consumer 消费消息时，将消息的 Header 的租户编号，添加到 {@link TenantContextHolder} 中，通过 {@link InvocableHandlerMethod} 实现
+ * When Consumer consumes a message, it adds the tenant ID of the header of the message to {@link TenantContextHolder} and implements it through {@link InvocableHandlerMethod}
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public class TenantRocketMQConsumeMessageHook implements ConsumeMessageHook {
 
-    @Override
-    public String hookName() {
-        return getClass().getSimpleName();
-    }
+ @Override
+ public String hookName() {
+ return getClass().getSimpleName();
+ }
 
-    @Override
-    public void consumeMessageBefore(ConsumeMessageContext context) {
-        // 校验，消息必须是单条，不然设置租户可能不正确
-        List<MessageExt> messages = context.getMsgList();
-        Assert.isTrue(messages.size() == 1, "消息条数({})不正确", messages.size());
-        // 设置租户编号
-        String tenantId = messages.get(0).getUserProperty(HEADER_TENANT_ID);
-        if (StrUtil.isNotEmpty(tenantId)) {
-            TenantContextHolder.setTenantId(Long.parseLong(tenantId));
-        }
-    }
+ @Override
+ public void consumeMessageBefore(ConsumeMessageContext context) {
+        // Verification, the message must be a single message, otherwise the tenant setting may be incorrect.
+ List<MessageExt> messages = context.getMsgList();
+        Assert.isTrue(messages.size() == 1, "message count ({}) is incorrect", messages.size());
+        // Set tenant ID
+ String tenantId = messages.get(0).getUserProperty(HEADER_TENANT_ID);
+ if (StrUtil.isNotEmpty(tenantId)) {
+ TenantContextHolder.setTenantId(Long.parseLong(tenantId));
+ }
+ }
 
-    @Override
-    public void consumeMessageAfter(ConsumeMessageContext context) {
-        TenantContextHolder.clear();
-    }
+ @Override
+ public void consumeMessageAfter(ConsumeMessageContext context) {
+ TenantContextHolder.clear();
+ }
 
 }

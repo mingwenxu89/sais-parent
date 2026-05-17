@@ -6,30 +6,30 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * 部门的数据权限 Response DTO
+ * Department data permissions Response DTO
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Data
 public class DeptDataPermissionRespDTO {
 
-    /**
-     * 是否可查看全部数据
-     */
-    private Boolean all;
-    /**
-     * 是否可查看自己的数据
-     */
-    private Boolean self;
-    /**
-     * 可查看的部门编号数组
-     */
-    private Set<Long> deptIds;
+ /**
+     * Can all data be viewed?
+ */
+ private Boolean all;
+ /**
+     * Can I view my own data?
+ */
+ private Boolean self;
+ /**
+     * Viewable array of department IDs
+ */
+ private Set<Long> deptIds;
 
-    public DeptDataPermissionRespDTO() {
-        this.all = false;
-        this.self = false;
-        this.deptIds = new HashSet<>();
-    }
+ public DeptDataPermissionRespDTO() {
+ this.all = false;
+ this.self = false;
+ this.deptIds = new HashSet<>();
+ }
 
 }

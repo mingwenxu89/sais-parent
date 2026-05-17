@@ -17,9 +17,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 文件存储器枚举
+ * File storage enumeration
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @AllArgsConstructor
 @Getter
@@ -35,16 +35,16 @@ public enum FileStorageEnum {
     ;
 
     /**
-     * 存储器
+     * memory
      */
     private final Integer storage;
 
     /**
-     * 配置类
+     * Configuration class
      */
     private final Class<? extends FileClientConfig> configClass;
     /**
-     * 客户端类
+     * Client class
      */
     private final Class<? extends FileClient> clientClass;
 

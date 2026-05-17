@@ -5,7 +5,7 @@ import cn.iocoder.yudao.module.system.framework.sms.core.property.SmsChannelProp
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 短信客户端的抽象类，提供模板方法，减少子类的冗余代码
+ * Abstract class of SMS client, providing template methods to reduce redundant code in subclasses
  *
  * @author zzf
  * @since 2021/2/1 9:28
@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 public abstract class AbstractSmsClient implements SmsClient {
 
     /**
-     * 短信渠道配置
+     * SMS channel configuration
      */
     protected volatile SmsChannelProperties properties;
 
@@ -23,20 +23,20 @@ public abstract class AbstractSmsClient implements SmsClient {
     }
 
     /**
-     * 初始化
+     * initialization
      */
     public final void init() {
-        log.debug("[init][配置({}) 初始化完成]", properties);
+        log.debug("[init][Configuration ({}) initialization completed]", properties);
     }
 
     public final void refresh(SmsChannelProperties properties) {
-        // 判断是否更新
+        // Determine whether to update
         if (properties.equals(this.properties)) {
             return;
         }
-        log.info("[refresh][配置({})发生变化，重新初始化]", properties);
+        log.info("[refresh][Configuration ({}) changes, reinitialize]", properties);
         this.properties = properties;
-        // 初始化
+        // initialization
         this.init();
     }
 

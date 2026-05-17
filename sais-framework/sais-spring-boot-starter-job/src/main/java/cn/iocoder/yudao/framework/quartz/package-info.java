@@ -1,7 +1,7 @@
 /**
- * 1. 定时任务，采用 Quartz 实现进程内的任务执行。
- * 考虑到高可用，使用 Quartz 自带的 MySQL 集群方案。
+ * 1. Scheduled tasks, using Quartz to implement task execution within the process.
+ * Considering high availability, Quartz’s own MySQL cluster solution is used.
  *
- * 2. 异步任务，采用 Spring Async 异步执行。
+ * 2. Asynchronous tasks are executed asynchronously using Spring Async.
  */
 package cn.iocoder.yudao.framework.quartz;

@@ -20,9 +20,9 @@ import static cn.iocoder.yudao.module.infra.dal.dataobject.logger.ApiAccessLogDO
 import static cn.iocoder.yudao.module.infra.dal.dataobject.logger.ApiAccessLogDO.RESULT_MSG_MAX_LENGTH;
 
 /**
- * API 访问日志 Service 实现类
+ * API access log Service implementation class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Slf4j
 @Service
@@ -40,7 +40,7 @@ public class ApiAccessLogServiceImpl implements ApiAccessLogService {
         if (TenantContextHolder.getTenantId() != null) {
             apiAccessLogMapper.insert(apiAccessLog);
         } else {
-            // 极端情况下，上下文中没有租户时，此时忽略租户上下文，避免插入失败！
+            // In extreme cases, when there is no tenant in the context, the tenant context is ignored at this time to avoid insertion failure!
             TenantUtils.executeIgnore(() -> apiAccessLogMapper.insert(apiAccessLog));
         }
     }
@@ -60,11 +60,11 @@ public class ApiAccessLogServiceImpl implements ApiAccessLogService {
     public Integer cleanAccessLog(Integer exceedDay, Integer deleteLimit) {
         int count = 0;
         LocalDateTime expireDate = LocalDateTime.now().minusDays(exceedDay);
-        // 循环删除，直到没有满足条件的数据
+        // Delete in a loop until there is no data that meets the condition
         for (int i = 0; i < Short.MAX_VALUE; i++) {
             int deleteCount = apiAccessLogMapper.deleteByCreateTimeLt(expireDate, deleteLimit);
             count += deleteCount;
-            // 达到删除预期条数，说明到底了
+            // Reaching the expected ID of deletions means it’s over
             if (deleteCount < deleteLimit) {
                 break;
             }

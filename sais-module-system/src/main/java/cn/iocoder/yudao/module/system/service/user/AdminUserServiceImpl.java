@@ -52,9 +52,9 @@ import static cn.iocoder.yudao.module.system.enums.ErrorCodeConstants.*;
 import static cn.iocoder.yudao.module.system.enums.LogRecordConstants.*;
 
 /**
- * 后台用户 Service 实现类
+ * Background user Service implementation class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Service("adminUserService")
 @Slf4j
@@ -76,10 +76,10 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Resource
     private PasswordEncoder passwordEncoder;
     @Resource
-    @Lazy // 延迟，避免循环依赖报错
+    @Lazy // Delay to avoid circular dependency errors
     private TenantService tenantService;
     @Resource
-    @Lazy // 懒加载，避免循环依赖
+    @Lazy // Lazy loading to avoid circular dependencies
     private OAuth2TokenService oauth2TokenService;
 
     @Resource
@@ -93,52 +93,52 @@ public class AdminUserServiceImpl implements AdminUserService {
     @LogRecord(type = SYSTEM_USER_TYPE, subType = SYSTEM_USER_CREATE_SUB_TYPE, bizNo = "{{#user.id}}",
             success = SYSTEM_USER_CREATE_SUCCESS)
     public Long createUser(UserSaveReqVO createReqVO) {
-        // 1.1 校验账户配合
+        // 1.1 Verify account coordination
         tenantService.handleTenantInfo(tenant -> {
             long count = userMapper.selectCount();
             if (count >= tenant.getAccountCount()) {
                 throw exception(USER_COUNT_MAX, tenant.getAccountCount());
             }
         });
-        // 1.2 校验正确性
+        // 1.2 Verification correctness
         validateUserForCreateOrUpdate(null, createReqVO.getUsername(),
                 createReqVO.getMobile(), createReqVO.getEmail(), createReqVO.getDeptId(), createReqVO.getPostIds());
-        // 2.1 插入用户
+        // 2.1 Insert user
         AdminUserDO user = BeanUtils.toBean(createReqVO, AdminUserDO.class);
-        user.setStatus(CommonStatusEnum.ENABLE.getStatus()); // 默认开启
-        user.setPassword(encodePassword(createReqVO.getPassword())); // 加密密码
+        user.setStatus(CommonStatusEnum.ENABLE.getStatus()); // Enabled by default
+        user.setPassword(encodePassword(createReqVO.getPassword())); // Encrypted password
         userMapper.insert(user);
-        // 2.2 插入关联岗位
+        // 2.2 Insert related positions
         if (CollectionUtil.isNotEmpty(user.getPostIds())) {
             userPostMapper.insertBatch(convertList(user.getPostIds(),
                     postId -> new UserPostDO().setUserId(user.getId()).setPostId(postId)));
         }
 
-        // 3. 记录操作日志上下文
+        // 3. Record operation log context
         LogRecordContext.putVariable("user", user);
         return user.getId();
     }
 
     @Override
     public Long registerUser(AuthRegisterReqVO registerReqVO) {
-        // 1.1 校验是否开启注册
+        // 1.1 Verify whether registration is enabled
         if (ObjUtil.notEqual(configApi.getConfigValueByKey(USER_REGISTER_ENABLED_KEY), "true")) {
             throw exception(USER_REGISTER_DISABLED);
         }
-        // 1.2 校验账户配合
+        // 1.2 Verify account coordination
         tenantService.handleTenantInfo(tenant -> {
             long count = userMapper.selectCount();
             if (count >= tenant.getAccountCount()) {
                 throw exception(USER_COUNT_MAX, tenant.getAccountCount());
             }
         });
-        // 1.3 校验正确性
+        // 1.3 Verification correctness
         validateUserForCreateOrUpdate(null, registerReqVO.getUsername(), null, null, null, null);
 
-        // 2. 插入用户
+        // 2. Insert user
         AdminUserDO user = BeanUtils.toBean(registerReqVO, AdminUserDO.class);
-        user.setStatus(CommonStatusEnum.ENABLE.getStatus()); // 默认开启
-        user.setPassword(encodePassword(registerReqVO.getPassword())); // 加密密码
+        user.setStatus(CommonStatusEnum.ENABLE.getStatus()); // Enabled by default
+        user.setPassword(encodePassword(registerReqVO.getPassword())); // Encrypted password
         userMapper.insert(user);
         return user.getId();
     }
@@ -148,18 +148,18 @@ public class AdminUserServiceImpl implements AdminUserService {
     @LogRecord(type = SYSTEM_USER_TYPE, subType = SYSTEM_USER_UPDATE_SUB_TYPE, bizNo = "{{#updateReqVO.id}}",
             success = SYSTEM_USER_UPDATE_SUCCESS)
     public void updateUser(UserSaveReqVO updateReqVO) {
-        updateReqVO.setPassword(null); // 特殊：此处不更新密码
-        // 1. 校验正确性
+        updateReqVO.setPassword(null); // Special: DO not update password here
+        // 1. Verify correctness
         AdminUserDO oldUser = validateUserForCreateOrUpdate(updateReqVO.getId(), updateReqVO.getUsername(),
                 updateReqVO.getMobile(), updateReqVO.getEmail(), updateReqVO.getDeptId(), updateReqVO.getPostIds());
 
-        // 2.1 更新用户
+        // 2.1 Update user
         AdminUserDO updateObj = BeanUtils.toBean(updateReqVO, AdminUserDO.class);
         userMapper.updateById(updateObj);
-        // 2.2 更新岗位
+        // 2.2 Update positions
         updateUserPost(updateReqVO, updateObj);
 
-        // 3. 记录操作日志上下文
+        // 3. Record operation log context
         LogRecordContext.putVariable(DiffParseFunction.OLD_OBJECT, BeanUtils.toBean(oldUser, UserSaveReqVO.class));
         LogRecordContext.putVariable("user", oldUser);
     }
@@ -167,11 +167,11 @@ public class AdminUserServiceImpl implements AdminUserService {
     private void updateUserPost(UserSaveReqVO reqVO, AdminUserDO updateObj) {
         Long userId = reqVO.getId();
         Set<Long> dbPostIds = convertSet(userPostMapper.selectListByUserId(userId), UserPostDO::getPostId);
-        // 计算新增和删除的岗位编号
+        // Calculate newly added and deleted position IDs
         Set<Long> postIds = CollUtil.emptyIfNull(updateObj.getPostIds());
         Collection<Long> createPostIds = CollUtil.subtract(postIds, dbPostIds);
         Collection<Long> deletePostIds = CollUtil.subtract(dbPostIds, postIds);
-        // 执行新增和删除。对于已经授权的岗位，不用做任何处理
+        // Perform additions and deletions. For positions that have been authorized, no processing is required.
         if (!CollectionUtil.isEmpty(createPostIds)) {
             userPostMapper.insertBatch(convertList(createPostIds,
                     postId -> new UserPostDO().setUserId(userId).setPostId(postId)));
@@ -188,21 +188,21 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     public void updateUserProfile(Long id, UserProfileUpdateReqVO reqVO) {
-        // 校验正确性
+        // Check correctness
         validateUserExists(id);
         validateEmailUnique(id, reqVO.getEmail());
         validateMobileUnique(id, reqVO.getMobile());
-        // 执行更新
+        // perform update
         userMapper.updateById(BeanUtils.toBean(reqVO, AdminUserDO.class).setId(id));
     }
 
     @Override
     public void updateUserPassword(Long id, UserProfileUpdatePasswordReqVO reqVO) {
-        // 校验旧密码密码
+        // Verify old password password
         validateOldPassword(id, reqVO.getOldPassword());
-        // 执行更新
+        // perform update
         AdminUserDO updateObj = new AdminUserDO().setId(id);
-        updateObj.setPassword(encodePassword(reqVO.getNewPassword())); // 加密密码
+        updateObj.setPassword(encodePassword(reqVO.getNewPassword())); // Encrypted password
         userMapper.updateById(updateObj);
     }
 
@@ -210,31 +210,31 @@ public class AdminUserServiceImpl implements AdminUserService {
     @LogRecord(type = SYSTEM_USER_TYPE, subType = SYSTEM_USER_UPDATE_PASSWORD_SUB_TYPE, bizNo = "{{#id}}",
             success = SYSTEM_USER_UPDATE_PASSWORD_SUCCESS)
     public void updateUserPassword(Long id, String password) {
-        // 1. 校验用户存在
+        // 1. Verify user existence
         AdminUserDO user = validateUserExists(id);
 
-        // 2. 更新密码
+        // 2. Update password
         AdminUserDO updateObj = new AdminUserDO();
         updateObj.setId(id);
-        updateObj.setPassword(encodePassword(password)); // 加密密码
+        updateObj.setPassword(encodePassword(password)); // Encrypted password
         userMapper.updateById(updateObj);
 
-        // 3. 记录操作日志上下文
+        // 3. Record operation log context
         LogRecordContext.putVariable("user", user);
         LogRecordContext.putVariable("newPassword", updateObj.getPassword());
     }
 
     @Override
     public void updateUserStatus(Long id, Integer status) {
-        // 校验用户存在
+        // Verify user exists
         validateUserExists(id);
-        // 更新状态
+        // update status
         AdminUserDO updateObj = new AdminUserDO();
         updateObj.setId(id);
         updateObj.setStatus(status);
         userMapper.updateById(updateObj);
 
-        // 如果是禁用用户，则删除其 Token 信息
+        // If the user is disabled, delete his Token information
         if (CommonStatusEnum.isDisable(status)) {
             oauth2TokenService.removeAccessToken(id, UserTypeEnum.ADMIN.getValue());
         }
@@ -245,27 +245,27 @@ public class AdminUserServiceImpl implements AdminUserService {
     @LogRecord(type = SYSTEM_USER_TYPE, subType = SYSTEM_USER_DELETE_SUB_TYPE, bizNo = "{{#id}}",
             success = SYSTEM_USER_DELETE_SUCCESS)
     public void deleteUser(Long id) {
-        // 1. 校验用户存在
+        // 1. Verify user existence
         AdminUserDO user = validateUserExists(id);
 
-        // 2.1 删除用户
+        // 2.1 Delete user
         userMapper.deleteById(id);
-        // 2.2 删除用户关联数据
+        // 2.2 Delete user-related data
         permissionService.processUserDeleted(id);
-        // 2.2 删除用户岗位
+        // 2.2 Delete user position
         userPostMapper.deleteByUserId(id);
 
-        // 3. 记录操作日志上下文
+        // 3. Record operation log context
         LogRecordContext.putVariable("user", user);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteUserList(List<Long> ids) {
-        // 1. 批量删除用户
+        // 1. Delete users in batches
         userMapper.deleteByIds(ids);
 
-        // 2. 批量删除用户关联数据
+        // 2. Delete user-related data in batches
         ids.forEach(id -> {
             permissionService.processUserDeleted(id);
             userPostMapper.deleteByUserId(id);
@@ -284,7 +284,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     public PageResult<AdminUserDO> getUserPage(UserPageReqVO reqVO) {
-        // 如果有角色编号，查询角色对应的用户编号
+        // If there is a role ID, query the user ID corresponding to the role.
         Set<Long> userIds = null;
         if (reqVO.getRoleId() != null) {
             userIds = permissionService.getUserRoleIdListByRoleId(singleton(reqVO.getRoleId()));
@@ -293,7 +293,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             }
         }
 
-        // 分页查询
+        // Page query
         return userMapper.selectPage(reqVO, getDeptCondition(reqVO.getDeptId()), userIds);
     }
 
@@ -335,10 +335,10 @@ public class AdminUserServiceImpl implements AdminUserService {
         if (CollUtil.isEmpty(ids)) {
             return;
         }
-        // 获得岗位信息
+        // Get job information
         List<AdminUserDO> users = userMapper.selectByIds(ids);
         Map<Long, AdminUserDO> userMap = CollectionUtils.convertMap(users, AdminUserDO::getId);
-        // 校验
+        // Verify
         ids.forEach(id -> {
             AdminUserDO user = userMap.get(id);
             if (user == null) {
@@ -356,35 +356,35 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     /**
-     * 获得部门条件：查询指定部门的子部门编号们，包括自身
+     * Obtain department conditions: Query the sub-department IDs of the specified department, including itself
      *
-     * @param deptId 部门编号
-     * @return 部门编号集合
+     * @param deptId Department ID
+     * @return Department ID collection
      */
     private Set<Long> getDeptCondition(Long deptId) {
         if (deptId == null) {
             return Collections.emptySet();
         }
         Set<Long> deptIds = convertSet(deptService.getChildDeptList(deptId), DeptDO::getId);
-        deptIds.add(deptId); // 包括自身
+        deptIds.add(deptId); // including self
         return deptIds;
     }
 
     private AdminUserDO validateUserForCreateOrUpdate(Long id, String username, String mobile, String email,
                                                Long deptId, Set<Long> postIds) {
-        // 关闭数据权限，避免因为没有数据权限，查询不到数据，进而导致唯一校验不正确
+        // Turn off data permissions to avoid not being able to query data due to lack of data permissions, resulting in incorrect unique verification
         return DataPermissionUtils.executeIgnore(() -> {
-            // 校验用户存在
+            // Verify user exists
             AdminUserDO user = validateUserExists(id);
-            // 校验用户名唯一
+            // Verify username is unique
             validateUsernameUnique(id, username);
-            // 校验手机号唯一
+            // Verify that the mobile phone ID is unique
             validateMobileUnique(id, mobile);
-            // 校验邮箱唯一
+            // Verify that the email is unique
             validateEmailUnique(id, email);
-            // 校验部门处于开启状态
+            // The verification department is open
             deptService.validateDeptList(CollectionUtils.singleton(deptId));
-            // 校验岗位处于开启状态
+            // The verification position is open
             postService.validatePostList(postIds);
             return user;
         });
@@ -411,7 +411,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         if (user == null) {
             return;
         }
-        // 如果 id 为空，说明不用比较是否为相同 id 的用户
+        // If the id is empty, it means there is no need to compare whether they are users with the same id.
         if (id == null) {
             throw exception(USER_USERNAME_EXISTS);
         }
@@ -429,7 +429,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         if (user == null) {
             return;
         }
-        // 如果 id 为空，说明不用比较是否为相同 id 的用户
+        // If the id is empty, it means there is no need to compare whether they are users with the same id.
         if (id == null) {
             throw exception(USER_EMAIL_EXISTS);
         }
@@ -447,7 +447,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         if (user == null) {
             return;
         }
-        // 如果 id 为空，说明不用比较是否为相同 id 的用户
+        // If the id is empty, it means there is no need to compare whether they are users with the same id.
         if (id == null) {
             throw exception(USER_MOBILE_EXISTS);
         }
@@ -457,9 +457,9 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     /**
-     * 校验旧密码
-     * @param id          用户 id
-     * @param oldPassword 旧密码
+     * Verify old password
+     * @param id          user id
+     * @param oldPassword old password
      */
     @VisibleForTesting
     void validateOldPassword(Long id, String oldPassword) {
@@ -473,33 +473,33 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class) // 添加事务，异常则回滚所有导入
+    @Transactional(rollbackFor = Exception.class) // Add a transaction, roll back all imports if exception occurs
     public UserImportRespVO importUserList(List<UserImportExcelVO> importUsers, boolean isUpdateSupport) {
-        // 1.1 参数校验
+        // 1.1 Parameter verification
         if (CollUtil.isEmpty(importUsers)) {
             throw exception(USER_IMPORT_LIST_IS_EMPTY);
         }
-        // 1.2 初始化密码不能为空
+        // 1.2 The initialization password cannot be empty
         String initPassword = configApi.getConfigValueByKey(USER_INIT_PASSWORD_KEY);
         if (StrUtil.isEmpty(initPassword)) {
             throw exception(USER_IMPORT_INIT_PASSWORD);
         }
 
-        // 2. 遍历，逐个创建 or 更新
+        // 2. Traverse, create or update one by one
         UserImportRespVO respVO = UserImportRespVO.builder().createUsernames(new ArrayList<>())
                 .updateUsernames(new ArrayList<>()).failureUsernames(new LinkedHashMap<>()).build();
         AtomicInteger index = new AtomicInteger(1);
         importUsers.forEach(importUser -> {
             int currentIndex = index.getAndIncrement();
-            // 2.1.1 校验字段是否符合要求
+            // 2.1.1 Check whether the fields meet the requirements
             try {
                 ValidationUtils.validate(BeanUtils.toBean(importUser, UserSaveReqVO.class).setPassword(initPassword));
             } catch (ConstraintViolationException ex) {
-                String key = StrUtil.blankToDefault(importUser.getUsername(), "第 " + currentIndex + " 行");
+                String key = StrUtil.blankToDefault(importUser.getUsername(), "No. " + currentIndex + " OK");
                 respVO.getFailureUsernames().put(key, ex.getMessage());
                 return;
             }
-            // 2.1.2 校验，判断是否有不符合的原因
+            // 2.1.2 Verification to determine whether there are any reasons for noncompliance
             try {
                 validateUserForCreateOrUpdate(null, null, importUser.getMobile(), importUser.getEmail(),
                         importUser.getDeptId(), null);
@@ -508,15 +508,15 @@ public class AdminUserServiceImpl implements AdminUserService {
                 return;
             }
 
-            // 2.2.1 判断如果不存在，在进行插入
+            // 2.2.1 Determine if it does not exist, insert it
             AdminUserDO existUser = userMapper.selectByUsername(importUser.getUsername());
             if (existUser == null) {
                 userMapper.insert(BeanUtils.toBean(importUser, AdminUserDO.class)
-                        .setPassword(encodePassword(initPassword)).setPostIds(new HashSet<>())); // 设置默认密码及空岗位编号数组
+                        .setPassword(encodePassword(initPassword)).setPostIds(new HashSet<>())); // Set default password and empty position ID array
                 respVO.getCreateUsernames().add(importUser.getUsername());
                 return;
             }
-            // 2.2.2 如果存在，判断是否允许更新
+            // 2.2.2 If it exists, determine whether the update is allowed
             if (!isUpdateSupport) {
                 respVO.getFailureUsernames().put(importUser.getUsername(), USER_USERNAME_EXISTS.getMsg());
                 return;
@@ -540,10 +540,10 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     /**
-     * 对密码进行加密
+     * Encrypt password
      *
-     * @param password 密码
-     * @return 加密后的密码
+     * @param password Password
+     * @return Encrypted password
      */
     private String encodePassword(String password) {
         return passwordEncoder.encode(password);

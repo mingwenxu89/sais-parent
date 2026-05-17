@@ -14,42 +14,42 @@ import java.util.List;
 @AutoConfiguration(after = YudaoRedisAutoConfiguration.class)
 public class YudaoRateLimiterConfiguration {
 
-    @Bean
-    public RateLimiterAspect rateLimiterAspect(List<RateLimiterKeyResolver> keyResolvers, RateLimiterRedisDAO rateLimiterRedisDAO) {
-        return new RateLimiterAspect(keyResolvers, rateLimiterRedisDAO);
-    }
+ @Bean
+ public RateLimiterAspect rateLimiterAspect(List<RateLimiterKeyResolver> keyResolvers, RateLimiterRedisDAO rateLimiterRedisDAO) {
+ return new RateLimiterAspect(keyResolvers, rateLimiterRedisDAO);
+ }
 
-    @Bean
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public RateLimiterRedisDAO rateLimiterRedisDAO(RedissonClient redissonClient) {
-        return new RateLimiterRedisDAO(redissonClient);
-    }
+ @Bean
+ @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+ public RateLimiterRedisDAO rateLimiterRedisDAO(RedissonClient redissonClient) {
+ return new RateLimiterRedisDAO(redissonClient);
+ }
 
-    // ========== 各种 RateLimiterRedisDAO Bean ==========
+    // ========== Various RateLimiterRedisDAO Beans ==========
 
-    @Bean
-    public DefaultRateLimiterKeyResolver defaultRateLimiterKeyResolver() {
-        return new DefaultRateLimiterKeyResolver();
-    }
+ @Bean
+ public DefaultRateLimiterKeyResolver defaultRateLimiterKeyResolver() {
+ return new DefaultRateLimiterKeyResolver();
+ }
 
-    @Bean
-    public UserRateLimiterKeyResolver userRateLimiterKeyResolver() {
-        return new UserRateLimiterKeyResolver();
-    }
+ @Bean
+ public UserRateLimiterKeyResolver userRateLimiterKeyResolver() {
+ return new UserRateLimiterKeyResolver();
+ }
 
-    @Bean
-    public ClientIpRateLimiterKeyResolver clientIpRateLimiterKeyResolver() {
-        return new ClientIpRateLimiterKeyResolver();
-    }
+ @Bean
+ public ClientIpRateLimiterKeyResolver clientIpRateLimiterKeyResolver() {
+ return new ClientIpRateLimiterKeyResolver();
+ }
 
-    @Bean
-    public ServerNodeRateLimiterKeyResolver serverNodeRateLimiterKeyResolver() {
-        return new ServerNodeRateLimiterKeyResolver();
-    }
+ @Bean
+ public ServerNodeRateLimiterKeyResolver serverNodeRateLimiterKeyResolver() {
+ return new ServerNodeRateLimiterKeyResolver();
+ }
 
-    @Bean
-    public ExpressionRateLimiterKeyResolver expressionRateLimiterKeyResolver() {
-        return new ExpressionRateLimiterKeyResolver();
-    }
+ @Bean
+ public ExpressionRateLimiterKeyResolver expressionRateLimiterKeyResolver() {
+ return new ExpressionRateLimiterKeyResolver();
+ }
 
 }

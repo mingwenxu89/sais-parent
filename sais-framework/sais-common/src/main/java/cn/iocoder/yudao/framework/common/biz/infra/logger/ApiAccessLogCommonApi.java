@@ -1,28 +1,27 @@
 package cn.iocoder.yudao.framework.common.biz.infra.logger;
 
 import cn.iocoder.yudao.framework.common.biz.infra.logger.dto.ApiAccessLogCreateReqDTO;
+import jakarta.validation.Valid;
 import org.springframework.scheduling.annotation.Async;
 
-import jakarta.validation.Valid;
-
 /**
- * API 访问日志的 API 接口
+ * API API for API access logs
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface ApiAccessLogCommonApi {
 
     /**
-     * 创建 API 访问日志
+     * Create API access log
      *
-     * @param createDTO 创建信息
+     * @param createDTO Create information
      */
     void createApiAccessLog(@Valid ApiAccessLogCreateReqDTO createDTO);
 
     /**
-     * 【异步】创建 API 访问日志
+     * [Asynchronous] Create API access log
      *
-     * @param createDTO 访问日志 DTO
+     * @param createDTO Access log DTO
      */
     @Async
     default void createApiAccessLogAsync(ApiAccessLogCreateReqDTO createDTO) {

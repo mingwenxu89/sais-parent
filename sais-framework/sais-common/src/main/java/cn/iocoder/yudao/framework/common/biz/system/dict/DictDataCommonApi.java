@@ -5,18 +5,18 @@ import cn.iocoder.yudao.framework.common.biz.system.dict.dto.DictDataRespDTO;
 import java.util.List;
 
 /**
- * 字典数据 API 接口
+ * Dictionary data API interface
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface DictDataCommonApi {
 
-    /**
-     * 获得指定字典类型的字典数据列表
-     *
-     * @param dictType 字典类型
-     * @return 字典数据列表
-     */
-    List<DictDataRespDTO> getDictDataList(String dictType);
+ /**
+     * Get a dictionary data list of the specified dictionary type
+ *
+     * @param dictType dictionary type
+     * @return Dictionary data list
+ */
+ List<DictDataRespDTO> getDictDataList(String dictType);
 
 }

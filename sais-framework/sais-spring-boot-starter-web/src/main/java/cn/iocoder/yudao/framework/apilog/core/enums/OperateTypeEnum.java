@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 操作日志的操作类型
+ * Operation type of operation log
  *
  * @author ruoyi
  */
@@ -12,40 +12,40 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum OperateTypeEnum {
 
-    /**
-     * 查询
-     */
-    GET(1),
-    /**
-     * 新增
-     */
-    CREATE(2),
-    /**
-     * 修改
-     */
-    UPDATE(3),
-    /**
-     * 删除
-     */
-    DELETE(4),
-    /**
-     * 导出
-     */
-    EXPORT(5),
-    /**
-     * 导入
-     */
-    IMPORT(6),
-    /**
-     * 其它
-     *
-     * 在无法归类时，可以选择使用其它。因为还有操作名可以进一步标识
-     */
-    OTHER(0);
+ /**
+     * Query
+ */
+ GET(1),
+ /**
+     * New
+ */
+ CREATE(2),
+ /**
+     * Revise
+ */
+ UPDATE(3),
+ /**
+     * delete
+ */
+ DELETE(4),
+ /**
+     * Export
+ */
+ EXPORT(5),
+ /**
+     * import
+ */
+ IMPORT(6),
+ /**
+     * other
+ *
+     * When it cannot be classified, you can choose to use others. Because there are also operation names that can be further identified
+ */
+ OTHER(0);
 
-    /**
-     * 类型
-     */
-    private final Integer type;
+ /**
+     * type
+ */
+ private final Integer type;
 
 }

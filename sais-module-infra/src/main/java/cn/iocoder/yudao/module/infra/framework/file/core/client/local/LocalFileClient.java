@@ -7,9 +7,9 @@ import cn.iocoder.yudao.module.infra.framework.file.core.client.AbstractFileClie
 import java.io.File;
 
 /**
- * 本地文件客户端
+ * local file client
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public class LocalFileClient extends AbstractFileClient<LocalFileClientConfig> {
 
@@ -23,10 +23,10 @@ public class LocalFileClient extends AbstractFileClient<LocalFileClientConfig> {
 
     @Override
     public String upload(byte[] content, String path, String type) {
-        // 执行写入
+        // perform write
         String filePath = getFilePath(path);
         FileUtil.writeBytes(content, filePath);
-        // 拼接返回路径
+        // splice return path
         return super.formatFileUrl(config.getDomain(), path);
     }
 

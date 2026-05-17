@@ -1,6 +1,6 @@
 /**
- * 基础的通用类，和框架无关
+ * Basic general class, nothing to do with the framework
  *
- * 例如说，CommonResult 为通用返回
+ * For example, CommonResult returns a common
  */
 package cn.iocoder.yudao.framework.common;

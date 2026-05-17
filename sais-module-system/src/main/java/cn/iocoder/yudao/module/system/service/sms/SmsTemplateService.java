@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 短信模板 Service 接口
+ * SMS template Service API
  *
  * @author zzf
  * @since 2021/1/25 9:24
@@ -18,72 +18,72 @@ import java.util.Map;
 public interface SmsTemplateService {
 
     /**
-     * 创建短信模板
+     * Create SMS template
      *
-     * @param createReqVO 创建信息
-     * @return 编号
+     * @param createReqVO Create information
+     * @return ID
      */
     Long createSmsTemplate(@Valid SmsTemplateSaveReqVO createReqVO);
 
     /**
-     * 更新短信模板
+     * Update SMS template
      *
-     * @param updateReqVO 更新信息
+     * @param updateReqVO Update information
      */
     void updateSmsTemplate(@Valid SmsTemplateSaveReqVO updateReqVO);
 
     /**
-     * 删除短信模板
+     * Delete SMS template
      *
-     * @param id 编号
+     * @param id ID
      */
     void deleteSmsTemplate(Long id);
 
     /**
-     * 批量删除短信模板
+     * Delete SMS templates in batches
      *
-     * @param ids 编号数组
+     * @param ids IDed array
      */
     void deleteSmsTemplateList(List<Long> ids);
 
     /**
-     * 获得短信模板
+     * Get SMS template
      *
-     * @param id 编号
-     * @return 短信模板
+     * @param id ID
+     * @return SMS template
      */
     SmsTemplateDO getSmsTemplate(Long id);
 
     /**
-     * 获得短信模板，从缓存中
+     * Get SMS template from cache
      *
-     * @param code 模板编码
-     * @return 短信模板
+     * @param code template encoding
+     * @return SMS template
      */
     SmsTemplateDO getSmsTemplateByCodeFromCache(String code);
 
     /**
-     * 获得短信模板分页
+     * Get SMS template pagination
      *
-     * @param pageReqVO 分页查询
-     * @return 短信模板分页
+     * @param pageReqVO Page query
+     * @return SMS template pagination
      */
     PageResult<SmsTemplateDO> getSmsTemplatePage(SmsTemplatePageReqVO pageReqVO);
 
     /**
-     * 获得指定短信渠道下的短信模板数量
+     * Get the ID of SMS templates under the specified SMS channel
      *
-     * @param channelId 短信渠道编号
-     * @return 数量
+     * @param channelId SMS channel ID
+     * @return Quantity
      */
     Long getSmsTemplateCountByChannelId(Long channelId);
 
     /**
-     * 格式化短信内容
+     * Format text message content
      *
-     * @param content 短信模板的内容
-     * @param params 内容的参数
-     * @return 格式化后的内容
+     * @param content Contents of SMS template
+     * @param params content parameters
+     * @return Formatted content
      */
     String formatSmsTemplateContent(String content, Map<String, Object> params);
 

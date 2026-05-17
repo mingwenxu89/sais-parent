@@ -10,23 +10,23 @@ import jakarta.validation.constraints.NotNull;
 @Data
 public class NotifyTemplateReqDTO {
 
-    @NotEmpty(message = "模版名称不能为空")
+    @NotEmpty(message = "Template name cannot be empty")
     private String name;
 
-    @NotNull(message = "模版编码不能为空")
+    @NotNull(message = "Template code cannot be empty")
     private String code;
 
-    @NotNull(message = "模版类型不能为空")
+    @NotNull(message = "Template type cannot be empty")
     private Integer type;
 
-    @NotEmpty(message = "发送人名称不能为空")
+    @NotEmpty(message = "Sender name cannot be empty")
     private String nickname;
 
-    @NotEmpty(message = "模版内容不能为空")
+    @NotEmpty(message = "Template content cannot be empty")
     private String content;
 
-    @NotNull(message = "状态不能为空")
-    @InEnum(value = CommonStatusEnum.class, message = "状态必须是 {value}")
+    @NotNull(message = "Status cannot be empty")
+    @InEnum(value = CommonStatusEnum.class, message = "status must be {value}")
     private Integer status;
 
     private String remark;

@@ -9,38 +9,38 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * 通知公告表
+ * Notice announcement form
  *
  * @author ruoyi
  */
 @TableName("system_notice")
-@KeySequence("system_notice_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
+@KeySequence("system_notice_seq") // Primary key auto-increment for Oracle, PostgreSQL, Kingbase, DB2, H2 databases. If it is a database such as MySQL, you DO not need to write it.
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class NoticeDO extends BaseDO {
 
     /**
-     * 公告ID
+     * Announcement ID
      */
     private Long id;
     /**
-     * 公告标题
+     * Announcement title
      */
     private String title;
     /**
-     * 公告类型
+     * Announcement type
      *
-     * 枚举 {@link NoticeTypeEnum}
+     * Enum {@link NoticeTypeEnum}
      */
     private Integer type;
     /**
-     * 公告内容
+     * Announcement content
      */
     private String content;
     /**
-     * 公告状态
+     * Announcement status
      *
-     * 枚举 {@link CommonStatusEnum}
+     * Enum {@link CommonStatusEnum}
      */
     private Integer status;
 

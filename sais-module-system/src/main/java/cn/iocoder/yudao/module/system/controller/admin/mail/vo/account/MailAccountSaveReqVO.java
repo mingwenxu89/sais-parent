@@ -6,40 +6,40 @@ import lombok.Data;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 
-@Schema(description = "管理后台 - 邮箱账号创建/修改 Request VO")
+@Schema(description = "Management backend - Email account creation/modification Request VO")
 @Data
 public class MailAccountSaveReqVO {
 
-    @Schema(description = "编号", example = "1024")
+    @Schema(description = "ID", example = "1024")
     private Long id;
 
-    @Schema(description = "邮箱", requiredMode = Schema.RequiredMode.REQUIRED, example = "yudaoyuanma@123.com")
-    @NotNull(message = "邮箱不能为空")
-    @Email(message = "必须是 Email 格式")
+    @Schema(description = "Email", requiredMode = Schema.RequiredMode.REQUIRED, example = "yudaoyuanma@123.com")
+    @NotNull(message = "Email cannot be empty")
+    @Email(message = "Must be in Email format")
     private String mail;
 
-    @Schema(description = "用户名", requiredMode = Schema.RequiredMode.REQUIRED, example = "yudao")
-    @NotNull(message = "用户名不能为空")
+    @Schema(description = "Username", requiredMode = Schema.RequiredMode.REQUIRED, example = "yudao")
+    @NotNull(message = "Username cannot be empty")
     private String username;
 
-    @Schema(description = "密码", requiredMode = Schema.RequiredMode.REQUIRED, example = "123456")
-    @NotNull(message = "密码必填")
+    @Schema(description = "Password", requiredMode = Schema.RequiredMode.REQUIRED, example = "123456")
+    @NotNull(message = "Password required")
     private String password;
 
-    @Schema(description = "SMTP 服务器域名", requiredMode = Schema.RequiredMode.REQUIRED, example = "www.iocoder.cn")
-    @NotNull(message = "SMTP 服务器域名不能为空")
+    @Schema(description = "SMTP server domain name", requiredMode = Schema.RequiredMode.REQUIRED, example = "www.iocoder.cn")
+    @NotNull(message = "SMTP server domain name cannot be empty")
     private String host;
 
-    @Schema(description = "SMTP 服务器端口", requiredMode = Schema.RequiredMode.REQUIRED, example = "80")
-    @NotNull(message = "SMTP 服务器端口不能为空")
+    @Schema(description = "SMTP server port", requiredMode = Schema.RequiredMode.REQUIRED, example = "80")
+    @NotNull(message = "SMTP server port cannot be empty")
     private Integer port;
 
-    @Schema(description = "是否开启 ssl", requiredMode = Schema.RequiredMode.REQUIRED, example = "true")
-    @NotNull(message = "是否开启 ssl 必填")
+    @Schema(description = "Whether to enable ssl", requiredMode = Schema.RequiredMode.REQUIRED, example = "true")
+    @NotNull(message = "Whether to enable ssl required")
     private Boolean sslEnable;
 
-    @Schema(description = "是否开启 starttls", requiredMode = Schema.RequiredMode.REQUIRED, example = "true")
-    @NotNull(message = "是否开启 starttls 必填")
+    @Schema(description = "Whether to enable starttls", requiredMode = Schema.RequiredMode.REQUIRED, example = "true")
+    @NotNull(message = "Whether to enable starttls Required")
     private Boolean starttlsEnable;
 
 }

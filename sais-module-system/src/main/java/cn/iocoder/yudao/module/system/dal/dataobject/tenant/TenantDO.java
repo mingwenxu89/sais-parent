@@ -14,12 +14,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 租户 DO
+ * Tenant DO
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @TableName(value = "system_tenant", autoResultMap = true)
-@KeySequence("system_tenant_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
+@KeySequence("system_tenant_seq") // Primary key auto-increment for Oracle, PostgreSQL, Kingbase, DB2, H2 databases. If it is a database such as MySQL, you DO not need to write it.
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
@@ -30,59 +30,59 @@ import java.util.List;
 public class TenantDO extends BaseDO {
 
     /**
-     * 套餐编号 - 系统
+     * Package ID - System
      */
     public static final Long PACKAGE_ID_SYSTEM = 0L;
 
     /**
-     * 租户编号，自增
+     * Tenant ID, self-incrementing
      */
     private Long id;
     /**
-     * 租户名，唯一
+     * Tenant name, unique
      */
     private String name;
     /**
-     * 联系人的用户编号
+     * Contact user ID
      *
-     * 关联 {@link AdminUserDO#getId()}
+     * Association {@link AdminUserDO#getId()}
      */
     private Long contactUserId;
     /**
-     * 联系人
+     * Contact person
      */
     private String contactName;
     /**
-     * 联系手机
+     * Contact mobile phone
      */
     private String contactMobile;
     /**
-     * 租户状态
+     * Tenant status
      *
-     * 枚举 {@link CommonStatusEnum}
+     * Enum {@link CommonStatusEnum}
      */
     private Integer status;
     /**
-     * 绑定域名列表
+     * Bind domain name list
      *
-     * 1. 考虑到对微信小程序的兼容，也允许传递 appid
-     * 2. 为什么是数组，考虑到管理后台、会员前台都有独立的域名，又或者多个管理后台
+     * 1. Considering the compatibility with WeChat applet, appid is also allowed to be passed.
+     * 2. Why is it an array? Considering that the management backend and member frontend have independent domain names, or there are multiple management backends.
      */
     @TableField(typeHandler = StringListTypeHandler.class)
     private List<String> websites;
     /**
-     * 租户套餐编号
+     * Tenant Package ID
      *
-     * 关联 {@link TenantPackageDO#getId()}
-     * 特殊逻辑：系统内置租户，不使用套餐，暂时使用 {@link #PACKAGE_ID_SYSTEM} 标识
+     * Association {@link TenantPackageDO#getId()}
+     * Special logic: The system has built-in tenants, does not use packages, and temporarily uses the {@link #PACKAGE_ID_SYSTEM} identifier.
      */
     private Long packageId;
     /**
-     * 过期时间
+     * Expiration time
      */
     private LocalDateTime expireTime;
     /**
-     * 账号数量
+     * ID of accounts
      */
     private Integer accountCount;
 

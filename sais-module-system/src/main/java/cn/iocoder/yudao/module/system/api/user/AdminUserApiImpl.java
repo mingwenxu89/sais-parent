@@ -21,9 +21,9 @@ import java.util.Set;
 import static cn.iocoder.yudao.framework.common.util.collection.CollectionUtils.convertSet;
 
 /**
- * Admin 用户 API 实现类
+ * Admin user API implementation class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Service
 public class AdminUserApiImpl implements AdminUserApi {
@@ -34,7 +34,7 @@ public class AdminUserApiImpl implements AdminUserApi {
     private DeptService deptService;
 
     @Override
-    @DataPermission(enable = false) // 忽略数据权限，避免因为过滤，导致无法查询用户。类似：https://github.com/YunaiV/ruoyi-vue-pro/issues/1051
+    @DataPermission(enable = false) // Ignore data permissions to avoid being unable to query users due to filtering. Similar: https://github.com/YunaiV/ruoyi-vue-pro/issues/1051
     public AdminUserRespDTO getUser(Long id) {
         AdminUserDO user = userService.getUser(id);
         return BeanUtils.toBean(user, AdminUserRespDTO.class);
@@ -42,27 +42,27 @@ public class AdminUserApiImpl implements AdminUserApi {
 
     @Override
     public List<AdminUserRespDTO> getUserListBySubordinate(Long id) {
-        // 1.1 获取用户负责的部门
+        // 1.1 Obtain the department the user is responsible for
         List<DeptDO> depts = deptService.getDeptListByLeaderUserId(id);
         if (CollUtil.isEmpty(depts)) {
             return Collections.emptyList();
         }
-        // 1.2 获取所有子部门
+        // 1.2 Get all sub-departments
         Set<Long> deptIds = convertSet(depts, DeptDO::getId);
         List<DeptDO> childDeptList = deptService.getChildDeptList(deptIds);
         if (CollUtil.isNotEmpty(childDeptList)) {
             deptIds.addAll(convertSet(childDeptList, DeptDO::getId));
         }
 
-        // 2. 获取部门对应的用户信息
+        // 2. Obtain user information corresponding to the department
         List<AdminUserDO> users = userService.getUserListByDeptIds(deptIds);
-        users.removeIf(item -> ObjUtil.equal(item.getId(), id)); // 排除自己
+        users.removeIf(item -> ObjUtil.equal(item.getId(), id)); // exclude yourself
         return BeanUtils.toBean(users, AdminUserRespDTO.class);
     }
 
     @Override
     public List<AdminUserRespDTO> getUserList(Collection<Long> ids) {
-        return DataPermissionUtils.executeIgnore(() -> { // 禁用数据权限。原因是，一般基于指定 id 的 API 查询，都是数据拼接为主
+        return DataPermissionUtils.executeIgnore(() -> { // Disable data permissions. The reason is that generally API queries based on specified id are mainly based on data splicing.
             List<AdminUserDO> users = userService.getUserList(ids);
             return BeanUtils.toBean(users, AdminUserRespDTO.class);
         });

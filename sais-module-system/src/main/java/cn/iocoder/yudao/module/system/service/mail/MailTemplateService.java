@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 邮件模版 Service 接口
+ * Email template service API
  *
  * @author wangjingyi
  * @since 2022-03-21
@@ -18,79 +18,79 @@ import java.util.Map;
 public interface MailTemplateService {
 
     /**
-     * 邮件模版创建
+     * Email template creation
      *
-     * @param createReqVO 邮件信息
-     * @return 编号
+     * @param createReqVO Email message
+     * @return ID
      */
     Long createMailTemplate(@Valid MailTemplateSaveReqVO createReqVO);
 
     /**
-     * 邮件模版修改
+     * Email template modification
      *
-     * @param updateReqVO 邮件信息
+     * @param updateReqVO Email message
      */
     void updateMailTemplate(@Valid MailTemplateSaveReqVO updateReqVO);
 
     /**
-     * 邮件模版删除
+     * Email template deletion
      *
-     * @param id 编号
+     * @param id ID
      */
     void deleteMailTemplate(Long id);
 
     /**
-     * 批量删除邮件模版
+     * Batch delete email templates
      *
-     * @param ids 编号列表
+     * @param ids ID list
      */
     void deleteMailTemplateList(List<Long> ids);
 
     /**
-     * 获取邮件模版
+     * Get email template
      *
-     * @param id 编号
-     * @return 邮件模版
+     * @param id ID
+     * @return Email template
      */
     MailTemplateDO getMailTemplate(Long id);
 
     /**
-     * 获取邮件模版分页
+     * Get email template pagination
      *
-     * @param pageReqVO 模版信息
-     * @return 邮件模版分页信息
+     * @param pageReqVO Template information
+     * @return Email template pagination information
      */
     PageResult<MailTemplateDO> getMailTemplatePage(MailTemplatePageReqVO pageReqVO);
 
     /**
-     * 获取邮件模板数组
+     * Get email template array
      *
-     * @return 模版数组
+     * @return template array
      */
     List<MailTemplateDO> getMailTemplateList();
 
     /**
-     * 从缓存中获取邮件模版
+     * Get email template from cache
      *
-     * @param code 模板编码
-     * @return 邮件模板
+     * @param code template encoding
+     * @return Email template
      */
     MailTemplateDO getMailTemplateByCodeFromCache(String code);
 
     /**
-     * 邮件模版内容合成
+     * Email template content synthesis
      *
-     * @param content 邮件模版
-     * @param params 合成参数
-     * @return 格式化后的内容
+     * @param content Email template
+     * @param params Synthesis parameters
+     * @return Formatted content
      */
     String formatMailTemplateContent(String content, Map<String, Object> params);
 
     /**
-     * 获得指定邮件账号下的邮件模板数量
+     * Get the ID of email templates under the specified email account
      *
-     * @param accountId 账号编号
-     * @return 数量
+     * @param accountId Account ID
+     * @return Quantity
      */
     long getMailTemplateCountByAccountId(Long accountId);
 

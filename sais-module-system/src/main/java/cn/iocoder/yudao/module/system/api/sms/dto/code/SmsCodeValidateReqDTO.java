@@ -9,29 +9,29 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 /**
- * 短信验证码的校验 Request DTO
+ * Verification of SMS captcha Request DTO
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Data
 public class SmsCodeValidateReqDTO {
 
     /**
-     * 手机号
+     * Mobile phone ID
      */
     @Mobile
-    @NotEmpty(message = "手机号不能为空")
+    @NotEmpty(message = "Mobile phone ID cannot be empty")
     private String mobile;
     /**
-     * 发送场景
+     * Send scene
      */
-    @NotNull(message = "发送场景不能为空")
+    @NotNull(message = "The sending scene cannot be empty")
     @InEnum(SmsSceneEnum.class)
     private Integer scene;
     /**
-     * 验证码
+     * Captcha
      */
-    @NotEmpty(message = "验证码")
+    @NotEmpty(message = "Captcha")
     private String code;
 
 }

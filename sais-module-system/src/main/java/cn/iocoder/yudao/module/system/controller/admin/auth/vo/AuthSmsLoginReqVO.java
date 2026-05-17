@@ -9,20 +9,20 @@ import lombok.NoArgsConstructor;
 
 import jakarta.validation.constraints.NotEmpty;
 
-@Schema(description = "管理后台 - 短信验证码的登录 Request VO")
+@Schema(description = "Management backend - SMS captcha login Request VO")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class AuthSmsLoginReqVO {
 
-    @Schema(description = "手机号", requiredMode = Schema.RequiredMode.REQUIRED, example = "yudaoyuanma")
-    @NotEmpty(message = "手机号不能为空")
+    @Schema(description = "Mobile phone ID", requiredMode = Schema.RequiredMode.REQUIRED, example = "yudaoyuanma")
+    @NotEmpty(message = "Mobile phone ID cannot be empty")
     @Mobile
     private String mobile;
 
-    @Schema(description = "短信验证码", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
-    @NotEmpty(message = "验证码不能为空")
+    @Schema(description = "SMS captcha", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
+    @NotEmpty(message = "Captcha cannot be empty")
     private String code;
 
 }

@@ -10,36 +10,36 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 
 /**
- * 异步任务 Configuration
+ * Asynchronous task Configuration
  */
 @AutoConfiguration
 @EnableAsync
 public class YudaoAsyncAutoConfiguration {
 
-    @Bean
-    public BeanPostProcessor threadPoolTaskExecutorBeanPostProcessor() {
-        return new BeanPostProcessor() {
+ @Bean
+ public BeanPostProcessor threadPoolTaskExecutorBeanPostProcessor() {
+ return new BeanPostProcessor() {
 
-            @Override
-            @SuppressWarnings("PatternVariableCanBeUsed")
-            public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-                // 处理 ThreadPoolTaskExecutor
-                if (bean instanceof ThreadPoolTaskExecutor) {
-                    ThreadPoolTaskExecutor executor = (ThreadPoolTaskExecutor) bean;
-                    executor.setTaskDecorator(TtlRunnable::get);
-                    return executor;
-                }
-                // 处理 SimpleAsyncTaskExecutor
-                // 参考 https://t.zsxq.com/CBoks 增加
-                if (bean instanceof SimpleAsyncTaskExecutor) {
-                    SimpleAsyncTaskExecutor executor = (SimpleAsyncTaskExecutor) bean;
-                    executor.setTaskDecorator(TtlRunnable::get);
-                    return executor;
-                }
-                return bean;
-            }
+ @Override
+ @SuppressWarnings("PatternVariableCanBeUsed")
+ public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+                // Handle ThreadPoolTaskExecutor
+ if (bean instanceof ThreadPoolTaskExecutor) {
+ ThreadPoolTaskExecutor executor = (ThreadPoolTaskExecutor) bean;
+ executor.setTaskDecorator(TtlRunnable::get);
+ return executor;
+ }
+                // Handling SimpleAsyncTaskExecutor
+                // Reference https://t.zsxq.com/CBoks to add
+ if (bean instanceof SimpleAsyncTaskExecutor) {
+ SimpleAsyncTaskExecutor executor = (SimpleAsyncTaskExecutor) bean;
+ executor.setTaskDecorator(TtlRunnable::get);
+ return executor;
+ }
+ return bean;
+ }
 
-        };
-    }
+ };
+ }
 
 }

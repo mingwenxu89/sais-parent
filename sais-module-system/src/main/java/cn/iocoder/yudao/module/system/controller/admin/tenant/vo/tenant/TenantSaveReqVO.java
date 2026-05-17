@@ -13,54 +13,54 @@ import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Schema(description = "管理后台 - 租户创建/修改 Request VO")
+@Schema(description = "Management backend - Tenant creation/modification Request VO")
 @Data
 public class TenantSaveReqVO {
 
-    @Schema(description = "租户编号", example = "1024")
+    @Schema(description = "Tenant ID", example = "1024")
     private Long id;
 
-    @Schema(description = "租户名", requiredMode = Schema.RequiredMode.REQUIRED, example = "芋道")
-    @NotNull(message = "租户名不能为空")
+    @Schema(description = "Tenant name", requiredMode = Schema.RequiredMode.REQUIRED, example = "taro road")
+    @NotNull(message = "Tenant name cannot be empty")
     private String name;
 
-    @Schema(description = "联系人", requiredMode = Schema.RequiredMode.REQUIRED, example = "芋艿")
-    @NotNull(message = "联系人不能为空")
+    @Schema(description = "Contact person", requiredMode = Schema.RequiredMode.REQUIRED, example = "Yunai")
+    @NotNull(message = "Contact cannot be empty")
     private String contactName;
 
-    @Schema(description = "联系手机", example = "15601691300")
+    @Schema(description = "Contact mobile phone", example = "15601691300")
     private String contactMobile;
 
-    @Schema(description = "租户状态", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
-    @NotNull(message = "租户状态")
+    @Schema(description = "Tenant status", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
+    @NotNull(message = "Tenant status")
     private Integer status;
 
-    @Schema(description = "绑定域名数组", example = "https://www.iocoder.cn")
+    @Schema(description = "Bind domain name array", example = "https://www.iocoder.cn")
     private List<String> websites;
 
-    @Schema(description = "租户套餐编号", example = "1024")
+    @Schema(description = "Tenant Package ID", example = "1024")
     private Long packageId;
 
-    @Schema(description = "过期时间", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotNull(message = "过期时间不能为空")
+    @Schema(description = "Expiration time", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotNull(message = "Expiration time cannot be empty")
     private LocalDateTime expireTime;
 
-    // ========== 仅【创建】时，需要传递的字段 ==========
+    // ========== Fields that need to be passed only when [Creating] ==========
 
-    @Schema(description = "用户账号", requiredMode = Schema.RequiredMode.REQUIRED, example = "yudao")
-    @Pattern(regexp = "^[a-zA-Z0-9]{4,30}$", message = "用户账号由 数字、字母 组成")
-    @Size(min = 4, max = 30, message = "用户账号长度为 4-30 个字符")
+    @Schema(description = "User account", requiredMode = Schema.RequiredMode.REQUIRED, example = "yudao")
+    @Pattern(regexp = "^[a-zA-Z0-9]{4,30}$", message = "User account consists of IDs and letters")
+    @Size(min = 4, max = 30, message = "User account length is 4-30 characters")
     private String username;
 
-    @Schema(description = "密码", requiredMode = Schema.RequiredMode.REQUIRED, example = "123456")
-    @Length(min = 4, max = 16, message = "密码长度为 4-16 位")
+    @Schema(description = "Password", requiredMode = Schema.RequiredMode.REQUIRED, example = "123456")
+    @Length(min = 4, max = 16, message = "Password length is 4-16 characters")
     private String password;
 
-    @AssertTrue(message = "用户账号、密码不能为空")
+    @AssertTrue(message = "User account and password cannot be empty")
     @JsonIgnore
     public boolean isUsernameValid() {
-        return id != null // 修改时，不需要传递
-                || (ObjectUtil.isAllNotEmpty(username, password)); // 新增时，必须都传递 username、password
+        return id != null // When modifying, no need to pass
+                || (ObjectUtil.isAllNotEmpty(username, password)); // When adding, username and password must be passed.
     }
 
 }

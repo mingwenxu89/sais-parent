@@ -5,25 +5,25 @@ import cn.iocoder.yudao.module.system.api.notify.dto.NotifySendSingleToUserReqDT
 import jakarta.validation.Valid;
 
 /**
- * 站内信发送 API 接口
+ * Site message sending API API
  *
  * @author xrcoder
  */
 public interface NotifyMessageSendApi {
 
     /**
-     * 发送单条站内信给 Admin 用户
+     * Send a single site message to Admin users
      *
-     * @param reqDTO 发送请求
-     * @return 发送消息 ID
+     * @param reqDTO Send request
+     * @return Send message ID
      */
     Long sendSingleMessageToAdmin(@Valid NotifySendSingleToUserReqDTO reqDTO);
 
     /**
-     * 发送单条站内信给 Member 用户
+     * Send a single site message to Member users
      *
-     * @param reqDTO 发送请求
-     * @return 发送消息 ID
+     * @param reqDTO Send request
+     * @return Send message ID
      */
     Long sendSingleMessageToMember(@Valid NotifySendSingleToUserReqDTO reqDTO);
 

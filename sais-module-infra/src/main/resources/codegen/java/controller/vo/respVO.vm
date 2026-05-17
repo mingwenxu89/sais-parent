@@ -3,14 +3,14 @@ package ${basePackage}.module.${table.moduleName}.controller.${sceneEnum.basePac
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import java.util.*;
-## 处理 BigDecimal 字段的引入
+## Handling the introduction of BigDecimal fields
 #foreach ($column in $columns)
 #if (${column.javaType} == "BigDecimal")
 import java.math.BigDecimal;
 #break
 #end
 #end
-## 处理 LocalDateTime 字段的引入
+## Handle the introduction of LocalDateTime field
 #foreach ($column in $columns)
 #if (${column.listOperationResult} && ${column.javaType} == "LocalDateTime")
 import org.springframework.format.annotation.DateTimeFormat;
@@ -18,10 +18,10 @@ import java.time.LocalDateTime;
 #break
 #end
 #end
-## 处理 Excel 导出
+## Process Excel export
 import cn.idev.excel.annotation.*;
 #foreach ($column in $columns)
-#if ("$!column.dictType" != "")## 有设置数据字典
+#if ("$!column.dictType" != "")## Have set up data dict
 import ${DictFormatClassName};
 import ${DictConvertClassName};
 #break
@@ -33,19 +33,19 @@ import ${DictConvertClassName};
 @ExcelIgnoreUnannotated
 public class ${sceneEnum.prefixClass}${table.className}RespVO {
 
-## 逐个处理字段
+## Process fields one by one
 #foreach ($column in $columns)
 #if (${column.listOperationResult})
-## 1. 处理 Swagger 注解
+## 1. Process Swagger annotations
     @Schema(description = "${column.columnComment}"#if (!${column.nullable}), requiredMode = Schema.RequiredMode.REQUIRED#end#if ("$!column.example" != ""), example = "${column.example}"#end)
-## 2. 处理 Excel 导出
-#if ("$!column.dictType" != "")##处理枚举值
+## 2. Processing Excel exports
+#if ("$!column.dictType" != "")##Handle enumeration values
     @ExcelProperty(value = "${column.columnComment}", converter = DictConvert.class)
-    @DictFormat("${column.dictType}") // TODO 代码优化：建议设置到对应的 DictTypeConstants 枚举类中
+    @DictFormat("${column.dictType}") // TODO Code optimization: It is recommended to set it to the corresponding DictTypeConstants enumeration class
 #else
     @ExcelProperty("${column.columnComment}")
 #end
-## 3. 处理字段定义
+## 3. Process field definitions
     private ${column.javaType} ${column.javaField};
 
 #end

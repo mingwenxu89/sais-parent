@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 /**
- * 地名的 {@link IParseFunction} 实现类
+ * {@link IParseFunction} implementation class of place name
  *
  * @author HUIHUI
  */
@@ -20,7 +20,7 @@ public class AreaParseFunction implements IParseFunction {
 
     @Override
     public boolean executeBefore() {
-        return true; // 先转换值后对比
+        return true; // Convert values first and then compare
     }
 
     @Override

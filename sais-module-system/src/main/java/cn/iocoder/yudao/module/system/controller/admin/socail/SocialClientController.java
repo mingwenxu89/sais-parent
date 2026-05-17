@@ -23,7 +23,7 @@ import java.util.List;
 
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 
-@Tag(name = "管理后台 - 社交客户端")
+@Tag(name = "Management backend - social client")
 @RestController
 @RequestMapping("/system/social-client")
 @Validated
@@ -35,14 +35,14 @@ public class SocialClientController {
     private SocialClientApi socialClientApi;
 
     @PostMapping("/create")
-    @Operation(summary = "创建社交客户端")
+    @Operation(summary = "Create a social client")
     @PreAuthorize("@ss.hasPermission('system:social-client:create')")
     public CommonResult<Long> createSocialClient(@Valid @RequestBody SocialClientSaveReqVO createReqVO) {
         return success(socialClientService.createSocialClient(createReqVO));
     }
 
     @PutMapping("/update")
-    @Operation(summary = "更新社交客户端")
+    @Operation(summary = "Update social client")
     @PreAuthorize("@ss.hasPermission('system:social-client:update')")
     public CommonResult<Boolean> updateSocialClient(@Valid @RequestBody SocialClientSaveReqVO updateReqVO) {
         socialClientService.updateSocialClient(updateReqVO);
@@ -50,8 +50,8 @@ public class SocialClientController {
     }
 
     @DeleteMapping("/delete")
-    @Operation(summary = "删除社交客户端")
-    @Parameter(name = "id", description = "编号", required = true)
+    @Operation(summary = "Delete social client")
+    @Parameter(name = "id", description = "ID", required = true)
     @PreAuthorize("@ss.hasPermission('system:social-client:delete')")
     public CommonResult<Boolean> deleteSocialClient(@RequestParam("id") Long id) {
         socialClientService.deleteSocialClient(id);
@@ -59,8 +59,8 @@ public class SocialClientController {
     }
 
     @DeleteMapping("/delete-list")
-    @Parameter(name = "ids", description = "编号列表", required = true)
-    @Operation(summary = "批量删除社交客户端")
+    @Parameter(name = "ids", description = "ID list", required = true)
+    @Operation(summary = "Delete social clients in batches")
     @PreAuthorize("@ss.hasPermission('system:social-client:delete')")
     public CommonResult<Boolean> deleteSocialClientList(@RequestParam("ids") List<Long> ids) {
         socialClientService.deleteSocialClientList(ids);
@@ -68,8 +68,8 @@ public class SocialClientController {
     }
 
     @GetMapping("/get")
-    @Operation(summary = "获得社交客户端")
-    @Parameter(name = "id", description = "编号", required = true, example = "1024")
+    @Operation(summary = "Get social client")
+    @Parameter(name = "id", description = "ID", required = true, example = "1024")
     @PreAuthorize("@ss.hasPermission('system:social-client:query')")
     public CommonResult<SocialClientRespVO> getSocialClient(@RequestParam("id") Long id) {
         SocialClientDO client = socialClientService.getSocialClient(id);
@@ -77,7 +77,7 @@ public class SocialClientController {
     }
 
     @GetMapping("/page")
-    @Operation(summary = "获得社交客户端分页")
+    @Operation(summary = "Get social client pagination")
     @PreAuthorize("@ss.hasPermission('system:social-client:query')")
     public CommonResult<PageResult<SocialClientRespVO>> getSocialClientPage(@Valid SocialClientPageReqVO pageVO) {
         PageResult<SocialClientDO> pageResult = socialClientService.getSocialClientPage(pageVO);
@@ -85,7 +85,7 @@ public class SocialClientController {
     }
 
     @PostMapping("/send-subscribe-message")
-    @Operation(summary = "发送订阅消息") // 用于测试
+    @Operation(summary = "Send subscription message") // for testing
     @PreAuthorize("@ss.hasPermission('system:social-client:query')")
     public void sendSubscribeMessage(@RequestBody SocialWxaSubscribeMessageSendReqDTO reqDTO) {
         socialClientApi.sendWxaSubscribeMessage(reqDTO);

@@ -1,6 +1,6 @@
 /**
- * 使用 SkyWalking 组件，作为链路追踪、日志中心。
+ * Use the SkyWalking component as a link tracking and logging center.
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 package cn.iocoder.yudao.framework.tracer;

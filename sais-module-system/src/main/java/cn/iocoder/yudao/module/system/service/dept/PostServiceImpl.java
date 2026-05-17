@@ -22,9 +22,9 @@ import static cn.iocoder.yudao.framework.common.util.collection.CollectionUtils.
 import static cn.iocoder.yudao.module.system.enums.ErrorCodeConstants.*;
 
 /**
- * 岗位 Service 实现类
+ * Position Service implementation class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Service
 @Validated
@@ -35,10 +35,10 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Long createPost(PostSaveReqVO createReqVO) {
-        // 校验正确性
+        // Check correctness
         validatePostForCreateOrUpdate(null, createReqVO.getName(), createReqVO.getCode());
 
-        // 插入岗位
+        // Insert position
         PostDO post = BeanUtils.toBean(createReqVO, PostDO.class);
         postMapper.insert(post);
         return post.getId();
@@ -46,19 +46,19 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void updatePost(PostSaveReqVO updateReqVO) {
-        // 校验正确性
+        // Check correctness
         validatePostForCreateOrUpdate(updateReqVO.getId(), updateReqVO.getName(), updateReqVO.getCode());
 
-        // 更新岗位
+        // Update position
         PostDO updateObj = BeanUtils.toBean(updateReqVO, PostDO.class);
         postMapper.updateById(updateObj);
     }
 
     @Override
     public void deletePost(Long id) {
-        // 校验是否存在
+        // Check if it exists
         validatePostExists(id);
-        // 删除岗位
+        // Delete position
         postMapper.deleteById(id);
     }
 
@@ -68,11 +68,11 @@ public class PostServiceImpl implements PostService {
     }
 
     private void validatePostForCreateOrUpdate(Long id, String name, String code) {
-        // 校验自己存在
+        // Verify your own existence
         validatePostExists(id);
-        // 校验岗位名的唯一性
+        // Verify the uniqueness of the position name
         validatePostNameUnique(id, name);
-        // 校验岗位编码的唯一性
+        // Verify the uniqueness of the position code
         validatePostCodeUnique(id, code);
     }
 
@@ -81,7 +81,7 @@ public class PostServiceImpl implements PostService {
         if (post == null) {
             return;
         }
-        // 如果 id 为空，说明不用比较是否为相同 id 的岗位
+        // If the id is empty, it means there is no need to compare whether they are positions with the same id.
         if (id == null) {
             throw exception(POST_NAME_DUPLICATE);
         }
@@ -95,7 +95,7 @@ public class PostServiceImpl implements PostService {
         if (post == null) {
             return;
         }
-        // 如果 id 为空，说明不用比较是否为相同 id 的岗位
+        // If the id is empty, it means there is no need to compare whether they are positions with the same id.
         if (id == null) {
             throw exception(POST_CODE_DUPLICATE);
         }
@@ -141,10 +141,10 @@ public class PostServiceImpl implements PostService {
         if (CollUtil.isEmpty(ids)) {
             return;
         }
-        // 获得岗位信息
+        // Get job information
         List<PostDO> posts = postMapper.selectByIds(ids);
         Map<Long, PostDO> postMap = convertMap(posts, PostDO::getId);
-        // 校验
+        // Verify
         ids.forEach(id -> {
             PostDO post = postMap.get(id);
             if (post == null) {

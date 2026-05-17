@@ -6,40 +6,40 @@ import cn.iocoder.yudao.module.infra.controller.admin.logger.vo.apiaccesslog.Api
 import cn.iocoder.yudao.module.infra.dal.dataobject.logger.ApiAccessLogDO;
 
 /**
- * API 访问日志 Service 接口
+ * API access log Service API
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface ApiAccessLogService {
 
     /**
-     * 创建 API 访问日志
+     * Create API access log
      *
-     * @param createReqDTO API 访问日志
+     * @param createReqDTO API access log
      */
     void createApiAccessLog(ApiAccessLogCreateReqDTO createReqDTO);
 
     /**
-     * 获得 API 访问日志
+     * Get API access logs
      *
-     * @param id 编号
-     * @return API 访问日志
+     * @param id ID
+     * @return API access log
      */
     ApiAccessLogDO getApiAccessLog(Long id);
 
     /**
-     * 获得 API 访问日志分页
+     * Get API access log pagination
      *
-     * @param pageReqVO 分页查询
-     * @return API 访问日志分页
+     * @param pageReqVO Page query
+     * @return API access log pagination
      */
     PageResult<ApiAccessLogDO> getApiAccessLogPage(ApiAccessLogPageReqVO pageReqVO);
 
     /**
-     * 清理 exceedDay 天前的访问日志
+     * Clear access logs from exceedDay days ago
      *
-     * @param exceedDay   超过多少天就进行清理
-     * @param deleteLimit 清理的间隔条数
+     * @param exceedDay   How many days will it take to clean up?
+     * @param deleteLimit ID of intervals to clear
      */
     Integer cleanAccessLog(Integer exceedDay, Integer deleteLimit);
 

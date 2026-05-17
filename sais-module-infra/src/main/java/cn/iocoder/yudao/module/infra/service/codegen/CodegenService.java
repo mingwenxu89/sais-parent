@@ -12,96 +12,96 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 代码生成 Service 接口
+ * Code generation service API
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface CodegenService {
 
     /**
-     * 基于数据库的表结构，创建代码生成器的表定义
+     * Based on the table structure of the database, create the table definition of the code generator
      *
-     * @param author 作者
-     * @param reqVO  表信息
-     * @return 创建的表定义的编号数组
+     * @param author Author
+     * @param reqVO  Table information
+     * @return IDed array of table definitions created
      */
     List<Long> createCodegenList(String author, CodegenCreateListReqVO reqVO);
 
     /**
-     * 更新数据库的表和字段定义
+     * Update database table and field definitions
      *
-     * @param updateReqVO 更新信息
+     * @param updateReqVO Update information
      */
     void updateCodegen(CodegenUpdateReqVO updateReqVO);
 
     /**
-     * 基于数据库的表结构，同步数据库的表和字段定义
+     * Based on the table structure of the database, synchronize the table and field definitions of the database
      *
-     * @param tableId 表编号
+     * @param tableId table ID
      */
     void syncCodegenFromDB(Long tableId);
 
     /**
-     * 删除数据库的表和字段定义
+     * Delete table and field definitions from the database
      *
-     * @param tableId 数据编号
+     * @param tableId Data ID
      */
     void deleteCodegen(Long tableId);
 
     /**
-     * 批量删除数据库的表和字段定义
+     * Delete database table and field definitions in batches
      *
-     * @param tableIds 数据编号列表
+     * @param tableIds Data ID list
      */
     void deleteCodegenList(List<Long> tableIds);
 
     /**
-     * 获得表定义列表
+     * Get a list of table definitions
      *
-     * @param dataSourceConfigId 数据源配置的编号
-     * @return 表定义列表
+     * @param dataSourceConfigId Data source configuration ID
+     * @return table definition list
      */
     List<CodegenTableDO> getCodegenTableList(Long dataSourceConfigId);
 
     /**
-     * 获得表定义分页
+     * Get table definition pagination
      *
-     * @param pageReqVO 分页条件
-     * @return 表定义分页
+     * @param pageReqVO Paging conditions
+     * @return table definition pagination
      */
     PageResult<CodegenTableDO> getCodegenTablePage(CodegenTablePageReqVO pageReqVO);
 
     /**
-     * 获得表定义
+     * Get table definition
      *
-     * @param id 表编号
-     * @return 表定义
+     * @param id table ID
+     * @return table definition
      */
     CodegenTableDO getCodegenTable(Long id);
 
     /**
-     * 获得指定表的字段定义数组
+     * Get the field definition array of the specified table
      *
-     * @param tableId 表编号
-     * @return 字段定义数组
+     * @param tableId table ID
+     * @return Field definition array
      */
     List<CodegenColumnDO> getCodegenColumnListByTableId(Long tableId);
 
     /**
-     * 执行指定表的代码生成
+     * Perform code generation for the specified table
      *
-     * @param tableId 表编号
-     * @return 生成结果。key 为文件路径，value 为对应的代码内容
+     * @param tableId table ID
+     * @return Generate results. key is the file path, value is the corresponding code content
      */
     Map<String, String> generationCodes(Long tableId);
 
     /**
-     * 获得数据库自带的表定义列表
+     * Get the table definition list that comes with the database
      *
-     * @param dataSourceConfigId 数据源的配置编号
-     * @param name               表名称
-     * @param comment            表描述
-     * @return 表定义列表
+     * @param dataSourceConfigId The configuration ID of the data source
+     * @param name               table name
+     * @param comment            Table description
+     * @return table definition list
      */
     List<DatabaseTableRespVO> getDatabaseTableList(Long dataSourceConfigId, String name, String comment);
 

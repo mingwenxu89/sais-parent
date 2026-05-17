@@ -1,12 +1,12 @@
 /**
- * 文件客户端，支持多种存储器
+ * File client, supports multiple storage devices
  *
- * 1. local：本地磁盘
- * 2. ftp：FTP 服务器
- * 3. sftp：SFTP 服务器
- * 4. db：数据库
- * 5. s3：支持 S3 协议的云存储服务，例如说 MinIO、阿里云、华为云、腾讯云、七牛云等等
+ * 1. local: local disk
+ * 2. FTP: FTP server
+ * 3. SFTP: SFTP server
+ * 4. DB: database
+ * 5. S3: Cloud storage services that support the S3 protocol, such as MinIO, Alibaba Cloud, Huawei Cloud, Tencent Cloud, Qiniu Cloud, etc.
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 package cn.iocoder.yudao.module.infra.framework.file;

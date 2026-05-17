@@ -1,4 +1,4 @@
 /**
- * 消息队列的生产者
+ * message queue producer
  */
 package cn.iocoder.yudao.module.infra.mq.producer;

@@ -9,31 +9,31 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * 用户和岗位关联
+ * User and position association
  *
  * @author ruoyi
  */
 @TableName("system_user_post")
-@KeySequence("system_user_post_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
+@KeySequence("system_user_post_seq") // Primary key auto-increment for Oracle, PostgreSQL, Kingbase, DB2, H2 databases. If it is a database such as MySQL, you DO not need to write it.
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class UserPostDO extends BaseDO {
 
     /**
-     * 自增主键
+     * auto-increment primary key
      */
     @TableId
     private Long id;
     /**
-     * 用户 ID
+     * User ID
      *
-     * 关联 {@link AdminUserDO#getId()}
+     * Association {@link AdminUserDO#getId()}
      */
     private Long userId;
     /**
-     * 角色 ID
+     * Role ID
      *
-     * 关联 {@link PostDO#getId()}
+     * Association {@link PostDO#getId()}
      */
     private Long postId;
 

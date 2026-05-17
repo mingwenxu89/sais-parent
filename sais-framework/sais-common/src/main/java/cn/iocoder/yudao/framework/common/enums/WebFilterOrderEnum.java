@@ -1,36 +1,36 @@
 package cn.iocoder.yudao.framework.common.enums;
 
 /**
- * Web 过滤器顺序的枚举类，保证过滤器按照符合我们的预期
+ * Enumeration class of Web filter order to ensure that the filter is in line with our expectations
  *
- *  考虑到每个 starter 都需要用到该工具类，所以放到 common 模块下的 enums 包下
+ * Considering that every starter needs to use this tool class, it is placed under the enums package under the common module.
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface WebFilterOrderEnum {
 
-    int CORS_FILTER = Integer.MIN_VALUE;
+ int CORS_FILTER = Integer.MIN_VALUE;
 
-    int TRACE_FILTER = CORS_FILTER + 1;
+ int TRACE_FILTER = CORS_FILTER + 1;
 
-    int REQUEST_BODY_CACHE_FILTER = Integer.MIN_VALUE + 500;
+ int REQUEST_BODY_CACHE_FILTER = Integer.MIN_VALUE + 500;
 
-    int API_ENCRYPT_FILTER = REQUEST_BODY_CACHE_FILTER + 1;
+ int API_ENCRYPT_FILTER = REQUEST_BODY_CACHE_FILTER + 1;
 
-    // OrderedRequestContextFilter 默认为 -105，用于国际化上下文等等
+    // OrderedRequestContextFilter defaults to -105, used for internationalization context, etc.
 
-    int TENANT_CONTEXT_FILTER = - 104; // 需要保证在 ApiAccessLogFilter 前面
+    int TENANT_CONTEXT_FILTER = - 104; // Need to ensure that it is in front of APIAccessLogFilter
 
-    int API_ACCESS_LOG_FILTER = -103; // 需要保证在 RequestBodyCacheFilter 后面
+    int API_ACCESS_LOG_FILTER = -103; // Need to ensure that it is behind RequestBodyCacheFilter
 
-    int XSS_FILTER = -102;  // 需要保证在 RequestBodyCacheFilter 后面
+    int XSS_FILTER = -102;  // Need to ensure that it is behind RequestBodyCacheFilter
 
-    // Spring Security Filter 默认为 -100，可见 org.springframework.boot.autoconfigure.security.SecurityProperties 配置属性类
+    // Spring Security Filter defaults to -100, visible org.springframework.boot.autoconfigure.security.SecurityProperties configuration property class
 
-    int TENANT_SECURITY_FILTER = -99; // 需要保证在 Spring Security 过滤器后面
+    int TENANT_SECURITY_FILTER = -99; // Need to ensure that it is behind the Spring Security filter
 
-    int FLOWABLE_FILTER = -98; // 需要保证在 Spring Security 过滤后面
+    int FLOWABLE_FILTER = -98; // Need to ensure that behind Spring Security filtering
 
-    int DEMO_FILTER = Integer.MAX_VALUE;
+ int DEMO_FILTER = Integer.MAX_VALUE;
 
 }

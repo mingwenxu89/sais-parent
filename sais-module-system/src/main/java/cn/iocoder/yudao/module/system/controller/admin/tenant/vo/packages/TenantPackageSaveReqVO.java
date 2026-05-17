@@ -9,27 +9,27 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.util.Set;
 
-@Schema(description = "管理后台 - 租户套餐创建/修改 Request VO")
+@Schema(description = "Management backend - Tenant package creation/modification Request VO")
 @Data
 public class TenantPackageSaveReqVO {
 
-    @Schema(description = "套餐编号", example = "1024")
+    @Schema(description = "Package ID", example = "1024")
     private Long id;
 
-    @Schema(description = "套餐名", requiredMode = Schema.RequiredMode.REQUIRED, example = "VIP")
-    @NotEmpty(message = "套餐名不能为空")
+    @Schema(description = "Package name", requiredMode = Schema.RequiredMode.REQUIRED, example = "VIP")
+    @NotEmpty(message = "Package name cannot be empty")
     private String name;
 
-    @Schema(description = "状态，参见 CommonStatusEnum 枚举", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
-    @NotNull(message = "状态不能为空")
-    @InEnum(value = CommonStatusEnum.class, message = "状态必须是 {value}")
+    @Schema(description = "Status, see CommonStatusEnum enumeration", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
+    @NotNull(message = "Status cannot be empty")
+    @InEnum(value = CommonStatusEnum.class, message = "status must be {value}")
     private Integer status;
 
-    @Schema(description = "备注", example = "好")
+    @Schema(description = "Remark", example = "good")
     private String remark;
 
-    @Schema(description = "关联的菜单编号", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotNull(message = "关联的菜单编号不能为空")
+    @Schema(description = "associated menu ID", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotNull(message = "The associated menu ID cannot be empty")
     private Set<Long> menuIds;
 
 }

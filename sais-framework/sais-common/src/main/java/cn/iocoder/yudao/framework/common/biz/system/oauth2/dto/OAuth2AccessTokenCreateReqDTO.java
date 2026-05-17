@@ -9,32 +9,32 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * OAuth2.0 访问令牌创建 Request DTO
+ * OAuth2.0 access token creation Request DTO
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Data
 public class OAuth2AccessTokenCreateReqDTO implements Serializable {
 
-    /**
-     * 用户编号
-     */
-    @NotNull(message = "用户编号不能为空")
-    private Long userId;
-    /**
-     * 用户类型
-     */
-    @NotNull(message = "用户类型不能为空")
-    @InEnum(value = UserTypeEnum.class, message = "用户类型必须是 {value}")
-    private Integer userType;
-    /**
-     * 客户端编号
-     */
-    @NotNull(message = "客户端编号不能为空")
-    private String clientId;
-    /**
-     * 授权范围
-     */
-    private List<String> scopes;
+ /**
+     * User ID
+ */
+    @NotNull(message = "user ID cannot be empty")
+ private Long userId;
+ /**
+     * User type
+ */
+    @NotNull(message = "user type cannot be empty")
+    @InEnum(value = UserTypeEnum.class, message = "user type must be {value}")
+ private Integer userType;
+ /**
+     * client number
+ */
+    @NotNull(message = "client ID cannot be empty")
+ private String clientId;
+ /**
+     * Authorization scope
+ */
+ private List<String> scopes;
 
 }

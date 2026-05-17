@@ -1,4 +1,4 @@
 /**
- * system API 包，定义并实现提供给其它模块的 API
+ * system API package, which defines and implements APIs provided to other modules
  */
 package cn.iocoder.yudao.module.system.api;

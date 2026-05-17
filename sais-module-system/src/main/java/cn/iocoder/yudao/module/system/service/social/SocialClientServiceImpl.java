@@ -75,48 +75,48 @@ import static cn.iocoder.yudao.module.system.enums.ErrorCodeConstants.*;
 import static java.util.Collections.singletonList;
 
 /**
- * 社交应用 Service 实现类
+ * Social application service implementation class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Service
 @Slf4j
 public class SocialClientServiceImpl implements SocialClientService {
 
     /**
-     * 小程序码要打开的小程序版本
+     * The miniapp version to be opened by the miniapp code
      *
-     * 1. release：正式版
-     * 2. trial：体验版
-     * 3. developer：开发版
+     * 1. release: official version
+     * 2. trial: trial version
+     * 3. developer: development version
      */
     @Value("${yudao.wxa-code.env-version:release}")
     public String envVersion;
     /**
-     * 订阅消息跳转小程序类型
+     * Subscription message jump applet type
      *
-     * 1. developer：开发版
-     * 2. trial：体验版
-     * 3. formal：正式版
+     * 1. developer: development version
+     * 2. trial: trial version
+     * 3. formal: official version
      */
     @Value("${yudao.wxa-subscribe-message.miniprogram-state:formal}")
     public String miniprogramState;
 
     /**
-     * 上传发货信息重试次数
+     * ID of retries to upload shipping information
      */
     private static final int UPLOAD_SHIPPING_INFO_MAX_RETRIES = 5;
     /**
-     * 上传发货信息重试间隔
+     * Retry interval for uploading shipping information
      */
     private static final Duration UPLOAD_SHIPPING_INFO_RETRY_INTERVAL = Duration.ofMillis(500L);
     /**
-     * 微信错误码：支付单不存在
+     * WeChat error code: Payment order does not exist
      */
     private static final int WX_ERR_CODE_PAY_ORDER_NOT_EXIST = 10060001;
 
     @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
-    @Autowired(required = false) // 由于 justauth.enable 配置项，可以关闭 AuthRequestFactory 的功能，所以这里只能不强制注入
+    @Autowired(required = false) // Due to the justauth.enable configuration item, the function of AuthRequestFactory can be turned off, so there is no forced injection here.
     private AuthRequestFactory authRequestFactory;
 
     @Resource
@@ -124,14 +124,14 @@ public class SocialClientServiceImpl implements SocialClientService {
     @Resource
     private WxMpProperties wxMpProperties;
     @Resource
-    private StringRedisTemplate stringRedisTemplate; // WxMpService 需要使用到，所以在 Service 注入了它
+    private StringRedisTemplate stringRedisTemplate; // WxMpService It needs to be used, so it is injected into Service
     /**
-     * 缓存 WxMpService 对象
+     * Caching WxMpService objects
      *
-     * key：使用微信公众号的 appId + secret 拼接，即 {@link SocialClientDO} 的 clientId 和 clientSecret 属性。
-     * 为什么 key 使用这种格式？因为 {@link SocialClientDO} 在管理后台可以变更，通过这个 key 存储它的单例。
+     * key: Use the appId + secret of the WeChat official account to splice, that is, the clientId and clientSecret attributes of {@link SocialClientDO}.
+     * Why does key use this format? Because {@link SocialClientDO} can be changed in the management background, its singleton is stored through this key.
      *
-     * 为什么要做 WxMpService 缓存？因为 WxMpService 构建成本比较大，所以尽量保证它是单例。
+     * Why DO we need to cache WxMpService? Because the construction cost of WxMpService is relatively high, try to ensure that it is a singleton.
      */
     private final LoadingCache<String, WxMpService> wxMpServiceCache = CacheUtils.buildAsyncReloadingCache(
             Duration.ofSeconds(10L),
@@ -150,9 +150,9 @@ public class SocialClientServiceImpl implements SocialClientService {
     @Resource
     private WxMaProperties wxMaProperties;
     /**
-     * 缓存 WxMaService 对象
+     * Caching WxMaService objects
      *
-     * 说明同 {@link #wxMpServiceCache} 变量
+     * The description is the same as {@link #wxMpServiceCache} variable
      */
     private final LoadingCache<String, WxMaService> wxMaServiceCache = CacheUtils.buildAsyncReloadingCache(
             Duration.ofSeconds(10L),
@@ -171,21 +171,21 @@ public class SocialClientServiceImpl implements SocialClientService {
 
     @Override
     public String getAuthorizeUrl(Integer socialType, Integer userType, String redirectUri) {
-        // 获得对应的 AuthRequest 实现
+        // Get the corresponding AuthRequest implementation
         AuthRequest authRequest = buildAuthRequest(socialType, userType);
-        // 生成跳转地址
+        // Generate jump address
         String authorizeUri = authRequest.authorize(AuthStateUtils.createState());
         return HttpUtils.replaceUrlQuery(authorizeUri, "redirect_uri", redirectUri);
     }
 
     @Override
     public AuthUser getAuthUser(Integer socialType, Integer userType, String code, String state) {
-        // 构建请求
+        // Build request
         AuthRequest authRequest = buildAuthRequest(socialType, userType);
         AuthCallback authCallback = AuthCallback.builder().code(code).auth_code(code).state(state).build();
-        // 执行请求
+        // Execute request
         AuthResponse<?> authResponse = authRequest.login(authCallback);
-        log.info("[getAuthUser][请求社交平台 type({}) request({}) response({})]", socialType,
+        log.info("[getAuthUser][Request social platform type({}) request({}) response({})]", socialType,
                 toJsonString(authCallback), toJsonString(authResponse));
         if (!authResponse.ok()) {
             throw exception(SOCIAL_USER_AUTH_FAILURE, authResponse.getMsg());
@@ -194,37 +194,37 @@ public class SocialClientServiceImpl implements SocialClientService {
     }
 
     /**
-     * 构建 AuthRequest 对象，支持多租户配置
+     * Construct AuthRequest object to support multi-tenant configuration
      *
-     * @param socialType 社交类型
-     * @param userType   用户类型
-     * @return AuthRequest 对象
+     * @param socialType social type
+     * @param userType   User type
+     * @return AuthRequest object
      */
     @VisibleForTesting
     AuthRequest buildAuthRequest(Integer socialType, Integer userType) {
-        // 1. 先查找默认的配置项，从 application-*.yaml 中读取
+        // 1. First find the default configuration items and read them from application-*.yaml
         AuthRequest request = authRequestFactory.get(SocialTypeEnum.valueOfType(socialType).getSource());
-        Assert.notNull(request, String.format("社交平台(%d) 不存在", socialType));
-        // 2. 查询 DB 的配置项，如果存在则进行覆盖
+        Assert.notNull(request, String.format("Social platform (%d) does not exist", socialType));
+        // 2. Query the configuration items of DB and overwrite them if they exist.
         SocialClientDO client = socialClientMapper.selectBySocialTypeAndUserType(socialType, userType);
         if (client != null && Objects.equals(client.getStatus(), CommonStatusEnum.ENABLE.getStatus())) {
-            // 2.1 构造新的 AuthConfig 对象
+            // 2.1 Construct a new AuthConfig object
             AuthConfig authConfig = (AuthConfig) ReflectUtil.getFieldValue(request, "config");
             AuthConfig newAuthConfig = ReflectUtil.newInstance(authConfig.getClass());
             BeanUtil.copyProperties(authConfig, newAuthConfig);
-            // 2.2 修改对应的 clientId + clientSecret 密钥
+            // 2.2 Modify the corresponding clientId + clientSecret key
             newAuthConfig.setClientId(client.getClientId());
             newAuthConfig.setClientSecret(client.getClientSecret());
-            if (client.getAgentId() != null) { // 如果有 agentId 则修改 agentId
+            if (client.getAgentId() != null) { // If there is an agentId, modify the agentId
                 newAuthConfig.setAgentId(client.getAgentId());
             }
-            // 如果是阿里的小程序
+            // If it is Alibaba’s miniapp
             if (SocialTypeEnum.ALIPAY_MINI_PROGRAM.getType().equals(socialType)) {
                 return new AuthAlipayRequest(newAuthConfig, client.getPublicKey());
             }
-            // 2.3 设置会 request 里，进行后续使用
+            // 2.3 The setting will be in request for subsequent use.
             if (SocialTypeEnum.ALIPAY_MINI_PROGRAM.getType().equals(socialType)) {
-                // 特殊：如果是支付宝的小程序，多了 publicKey 属性，可见 AuthConfig 里的 alipayPublicKey 字段说明
+                // Special: If it is an Alipay applet, there is an additional publicKey attribute. You can see the alipayPublicKey field description in AuthConfig.
                 return new AuthAlipayRequest(newAuthConfig, client.getPublicKey());
             }
             ReflectUtil.setFieldValue(request, "config", newAuthConfig);
@@ -232,7 +232,7 @@ public class SocialClientServiceImpl implements SocialClientService {
         return request;
     }
 
-    // =================== 微信公众号独有 ===================
+    // =================== Exclusive to WeChat official account ===================
 
     @Override
     @SneakyThrows
@@ -242,45 +242,45 @@ public class SocialClientServiceImpl implements SocialClientService {
     }
 
     /**
-     * 获得 clientId + clientSecret 对应的 WxMpService 对象
+     * Get the WxMpService object corresponding to clientId + clientSecret
      *
-     * @param userType 用户类型
-     * @return WxMpService 对象
+     * @param userType User type
+     * @return WxMpService object
      */
     @VisibleForTesting
     WxMpService getWxMpService(Integer userType) {
-        // 第一步，查询 DB 的配置项，获得对应的 WxMpService 对象
+        // The first step is to query the DB configuration items and obtain the corresponding WxMpService object.
         SocialClientDO client = socialClientMapper.selectBySocialTypeAndUserType(
                 SocialTypeEnum.WECHAT_MP.getType(), userType);
         if (client != null && Objects.equals(client.getStatus(), CommonStatusEnum.ENABLE.getStatus())) {
             return wxMpServiceCache.getUnchecked(client.getClientId() + ":" + client.getClientSecret());
         }
-        // 第二步，不存在 DB 配置项，则使用 application-*.yaml 对应的 WxMpService 对象
+        // In the second step, if there is no DB configuration item, use the WxMpService object corresponding to application-*.yaml
         return wxMpService;
     }
 
     /**
-     * 创建 clientId + clientSecret 对应的 WxMpService 对象
+     * Create a WxMpService object corresponding to clientId + clientSecret
      *
-     * @param clientId     微信公众号 appId
-     * @param clientSecret 微信公众号 secret
-     * @return WxMpService 对象
+     * @param clientId     WeChat official account appId
+     * @param clientSecret WeChat official account secret
+     * @return WxMpService object
      */
     public WxMpService buildWxMpService(String clientId, String clientSecret) {
-        // 第一步，创建 WxMpRedisConfigImpl 对象
+        // The first step is to create the WxMpRedisConfigImpl object
         WxMpRedisConfigImpl configStorage = new WxMpRedisConfigImpl(
                 new RedisTemplateWxRedisOps(stringRedisTemplate),
                 wxMpProperties.getConfigStorage().getKeyPrefix());
         configStorage.setAppId(clientId);
         configStorage.setSecret(clientSecret);
 
-        // 第二步，创建 WxMpService 对象
+        // The second step is to create the WxMpService object
         WxMpService service = new WxMpServiceImpl();
         service.setWxMpConfigStorage(configStorage);
         return service;
     }
 
-    // =================== 微信小程序独有 ===================
+    // =================== Exclusive to WeChat Mini Program ===================
 
     @Override
     public WxMaPhoneNumberInfo getWxMaPhoneNumberInfo(Integer userType, String phoneCode) {
@@ -288,7 +288,7 @@ public class SocialClientServiceImpl implements SocialClientService {
         try {
             return service.getUserService().getPhoneNumber(phoneCode);
         } catch (WxErrorException e) {
-            log.error("[getPhoneNumber][userType({}) phoneCode({}) 获得手机号失败]", userType, phoneCode, e);
+            log.error("[getPhoneID][userType({}) phoneCode({}) failed to obtain phone ID]", userType, phoneCode, e);
             throw exception(SOCIAL_CLIENT_WEIXIN_MINI_APP_PHONE_CODE_ERROR);
         }
     }
@@ -307,7 +307,7 @@ public class SocialClientServiceImpl implements SocialClientService {
                     null,
                     ObjUtil.defaultIfNull(reqVO.getHyaline(), SocialWxQrcodeReqDTO.HYALINE));
         } catch (WxErrorException e) {
-            log.error("[getWxQrcode][reqVO({}) 获得小程序码失败]", reqVO, e);
+            log.error("[getWxQrcode][reqVO({}) failed to obtain the miniapp code]", reqVO, e);
             throw exception(SOCIAL_CLIENT_WEIXIN_MINI_APP_QRCODE_ERROR);
         }
     }
@@ -321,7 +321,7 @@ public class SocialClientServiceImpl implements SocialClientService {
             WxMaSubscribeService subscribeService = service.getSubscribeService();
             return subscribeService.getTemplateList();
         } catch (WxErrorException e) {
-            log.error("[getSubscribeTemplate][userType({}) 获得小程序订阅消息模版]", userType, e);
+            log.error("[getSubscribeTemplate][userType({}) Get the miniapp subscription message template]", userType, e);
             throw exception(SOCIAL_CLIENT_WEIXIN_MINI_APP_SUBSCRIBE_TEMPLATE_ERROR);
         }
     }
@@ -333,25 +333,25 @@ public class SocialClientServiceImpl implements SocialClientService {
             WxMaSubscribeService subscribeService = service.getSubscribeService();
             subscribeService.sendSubscribeMsg(buildMessageSendReqDTO(reqDTO, templateId, openId));
         } catch (WxErrorException e) {
-            log.error("[sendSubscribeMessage][reqVO({}) templateId({}) openId({}) 发送小程序订阅消息失败]", reqDTO, templateId, openId, e);
+            log.error("[sendSubscribeMessage][reqVO({}) templateId({}) openId({}) Failed to send miniapp subscription message]", reqDTO, templateId, openId, e);
             throw exception(SOCIAL_CLIENT_WEIXIN_MINI_APP_SUBSCRIBE_MESSAGE_ERROR);
         }
     }
 
     /**
-     * 构建发送消息请求参数
+     * Construct send message request parameters
      *
-     * @param reqDTO     请求
-     * @param templateId 模版编号
-     * @param openId     会员 openId
-     * @return 微信小程序订阅消息请求参数
+     * @param reqDTO     Request
+     * @param templateId Template ID
+     * @param openId     Member openId
+     * @return WeChat applet subscription message request parameters
      */
     private WxMaSubscribeMessage buildMessageSendReqDTO(SocialWxaSubscribeMessageSendReqDTO reqDTO,
                                                         String templateId, String openId) {
-        // 设置订阅消息基本参数
+        // Set basic parameters for subscription messages
         WxMaSubscribeMessage subscribeMessage = new WxMaSubscribeMessage().setLang(WxMaConstants.MiniProgramLang.ZH_CN)
                 .setMiniprogramState(miniprogramState).setTemplateId(templateId).setToUser(openId).setPage(reqDTO.getPage());
-        // 设置具体消息参数
+        // Set specific message parameters
         Map<String, String> messages = reqDTO.getMessages();
         if (CollUtil.isNotEmpty(messages)) {
             reqDTO.getMessages().keySet().forEach(key -> findAndThen(messages, key, value ->
@@ -376,42 +376,42 @@ public class SocialClientServiceImpl implements SocialClientService {
         }
         WxMaOrderShippingInfoUploadRequest request = WxMaOrderShippingInfoUploadRequest.builder()
                 .orderKey(OrderKeyBean.builder()
-                        .orderNumberType(2) // 使用原支付交易对应的微信订单号，即渠道单号
+                        .orderNumberType(2) // Use the WeChat order ID corresponding to the original payment transaction, that is, the channel order ID
                         .transactionId(reqDTO.getTransactionId())
                         .build())
-                .logisticsType(reqDTO.getLogisticsType()) // 配送方式
-                .deliveryMode(1) // 统一发货
+                .logisticsType(reqDTO.getLogisticsType()) // Delivery method
+                .deliveryMode(1) // Unified delivery
                 .shippingList(shippingList)
                 .payer(PayerBean.builder().openid(reqDTO.getOpenid()).build())
                 .uploadTime(ZonedDateTime.now().format(UTC_MS_WITH_XXX_OFFSET_FORMATTER))
                 .build();
-        // 重试机制：解决支付回调与订单信息上传之间的时间差导致的 10060001 错误
-        // 对应 ISSUE：https://gitee.com/zhijiantianya/sar-cloud/pulls/230
+        // Retry mechanism: Solve the 10060001 error caused by the time difference between payment callback and order information upload
+        // Corresponding ISSUE: https://gitee.com/zhijiantianya/sar-cloud/pulls/230
         for (int attempt = 1; attempt <= UPLOAD_SHIPPING_INFO_MAX_RETRIES; attempt++) {
             try {
                 WxMaOrderShippingInfoBaseResponse response = service.getWxMaOrderShippingService().upload(request);
-                // 成功，直接返回
+                // Success, return directly
                 if (response.getErrCode() == 0) {
-                    log.info("[uploadWxaOrderShippingInfo][上传微信小程序发货信息成功：request({}) response({})]", request, response);
+                    log.info("[uploadWxaOrderShippingInfo][Successfully uploaded WeChat applet shipping information: request({}) response({})]", request, response);
                     return;
                 }
-                // 如果是 10060001 错误（支付单不存在）且还有重试次数，则等待后重试
+                // If it is a 10060001 error (the payment order does not exist) and there are still retry times, wait and try again.
                 if (response.getErrCode() == WX_ERR_CODE_PAY_ORDER_NOT_EXIST && attempt < UPLOAD_SHIPPING_INFO_MAX_RETRIES) {
-                    log.warn("[uploadWxaOrderShippingInfo][第 {} 次尝试失败，支付单不存在，{} 后重试：request({}) response({})]",
+                    log.warn("[uploadWxaOrderShippingInfo][The {}th attempt failed, the payment order does not exist, try again after {}: request({}) response({})]",
                             attempt, UPLOAD_SHIPPING_INFO_RETRY_INTERVAL, request, response);
                     Thread.sleep(UPLOAD_SHIPPING_INFO_RETRY_INTERVAL.toMillis());
                     continue;
                 }
-                // 其他错误或重试次数用尽，抛出异常
-                log.error("[uploadWxaOrderShippingInfo][上传微信小程序发货信息失败：request({}) response({})]", request, response);
+                // Other errors or the ID of retries is exhausted, an exception is thrown.
+                log.error("[uploadWxaOrderShippingInfo][Failed to upload WeChat applet shipping information: request({}) response({})]", request, response);
                 throw exception(SOCIAL_CLIENT_WEIXIN_MINI_APP_ORDER_UPLOAD_SHIPPING_INFO_ERROR, response.getErrMsg());
             } catch (WxErrorException ex) {
-                log.error("[uploadWxaOrderShippingInfo][上传微信小程序发货信息失败：request({})]", request, ex);
+                log.error("[uploadWxaOrderShippingInfo][Failed to upload WeChat applet shipping information: request({})]", request, ex);
                 throw exception(SOCIAL_CLIENT_WEIXIN_MINI_APP_ORDER_UPLOAD_SHIPPING_INFO_ERROR, ex.getError().getErrorMsg());
             } catch (InterruptedException ex) {
                 Thread.currentThread().interrupt();
-                log.error("[uploadWxaOrderShippingInfo][重试等待被中断：request({})]", request, ex);
-                throw exception(SOCIAL_CLIENT_WEIXIN_MINI_APP_ORDER_UPLOAD_SHIPPING_INFO_ERROR, "重试等待被中断");
+                log.error("[uploadWxaOrderShippingInfo][Retry waiting interrupted: request({})]", request, ex);
+                throw exception(SOCIAL_CLIENT_WEIXIN_MINI_APP_ORDER_UPLOAD_SHIPPING_INFO_ERROR, "Retry waiting was interrupted");
             }
         }
     }
@@ -426,63 +426,63 @@ public class SocialClientServiceImpl implements SocialClientService {
         try {
             WxMaOrderShippingInfoBaseResponse response = service.getWxMaOrderShippingService().notifyConfirmReceive(request);
             if (response.getErrCode() != 0) {
-                log.error("[notifyWxaOrderConfirmReceive][确认收货提醒到微信小程序失败：request({}) response({})]", request, response);
+                log.error("[notifyWxaOrderConfirmReceive][Failed to confirm receipt reminder to WeChat applet: request({}) response({})]", request, response);
                 throw exception(SOCIAL_CLIENT_WEIXIN_MINI_APP_ORDER_NOTIFY_CONFIRM_RECEIVE_ERROR, response.getErrMsg());
             }
-            log.info("[notifyWxaOrderConfirmReceive][确认收货提醒到微信小程序成功：request({}) response({})]", request, response);
+            log.info("[notifyWxaOrderConfirmReceive][Confirm receipt reminder to WeChat applet successfully: request({}) response({})]", request, response);
         } catch (WxErrorException ex) {
-            log.error("[notifyWxaOrderConfirmReceive][确认收货提醒到微信小程序失败：request({})]", request, ex);
+            log.error("[notifyWxaOrderConfirmReceive][Failed to confirm receipt reminder to WeChat applet: request({})]", request, ex);
             throw exception(SOCIAL_CLIENT_WEIXIN_MINI_APP_ORDER_NOTIFY_CONFIRM_RECEIVE_ERROR, ex.getError().getErrorMsg());
         }
     }
 
     /**
-     * 获得 clientId + clientSecret 对应的 WxMpService 对象
+     * Get the WxMpService object corresponding to clientId + clientSecret
      *
-     * @param userType 用户类型
-     * @return WxMpService 对象
+     * @param userType User type
+     * @return WxMpService object
      */
     @VisibleForTesting
     WxMaService getWxMaService(Integer userType) {
-        // 第一步，查询 DB 的配置项，获得对应的 WxMaService 对象
+        // The first step is to query the DB configuration items and obtain the corresponding WxMaService object.
         SocialClientDO client = socialClientMapper.selectBySocialTypeAndUserType(
                 SocialTypeEnum.WECHAT_MINI_PROGRAM.getType(), userType);
         if (client != null && Objects.equals(client.getStatus(), CommonStatusEnum.ENABLE.getStatus())) {
             return wxMaServiceCache.getUnchecked(client.getClientId() + ":" + client.getClientSecret());
         }
-        // 第二步，不存在 DB 配置项，则使用 application-*.yaml 对应的 WxMaService 对象
+        // In the second step, if there is no DB configuration item, use the WxMaService object corresponding to application-*.yaml
         return wxMaService;
     }
 
     /**
-     * 创建 clientId + clientSecret 对应的 WxMaService 对象
+     * Create a WxMaService object corresponding to clientId + clientSecret
      *
-     * @param clientId     微信小程序 appId
-     * @param clientSecret 微信小程序 secret
-     * @return WxMaService 对象
+     * @param clientId     WeChat applet appId
+     * @param clientSecret WeChat applet secret
+     * @return WxMaService object
      */
     private WxMaService buildWxMaService(String clientId, String clientSecret) {
-        // 第一步，创建 WxMaRedisBetterConfigImpl 对象
+        // The first step is to create the WxMaRedisBetterConfigImpl object
         WxMaRedisBetterConfigImpl configStorage = new WxMaRedisBetterConfigImpl(
                 new RedisTemplateWxRedisOps(stringRedisTemplate),
                 wxMaProperties.getConfigStorage().getKeyPrefix());
         configStorage.setAppid(clientId);
         configStorage.setSecret(clientSecret);
 
-        // 第二步，创建 WxMpService 对象
+        // The second step is to create the WxMpService object
         WxMaService service = new WxMaServiceImpl();
         service.setWxMaConfig(configStorage);
         return service;
     }
 
-    // =================== 客户端管理 ===================
+    // =================== Client Management ===================
 
     @Override
     public Long createSocialClient(SocialClientSaveReqVO createReqVO) {
-        // 校验重复
+        // Check for duplicates
         validateSocialClientUnique(null, createReqVO.getUserType(), createReqVO.getSocialType());
 
-        // 插入
+        // Insert
         SocialClientDO client = BeanUtils.toBean(createReqVO, SocialClientDO.class);
         socialClientMapper.insert(client);
         return client.getId();
@@ -490,21 +490,21 @@ public class SocialClientServiceImpl implements SocialClientService {
 
     @Override
     public void updateSocialClient(SocialClientSaveReqVO updateReqVO) {
-        // 校验存在
+        // Check existence
         validateSocialClientExists(updateReqVO.getId());
-        // 校验重复
+        // Check for duplicates
         validateSocialClientUnique(updateReqVO.getId(), updateReqVO.getUserType(), updateReqVO.getSocialType());
 
-        // 更新
+        // Update
         SocialClientDO updateObj = BeanUtils.toBean(updateReqVO, SocialClientDO.class);
         socialClientMapper.updateById(updateObj);
     }
 
     @Override
     public void deleteSocialClient(Long id) {
-        // 校验存在
+        // Check existence
         validateSocialClientExists(id);
-        // 删除
+        // Delete
         socialClientMapper.deleteById(id);
     }
 
@@ -520,12 +520,12 @@ public class SocialClientServiceImpl implements SocialClientService {
     }
 
     /**
-     * 校验社交应用是否重复，需要保证 userType + socialType 唯一
-     * 原因是，不同端（userType）选择某个社交登录（socialType）时，需要通过 {@link #buildAuthRequest(Integer, Integer)} 构建对应的请求
+     * To verify whether social applications are duplicated, userType + socialType must be unique
+     * The reason is that when different ends (userType) select a certain social login (socialType), they need to build the corresponding request through {@link #buildAuthRequest(Integer, Integer)}
      *
-     * @param id         编号
-     * @param userType   用户类型
-     * @param socialType 社交类型
+     * @param id         ID
+     * @param userType   User type
+     * @param socialType social type
      */
     private void validateSocialClientUnique(Long id, Integer userType, Integer socialType) {
         SocialClientDO client = socialClientMapper.selectBySocialTypeAndUserType(
@@ -533,8 +533,8 @@ public class SocialClientServiceImpl implements SocialClientService {
         if (client == null) {
             return;
         }
-        if (id == null // 新增时，说明重复
-                || ObjUtil.notEqual(id, client.getId())) { // 更新时，如果 id 不一致，说明重复
+        if (id == null // When adding, the description is repeated
+                || ObjUtil.notEqual(id, client.getId())) { // When updating, if the ids are inconsistent, it means duplication
             throw exception(SOCIAL_CLIENT_UNIQUE);
         }
     }

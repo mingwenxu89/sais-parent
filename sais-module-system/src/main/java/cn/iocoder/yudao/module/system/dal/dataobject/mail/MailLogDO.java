@@ -17,14 +17,14 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 邮箱日志 DO
- * 记录每一次邮件的发送
+ * Mailbox log DO
+ * Record every email sent
  *
  * @author wangjingyi
  * @since 2022-03-21
  */
 @TableName(value = "system_mail_log", autoResultMap = true)
-@KeySequence("system_mail_log_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
+@KeySequence("system_mail_log_seq") // Primary key auto-increment for Oracle, PostgreSQL, Kingbase, DB2, H2 databases. If it is a database such as MySQL, you DO not need to write it.
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
@@ -35,104 +35,104 @@ import java.util.Map;
 public class MailLogDO extends BaseDO implements Serializable {
 
     /**
-     * 日志编号，自增
+     * Log ID, auto-increment
      */
     private Long id;
 
     /**
-     * 用户编码
+     * user code
      */
     private Long userId;
     /**
-     * 用户类型
+     * User type
      *
-     * 枚举 {@link UserTypeEnum}
+     * Enumeration {@link UserTypeEnum}
      */
     private Integer userType;
 
     /**
-     * 接收邮箱地址
+     * Receive email address
      */
     @TableField(typeHandler = StringListTypeHandler.class)
     private List<String> toMails;
     /**
-     * 接收邮箱地址
+     * Receive email address
      */
     @TableField(typeHandler = StringListTypeHandler.class)
     private List<String> ccMails;
     /**
-     * 密送邮箱地址
+     * Bcc email address
      */
     @TableField(typeHandler = StringListTypeHandler.class)
     private List<String> bccMails;
 
     /**
-     * 邮箱账号编号
+     * Email account ID
      *
-     * 关联 {@link MailAccountDO#getId()}
+     * Association {@link MailAccountDO#getId()}
      */
     private Long accountId;
     /**
-     * 发送邮箱地址
+     * Send email address
      *
-     * 冗余 {@link MailAccountDO#getMail()}
+     * Redundant {@link MailAccountDO#getMail()}
      */
     private String fromMail;
 
-    // ========= 模板相关字段 =========
+    // ========= Template related fields =========
     /**
-     * 模版编号
+     * Template ID
      *
-     * 关联 {@link MailTemplateDO#getId()}
+     * Association {@link MailTemplateDO#getId()}
      */
     private Long templateId;
     /**
-     * 模版编码
+     * Template coding
      *
-     * 冗余 {@link MailTemplateDO#getCode()}
+     * Redundant {@link MailTemplateDO#getCode()}
      */
     private String templateCode;
     /**
-     * 模版发送人名称
+     * Template sender name
      *
-     * 冗余 {@link MailTemplateDO#getNickname()}
+     * Redundant {@link MailTemplateDO#getNickname()}
      */
     private String templateNickname;
     /**
-     * 模版标题
+     * Template title
      */
     private String templateTitle;
     /**
-     * 模版内容
+     * Template content
      *
-     * 基于 {@link MailTemplateDO#getContent()} 格式化后的内容
+     * Content formatted based on {@link MailTemplateDO#getContent()}
      */
     private String templateContent;
     /**
-     * 模版参数
+     * Template parameters
      *
-     * 基于 {@link MailTemplateDO#getParams()} 输入后的参数
+     * Parameters entered based on {@link MailTemplateDO#getParams()}
      */
     @TableField(typeHandler = JacksonTypeHandler.class)
     private Map<String, Object> templateParams;
 
-    // ========= 发送相关字段 =========
+    // ========= Send related fields =========
     /**
-     * 发送状态
+     * Send status
      *
-     * 枚举 {@link MailSendStatusEnum}
+     * Enumeration {@link MailSendStatusEnum}
      */
     private Integer sendStatus;
     /**
-     * 发送时间
+     * Send time
      */
     private LocalDateTime sendTime;
     /**
-     * 发送返回的消息 ID
+     * Send returned message ID
      */
     private String sendMessageId;
     /**
-     * 发送异常
+     * Send exception
      */
     private String sendException;
 

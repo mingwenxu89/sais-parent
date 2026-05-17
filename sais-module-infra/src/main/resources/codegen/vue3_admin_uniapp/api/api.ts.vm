@@ -7,7 +7,7 @@ import { http } from '@/http/http'
 #else
 #set ($primaryTsType = "string")
 #end
-/** ${table.classComment}信息 */
+/** ${table.classComment}information */
 export interface ${simpleClassName} {
 #foreach ($column in $columns)
   #if ($column.primaryKey || $column.createOperation || $column.updateOperation || $column.listOperationResult)
@@ -27,27 +27,27 @@ export interface ${simpleClassName} {
 #end
 }
 
-/** 获取${table.classComment}分页列表 */
+/** Get ${table.classComment} paginated list */
 export function get${simpleClassName}Page(params: PageParam) {
   return http.get<PageResult<${simpleClassName}>>('/${table.moduleName}/${simpleClassName_strikeCase}/page', params)
 }
 
-/** 获取${table.classComment}详情 */
+/** Get ${table.classComment} details */
 export function get${simpleClassName}(id: ${primaryTsType}) {
   return http.get<${simpleClassName}>(`/${table.moduleName}/${simpleClassName_strikeCase}/get?id=${id}`)
 }
 
-/** 创建${table.classComment} */
+/** Create ${table.classComment} */
 export function create${simpleClassName}(data: ${simpleClassName}) {
   return http.post<number>('/${table.moduleName}/${simpleClassName_strikeCase}/create', data)
 }
 
-/** 更新${table.classComment} */
+/** Update ${table.classComment} */
 export function update${simpleClassName}(data: ${simpleClassName}) {
   return http.put<boolean>('/${table.moduleName}/${simpleClassName_strikeCase}/update', data)
 }
 
-/** 删除${table.classComment} */
+/** Delete ${table.classComment} */
 export function delete${simpleClassName}(id: ${primaryTsType}) {
   return http.delete<boolean>(`/${table.moduleName}/${simpleClassName_strikeCase}/delete?id=${id}`)
 }

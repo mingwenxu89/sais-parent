@@ -27,9 +27,9 @@ import static cn.iocoder.yudao.framework.common.util.collection.CollectionUtils.
 import static cn.iocoder.yudao.module.infra.enums.ErrorCodeConstants.*;
 
 /**
- * 定时任务 Service 实现类
+ * Scheduled task Service implementation class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Service
 @Validated
@@ -46,23 +46,23 @@ public class JobServiceImpl implements JobService {
     @Transactional(rollbackFor = Exception.class)
     public Long createJob(JobSaveReqVO createReqVO) throws SchedulerException {
         validateCronExpression(createReqVO.getCronExpression());
-        // 1.1 校验唯一性
+        // 1.1 Verify uniqueness
         if (jobMapper.selectByHandlerName(createReqVO.getHandlerName()) != null) {
             throw exception(JOB_HANDLER_EXISTS);
         }
-        // 1.2 校验 JobHandler 是否存在
+        // 1.2 Verify whether JobHandler exists
         validateJobHandlerExists(createReqVO.getHandlerName());
 
-        // 2. 插入 JobDO
+        // 2. Insert JobDO
         JobDO job = BeanUtils.toBean(createReqVO, JobDO.class);
         job.setStatus(JobStatusEnum.INIT.getStatus());
         fillJobMonitorTimeoutEmpty(job);
         jobMapper.insert(job);
 
-        // 3.1 添加 Job 到 Quartz 中
+        // 3.1 Add Job to Quartz
         schedulerManager.addJob(job.getId(), job.getHandlerName(), job.getHandlerParam(), job.getCronExpression(),
                 createReqVO.getRetryCount(), createReqVO.getRetryInterval());
-        // 3.2 更新 JobDO
+        // 3.2 Update JobDO
         JobDO updateObj = JobDO.builder().id(job.getId()).status(JobStatusEnum.NORMAL.getStatus()).build();
         jobMapper.updateById(updateObj);
         return job.getId();
@@ -72,21 +72,21 @@ public class JobServiceImpl implements JobService {
     @Transactional(rollbackFor = Exception.class)
     public void updateJob(JobSaveReqVO updateReqVO) throws SchedulerException {
         validateCronExpression(updateReqVO.getCronExpression());
-        // 1.1 校验存在
+        // 1.1 Verify existence
         JobDO job = validateJobExists(updateReqVO.getId());
-        // 1.2 只有开启状态，才可以修改.原因是，如果出暂停状态，修改 Quartz Job 时，会导致任务又开始执行
+        // 1.2 It can only be modified if it is in the open state. The reason is that if the Quartz Job is in the paused state, modifying the Quartz Job will cause the task to start executing again.
         if (!job.getStatus().equals(JobStatusEnum.NORMAL.getStatus())) {
             throw exception(JOB_UPDATE_ONLY_NORMAL_STATUS);
         }
-        // 1.3 校验 JobHandler 是否存在
+        // 1.3 Verify whether JobHandler exists
         validateJobHandlerExists(updateReqVO.getHandlerName());
 
-        // 2. 更新 JobDO
+        // 2. Update JobDO
         JobDO updateObj = BeanUtils.toBean(updateReqVO, JobDO.class);
         fillJobMonitorTimeoutEmpty(updateObj);
         jobMapper.updateById(updateObj);
 
-        // 3. 更新 Job 到 Quartz 中
+        // 3. Update Job to Quartz
         schedulerManager.updateJob(job.getHandlerName(), updateReqVO.getHandlerParam(), updateReqVO.getCronExpression(),
                 updateReqVO.getRetryCount(), updateReqVO.getRetryInterval());
     }
@@ -106,77 +106,77 @@ public class JobServiceImpl implements JobService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateJobStatus(Long id, Integer status) throws SchedulerException {
-        // 校验 status
+        // Check status
         if (!containsAny(status, JobStatusEnum.NORMAL.getStatus(), JobStatusEnum.STOP.getStatus())) {
             throw exception(JOB_CHANGE_STATUS_INVALID);
         }
-        // 校验存在
+        // Check existence
         JobDO job = validateJobExists(id);
-        // 校验是否已经为当前状态
+        // Verify whether it is already in the current state
         if (job.getStatus().equals(status)) {
             throw exception(JOB_CHANGE_STATUS_EQUALS);
         }
-        // 更新 Job 状态
+        // Update job status
         JobDO updateObj = JobDO.builder().id(id).status(status).build();
         jobMapper.updateById(updateObj);
 
-        // 更新状态 Job 到 Quartz 中
-        if (JobStatusEnum.NORMAL.getStatus().equals(status)) { // 开启
+        // Update status Job to Quartz
+        if (JobStatusEnum.NORMAL.getStatus().equals(status)) { // turn on
             schedulerManager.resumeJob(job.getHandlerName());
-        } else { // 暂停
+        } else { // pause
             schedulerManager.pauseJob(job.getHandlerName());
         }
     }
 
     @Override
     public void triggerJob(Long id) throws SchedulerException {
-        // 校验存在
+        // Check existence
         JobDO job = validateJobExists(id);
 
-        // 触发 Quartz 中的 Job
+        // Trigger Job in Quartz
         schedulerManager.triggerJob(job.getId(), job.getHandlerName(), job.getHandlerParam());
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void syncJob() throws SchedulerException {
-        // 1. 查询 Job 配置
+        // 1. Query Job configuration
         List<JobDO> jobList = jobMapper.selectList();
 
-        // 2. 遍历处理
+        // 2. Traversal processing
         for (JobDO job : jobList) {
-            // 2.1 先删除，再创建
+            // 2.1 Delete first, then create
             schedulerManager.deleteJob(job.getHandlerName());
             schedulerManager.addJob(job.getId(), job.getHandlerName(), job.getHandlerParam(), job.getCronExpression(),
                     job.getRetryCount(), job.getRetryInterval());
-            // 2.2 如果 status 为暂停，则需要暂停
+            // 2.2 If status is paused, it needs to be paused
             if (Objects.equals(job.getStatus(), JobStatusEnum.STOP.getStatus())) {
                 schedulerManager.pauseJob(job.getHandlerName());
             }
-            log.info("[syncJob][id({}) handlerName({}) 同步完成]", job.getId(), job.getHandlerName());
+            log.info("[syncJob][id({}) handlerName({}) synchronization completed]", job.getId(), job.getHandlerName());
         }
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteJob(Long id) throws SchedulerException {
-        // 校验存在
+        // Check existence
         JobDO job = validateJobExists(id);
-        // 更新
+        // Update
         jobMapper.deleteById(id);
 
-        // 删除 Job 到 Quartz 中
+        // Delete Job into Quartz
         schedulerManager.deleteJob(job.getHandlerName());
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteJobList(List<Long> ids) throws SchedulerException {
-        // 批量删除
+        // Batch delete
         List<JobDO> jobs = jobMapper.selectByIds(ids);
         jobMapper.deleteByIds(ids);
 
-        // 删除 Job 到 Quartz 中
+        // Delete Job into Quartz
         for (JobDO job : jobs) {
             schedulerManager.deleteJob(job.getHandlerName());
         }

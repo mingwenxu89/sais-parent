@@ -9,79 +9,79 @@ import org.lionsoul.ip2region.xdb.Searcher;
 import java.io.IOException;
 
 /**
- * IP 工具类
+ * IP tools
  *
- * IP 数据源来自 ip2region.xdb 精简版，基于 <a href="https://gitee.com/zhijiantianya/ip2region"/> 项目
+ * The IP data source comes from the lite version of ip2region.xDB, based on the <a href="https://gitee.com/zhijiantianya/ip2region"/> project
  *
  * @author wanglhup
  */
 @Slf4j
 public class IPUtils {
 
-    /**
-     * 初始化 SEARCHER
-     */
-    @SuppressWarnings("InstantiationOfUtilityClass")
-    private final static IPUtils INSTANCE = new IPUtils();
+ /**
+     * Initialize SEARCHER
+ */
+ @SuppressWarnings("InstantiationOfUtilityClass")
+ private final static IPUtils INSTANCE = new IPUtils();
 
-    /**
-     * IP 查询器，启动加载到内存中
-     */
-    private static Searcher SEARCHER;
+ /**
+     * IP queryer, start loading into memory
+ */
+ private static Searcher SEARCHER;
 
-    /**
-     * 私有化构造
-     */
-    private IPUtils() {
-        try {
-            long now = System.currentTimeMillis();
-            byte[] bytes = ResourceUtil.readBytes("ip2region.xdb");
-            SEARCHER = Searcher.newWithBuffer(bytes);
-            log.info("启动加载 IPUtils 成功，耗时 ({}) 毫秒", System.currentTimeMillis() - now);
-        } catch (IOException e) {
-            log.error("启动加载 IPUtils 失败", e);
-        }
-    }
+ /**
+     * privatization structure
+ */
+ private IPUtils() {
+ try {
+ long now = System.currentTimeMillis();
+ byte[] bytes = ResourceUtil.readBytes("ip2region.xdb");
+ SEARCHER = Searcher.newWithBuffer(bytes);
+            log.info("Started loading IPUtils successfully, taking ({}) milliseconds", System.currentTimeMillis() - now);
+ } catch (IOException e) {
+            log.error("Failed to load IPUtils on startup", e);
+ }
+ }
 
-    /**
-     * 查询 IP 对应的地区编号
-     *
-     * @param ip IP 地址，格式为 127.0.0.1
-     * @return 地区id
-     */
-    @SneakyThrows
-    public static Integer getAreaId(String ip) {
-        return Integer.parseInt(SEARCHER.search(ip.trim()));
-    }
+ /**
+     * Query the area code corresponding to the IP
+ *
+     * @param ip IP address in the format 127.0.0.1
+     * @return region id
+ */
+ @SneakyThrows
+ public static Integer getAreaId(String ip) {
+ return Integer.parseInt(SEARCHER.search(ip.trim()));
+ }
 
-    /**
-     * 查询 IP 对应的地区编号
-     *
-     * @param ip IP 地址的时间戳，格式参考{@link Searcher#checkIP(String)} 的返回
-     * @return 地区编号
-     */
-    @SneakyThrows
-    public static Integer getAreaId(long ip) {
-        return Integer.parseInt(SEARCHER.search(ip));
-    }
+ /**
+     * Query the area code corresponding to the IP
+ *
+     * @param ip The timestamp of the IP address, the format refers to the return of {@link Searcher#checkIP(String)}
+     * @return area code
+ */
+ @SneakyThrows
+ public static Integer getAreaId(long ip) {
+ return Integer.parseInt(SEARCHER.search(ip));
+ }
 
-    /**
-     * 查询 IP 对应的地区
-     *
-     * @param ip IP 地址，格式为 127.0.0.1
-     * @return 地区
-     */
-    public static Area getArea(String ip) {
-        return AreaUtils.getArea(getAreaId(ip));
-    }
+ /**
+     * Query the region corresponding to the IP
+ *
+     * @param ip IP address in the format 127.0.0.1
+     * @return area
+ */
+ public static Area getArea(String ip) {
+ return AreaUtils.getArea(getAreaId(ip));
+ }
 
-    /**
-     * 查询 IP 对应的地区
-     *
-     * @param ip IP 地址的时间戳，格式参考{@link Searcher#checkIP(String)} 的返回
-     * @return 地区
-     */
-    public static Area getArea(long ip) {
-        return AreaUtils.getArea(getAreaId(ip));
-    }
+ /**
+     * Query the region corresponding to the IP
+ *
+     * @param ip The timestamp of the IP address, the format refers to the return of {@link Searcher#checkIP(String)}
+     * @return area
+ */
+ public static Area getArea(long ip) {
+ return AreaUtils.getArea(getAreaId(ip));
+ }
 }

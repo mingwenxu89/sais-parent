@@ -8,39 +8,39 @@ import lombok.Getter;
 import java.util.Arrays;
 
 /**
- * 通用状态枚举
+ * Generic status enum
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Getter
 @AllArgsConstructor
 public enum CommonStatusEnum implements ArrayValuable<Integer> {
 
-    ENABLE(0, "开启"),
-    DISABLE(1, "关闭");
+    ENABLE(0, "turn on"),
+    DISABLE(1, "closure");
 
-    public static final Integer[] ARRAYS = Arrays.stream(values()).map(CommonStatusEnum::getStatus).toArray(Integer[]::new);
+ public static final Integer[] ARRAYS = Arrays.stream(values()).map(CommonStatusEnum::getStatus).toArray(Integer[]::new);
 
-    /**
-     * 状态值
-     */
-    private final Integer status;
-    /**
-     * 状态名
-     */
-    private final String name;
+ /**
+     * status value
+ */
+ private final Integer status;
+ /**
+     * status name
+ */
+ private final String name;
 
-    @Override
-    public Integer[] array() {
-        return ARRAYS;
-    }
+ @Override
+ public Integer[] array() {
+ return ARRAYS;
+ }
 
-    public static boolean isEnable(Integer status) {
-        return ObjUtil.equal(ENABLE.status, status);
-    }
+ public static boolean isEnable(Integer status) {
+ return ObjUtil.equal(ENABLE.status, status);
+ }
 
-    public static boolean isDisable(Integer status) {
-        return ObjUtil.equal(DISABLE.status, status);
-    }
+ public static boolean isDisable(Integer status) {
+ return ObjUtil.equal(DISABLE.status, status);
+ }
 
 }

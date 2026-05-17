@@ -14,7 +14,7 @@ import java.util.List;
 @Mapper
 public interface OAuth2AccessTokenMapper extends BaseMapperX<OAuth2AccessTokenDO> {
 
-    @TenantIgnore // 获取 token 的时候，需要忽略租户编号。原因是：一些场景下，可能不会传递 tenant-id 请求头，例如说文件上传、积木报表等等
+    @TenantIgnore // When obtaining the token, you need to ignore the tenant ID. The reason is: In some scenarios, the tenant-id request header may not be passed, such as file upload, building block report, etc.
     default OAuth2AccessTokenDO selectByAccessToken(String accessToken) {
         return selectOne(OAuth2AccessTokenDO::getAccessToken, accessToken);
     }

@@ -4,29 +4,29 @@ import cn.iocoder.yudao.module.system.framework.sms.core.enums.SmsTemplateAuditS
 import lombok.Data;
 
 /**
- * 短信模板 Response DTO
+ * SMS Template Response DTO
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Data
 public class SmsTemplateRespDTO {
 
     /**
-     * 模板编号
+     * Template ID
      */
     private String id;
     /**
-     * 短信内容
+     * SMS content
      */
     private String content;
     /**
-     * 审核状态
+     * Review status
      *
-     * 枚举 {@link SmsTemplateAuditStatusEnum}
+     * Enum {@link SmsTemplateAuditStatusEnum}
      */
     private Integer auditStatus;
     /**
-     * 审核未通过的理由
+     * Reason for failure of review
      */
     private String auditReason;
 

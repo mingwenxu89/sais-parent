@@ -12,12 +12,12 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 /**
- * 验证码的配置类
+ * Captcha configuration class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Configuration(proxyBeanMethods = false)
-@ImportAutoConfiguration(AjCaptchaAutoConfiguration.class) // 目的：解决 aj-captcha 针对 SpringBoot 3.X 自动配置不生效的问题
+@ImportAutoConfiguration(AjCaptchaAutoConfiguration.class) // Purpose: To solve the problem that the automatic configuration of aj-captcha for SpringBoot 3.X does not take effect
 public class YudaoCaptchaConfiguration {
 
     @Bean(name = "AjCaptchaCacheService")

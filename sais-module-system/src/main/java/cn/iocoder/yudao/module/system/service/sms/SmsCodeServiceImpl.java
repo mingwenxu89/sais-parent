@@ -22,9 +22,9 @@ import static cn.iocoder.yudao.framework.common.util.date.DateUtils.isToday;
 import static cn.iocoder.yudao.module.system.enums.ErrorCodeConstants.*;
 
 /**
- * 短信验证码 Service 实现类
+ * SMS captcha Service implementation class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Service
 @Validated
@@ -42,31 +42,31 @@ public class SmsCodeServiceImpl implements SmsCodeService {
     @Override
     public void sendSmsCode(SmsCodeSendReqDTO reqDTO) {
         SmsSceneEnum sceneEnum = SmsSceneEnum.getCodeByScene(reqDTO.getScene());
-        Assert.notNull(sceneEnum, "验证码场景({}) 查找不到配置", reqDTO.getScene());
-        // 创建验证码
+        Assert.notNull(sceneEnum, "Captcha scenario ({}) configuration cannot be found", reqDTO.getScene());
+        // Create captcha
         String code = createSmsCode(reqDTO.getMobile(), reqDTO.getScene(), reqDTO.getCreateIp());
-        // 发送验证码
+        // Send captcha
         smsSendService.sendSingleSms(reqDTO.getMobile(), null, null,
                 sceneEnum.getTemplateCode(), MapUtil.of("code", code));
     }
 
     private String createSmsCode(String mobile, Integer scene, String ip) {
-        // 校验是否可以发送验证码，不用筛选场景
+        // Verify whether the captcha can be sent without filtering the scenario
         SmsCodeDO lastSmsCode = smsCodeMapper.selectLastByMobile(mobile, null, null);
         if (lastSmsCode != null) {
             if (LocalDateTimeUtil.between(lastSmsCode.getCreateTime(), LocalDateTime.now()).toMillis()
-                    < smsCodeProperties.getSendFrequency().toMillis()) { // 发送过于频繁
+                    < smsCodeProperties.getSendFrequency().toMillis()) { // Sent too frequently
                 throw exception(SMS_CODE_SEND_TOO_FAST);
             }
-            if (isToday(lastSmsCode.getCreateTime()) && // 必须是今天，才能计算超过当天的上限
-                    lastSmsCode.getTodayIndex() >= smsCodeProperties.getSendMaximumQuantityPerDay()) { // 超过当天发送的上限。
+            if (isToday(lastSmsCode.getCreateTime()) && // It must be today to calculate the limit exceeding the day's limit
+                    lastSmsCode.getTodayIndex() >= smsCodeProperties.getSendMaximumQuantityPerDay()) { // Exceeded the sending limit for the day.
                 throw exception(SMS_CODE_EXCEED_SEND_MAXIMUM_QUANTITY_PER_DAY);
             }
-            // TODO 芋艿：提升，每个 IP 每天可发送数量
-            // TODO 芋艿：提升，每个 IP 每小时可发送数量
+            // TODO Taro: Improved, the ID of messages each IP can send per day
+            // TODO Taro: Improve the ID of times each IP can send per hour
         }
 
-        // 创建验证码记录
+        // Create captcha record
         String code = String.format("%0" + smsCodeProperties.getEndCode().toString().length() + "d",
                 randomInt(smsCodeProperties.getBeginCode(), smsCodeProperties.getEndCode() + 1));
         SmsCodeDO newSmsCode = SmsCodeDO.builder().mobile(mobile).code(code).scene(scene)
@@ -78,9 +78,9 @@ public class SmsCodeServiceImpl implements SmsCodeService {
 
     @Override
     public void useSmsCode(SmsCodeUseReqDTO reqDTO) {
-        // 检测验证码是否有效
+        // Check whether the captcha is valid
         SmsCodeDO lastSmsCode = validateSmsCode0(reqDTO.getMobile(), reqDTO.getCode(), reqDTO.getScene());
-        // 使用验证码
+        // Use captcha
         smsCodeMapper.updateById(SmsCodeDO.builder().id(lastSmsCode.getId())
                 .used(true).usedTime(LocalDateTime.now()).usedIp(reqDTO.getUsedIp()).build());
     }
@@ -91,18 +91,18 @@ public class SmsCodeServiceImpl implements SmsCodeService {
     }
 
     private SmsCodeDO validateSmsCode0(String mobile, String code, Integer scene) {
-        // 校验验证码
+        // Verify captcha
         SmsCodeDO lastSmsCode = smsCodeMapper.selectLastByMobile(mobile, code, scene);
-        // 若验证码不存在，抛出异常
+        // If the captcha does not exist, an exception is thrown
         if (lastSmsCode == null) {
             throw exception(SMS_CODE_NOT_FOUND);
         }
-        // 超过时间
+        // time exceeded
         if (LocalDateTimeUtil.between(lastSmsCode.getCreateTime(), LocalDateTime.now()).toMillis()
-                >= smsCodeProperties.getExpireTimes().toMillis()) { // 验证码已过期
+                >= smsCodeProperties.getExpireTimes().toMillis()) { // Captcha has expired
             throw exception(SMS_CODE_EXPIRED);
         }
-        // 判断验证码是否已被使用
+        // Determine whether the captcha has been used
         if (Boolean.TRUE.equals(lastSmsCode.getUsed())) {
             throw exception(SMS_CODE_USED);
         }

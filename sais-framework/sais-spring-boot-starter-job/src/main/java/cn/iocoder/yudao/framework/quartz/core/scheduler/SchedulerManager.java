@@ -8,15 +8,15 @@ import static cn.iocoder.yudao.framework.common.exception.enums.GlobalErrorCodeC
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception0;
 
 /**
- * {@link org.quartz.Scheduler} 的管理器，负责创建任务
+ * The manager of {@link org.quartz.Scheduler}, responsible for creating tasks
  *
- * 考虑到实现的简洁性，我们使用 jobHandlerName 作为唯一标识，即：
- * 1. Job 的 {@link JobDetail#getKey()}
- * 2. Trigger 的 {@link Trigger#getKey()}
+ * Considering the simplicity of implementation, we use jobHandlerName as the unique identifier, that is:
+ * 1. Job’s {@link JobDetail#getKey()}
+ * 2. Trigger’s {@link Trigger#getKey()}
  *
- * 另外，jobHandlerName 对应到 Spring Bean 的名字，直接调用
+ * In addition, jobHandlerName corresponds to the name of Spring Bean, which can be called directly
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public class SchedulerManager {
 
@@ -27,71 +27,71 @@ public class SchedulerManager {
     }
 
     /**
-     * 添加 Job 到 Quartz 中
+     * Add Job to Quartz
      *
-     * @param jobId 任务编号
-     * @param jobHandlerName 任务处理器的名字
-     * @param jobHandlerParam 任务处理器的参数
-     * @param cronExpression CRON 表达式
-     * @param retryCount 重试次数
-     * @param retryInterval 重试间隔
-     * @throws SchedulerException 添加异常
+     * @param jobId Task number
+     * @param jobHandlerName Task handler name
+     * @param jobHandlerParam Task handler parameters
+     * @param cronExpression CRON expression
+     * @param retryCount Number of retries
+     * @param retryInterval Retry interval
+     * @throws SchedulerException Add exception
      */
     public void addJob(Long jobId, String jobHandlerName, String jobHandlerParam, String cronExpression,
                        Integer retryCount, Integer retryInterval)
             throws SchedulerException {
         validateScheduler();
-        // 创建 JobDetail 对象
+        // Create JobDetail object
         JobDetail jobDetail = JobBuilder.newJob(JobHandlerInvoker.class)
                 .usingJobData(JobDataKeyEnum.JOB_ID.name(), jobId)
                 .usingJobData(JobDataKeyEnum.JOB_HANDLER_NAME.name(), jobHandlerName)
                 .withIdentity(jobHandlerName).build();
-        // 创建 Trigger 对象
+        // Create a Trigger object
         Trigger trigger = this.buildTrigger(jobHandlerName, jobHandlerParam, cronExpression, retryCount, retryInterval);
-        // 新增 Job 调度
+        // Added Job Scheduling
         scheduler.scheduleJob(jobDetail, trigger);
     }
 
     /**
-     * 更新 Job 到 Quartz
+     * Update Job to Quartz
      *
-     * @param jobHandlerName 任务处理器的名字
-     * @param jobHandlerParam 任务处理器的参数
-     * @param cronExpression CRON 表达式
-     * @param retryCount 重试次数
-     * @param retryInterval 重试间隔
-     * @throws SchedulerException 更新异常
+     * @param jobHandlerName Task handler name
+     * @param jobHandlerParam Task handler parameters
+     * @param cronExpression CRON expression
+     * @param retryCount Number of retries
+     * @param retryInterval Retry interval
+     * @throws SchedulerException update exception
      */
     public void updateJob(String jobHandlerName, String jobHandlerParam, String cronExpression,
                           Integer retryCount, Integer retryInterval)
             throws SchedulerException {
         validateScheduler();
-        // 创建新 Trigger 对象
+        // Create a new Trigger object
         Trigger newTrigger = this.buildTrigger(jobHandlerName, jobHandlerParam, cronExpression, retryCount, retryInterval);
-        // 修改调度
+        // Modify schedule
         scheduler.rescheduleJob(new TriggerKey(jobHandlerName), newTrigger);
     }
 
     /**
-     * 删除 Quartz 中的 Job
+     * Delete Job in Quartz
      *
-     * @param jobHandlerName 任务处理器的名字
-     * @throws SchedulerException 删除异常
+     * @param jobHandlerName Task handler name
+     * @throws SchedulerException delete exception
      */
     public void deleteJob(String jobHandlerName) throws SchedulerException {
         validateScheduler();
-        // 暂停 Trigger 对象
+        // Pause the Trigger object
         scheduler.pauseTrigger(new TriggerKey(jobHandlerName));
-        // 取消并删除 Job 调度
+        // Cancel and delete job schedule
         scheduler.unscheduleJob(new TriggerKey(jobHandlerName));
         scheduler.deleteJob(new JobKey(jobHandlerName));
     }
 
     /**
-     * 暂停 Quartz 中的 Job
+     * Pause Job in Quartz
      *
-     * @param jobHandlerName 任务处理器的名字
-     * @throws SchedulerException 暂停异常
+     * @param jobHandlerName Task handler name
+     * @throws SchedulerException Pause exception
      */
     public void pauseJob(String jobHandlerName) throws SchedulerException {
         validateScheduler();
@@ -99,10 +99,10 @@ public class SchedulerManager {
     }
 
     /**
-     * 启动 Quartz 中的 Job
+     * Start a Job in Quartz
      *
-     * @param jobHandlerName 任务处理器的名字
-     * @throws SchedulerException 启动异常
+     * @param jobHandlerName Task handler name
+     * @throws SchedulerException startup exception
      */
     public void resumeJob(String jobHandlerName) throws SchedulerException {
         validateScheduler();
@@ -111,18 +111,18 @@ public class SchedulerManager {
     }
 
     /**
-     * 立即触发一次 Quartz 中的 Job
+     * Immediately trigger a Job in Quartz
      *
-     * @param jobId 任务编号
-     * @param jobHandlerName 任务处理器的名字
-     * @param jobHandlerParam 任务处理器的参数
-     * @throws SchedulerException 触发异常
+     * @param jobId Task number
+     * @param jobHandlerName Task handler name
+     * @param jobHandlerParam Task handler parameters
+     * @throws SchedulerException triggers exception
      */
     public void triggerJob(Long jobId, String jobHandlerName, String jobHandlerParam)
             throws SchedulerException {
         validateScheduler();
-        // 触发任务
-        JobDataMap data = new JobDataMap(); // 无需重试，所以不设置 retryCount 和 retryInterval
+        // trigger task
+        JobDataMap data = new JobDataMap(); // No need to retry, so retryCount and retryInterval are not set
         data.put(JobDataKeyEnum.JOB_ID.name(), jobId);
         data.put(JobDataKeyEnum.JOB_HANDLER_NAME.name(), jobHandlerName);
         data.put(JobDataKeyEnum.JOB_HANDLER_PARAM.name(), jobHandlerParam);
@@ -143,7 +143,7 @@ public class SchedulerManager {
     private void validateScheduler() {
         if (scheduler == null) {
             throw exception0(NOT_IMPLEMENTED.getCode(),
-                    "[定时任务 - 已禁用][参考 https://doc.iocoder.cn/job/ 开启]");
+                    "[定时任务 - 已禁用][参考 https:// doc.iocoder.cn/job/Open]");
         }
     }
 

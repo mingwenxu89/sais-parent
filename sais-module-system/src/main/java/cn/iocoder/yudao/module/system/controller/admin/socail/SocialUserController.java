@@ -26,7 +26,7 @@ import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 import static cn.iocoder.yudao.framework.common.util.collection.CollectionUtils.convertList;
 import static cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils.getLoginUserId;
 
-@Tag(name = "管理后台 - 社交用户")
+@Tag(name = "Management backend - social users")
 @RestController
 @RequestMapping("/system/social-user")
 @Validated
@@ -36,7 +36,7 @@ public class SocialUserController {
     private SocialUserService socialUserService;
 
     @PostMapping("/bind")
-    @Operation(summary = "社交绑定，使用 code 授权码")
+    @Operation(summary = "Social binding, use code authorization code")
     public CommonResult<Boolean> socialBind(@RequestBody @Valid SocialUserBindReqVO reqVO) {
         socialUserService.bindSocialUser(new SocialUserBindReqDTO().setSocialType(reqVO.getType())
                         .setCode(reqVO.getCode()).setState(reqVO.getState())
@@ -45,26 +45,26 @@ public class SocialUserController {
     }
 
     @DeleteMapping("/unbind")
-    @Operation(summary = "取消社交绑定")
+    @Operation(summary = "Cancel social binding")
     public CommonResult<Boolean> socialUnbind(@RequestBody SocialUserUnbindReqVO reqVO) {
         socialUserService.unbindSocialUser(getLoginUserId(), UserTypeEnum.ADMIN.getValue(), reqVO.getType(), reqVO.getOpenid());
         return CommonResult.success(true);
     }
 
     @GetMapping("/get-bind-list")
-    @Operation(summary = "获得绑定社交用户列表")
+    @Operation(summary = "Get the list of bound social users")
     public CommonResult<List<SocialUserRespVO>> getBindSocialUserList() {
         List<SocialUserDO> list = socialUserService.getSocialUserList(getLoginUserId(), UserTypeEnum.ADMIN.getValue());
-        return success(convertList(list, socialUser -> new SocialUserRespVO() // 返回精简信息
+        return success(convertList(list, socialUser -> new SocialUserRespVO() // Return condensed information
                 .setId(socialUser.getId()).setType(socialUser.getType()).setOpenid(socialUser.getOpenid())
                 .setNickname(socialUser.getNickname()).setAvatar(socialUser.getNickname())));
     }
 
-    // ==================== 社交用户 CRUD ====================
+    // ==================== Social User CRUD ====================
 
     @GetMapping("/get")
-    @Operation(summary = "获得社交用户")
-    @Parameter(name = "id", description = "编号", required = true, example = "1024")
+    @Operation(summary = "Get social users")
+    @Parameter(name = "id", description = "ID", required = true, example = "1024")
     @PreAuthorize("@ss.hasPermission('system:social-user:query')")
     public CommonResult<SocialUserRespVO> getSocialUser(@RequestParam("id") Long id) {
         SocialUserDO socialUser = socialUserService.getSocialUser(id);
@@ -72,7 +72,7 @@ public class SocialUserController {
     }
 
     @GetMapping("/page")
-    @Operation(summary = "获得社交用户分页")
+    @Operation(summary = "Get social user pagination")
     @PreAuthorize("@ss.hasPermission('system:social-user:query')")
     public CommonResult<PageResult<SocialUserRespVO>> getSocialUserPage(@Valid SocialUserPageReqVO pageVO) {
         PageResult<SocialUserDO> pageResult = socialUserService.getSocialUserPage(pageVO);

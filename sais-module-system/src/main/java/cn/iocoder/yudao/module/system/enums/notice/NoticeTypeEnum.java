@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 通知类型
+ * notification type
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Getter
 @AllArgsConstructor
@@ -16,7 +16,7 @@ public enum NoticeTypeEnum {
     ANNOUNCEMENT(2);
 
     /**
-     * 类型
+     * Type
      */
     private final Integer type;
 

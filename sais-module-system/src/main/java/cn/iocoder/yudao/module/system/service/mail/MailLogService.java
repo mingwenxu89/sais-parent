@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 邮件日志 Service 接口
+ * Mail Log Service API
  *
  * @author wangjingyi
  * @since 2022-03-21
@@ -19,35 +19,35 @@ import java.util.Map;
 public interface MailLogService {
 
     /**
-     * 邮件日志分页
+     * Email log paging
      *
-     * @param pageVO 分页参数
-     * @return 分页结果
+     * @param pageVO Paging parameters
+     * @return Paginated results
      */
     PageResult<MailLogDO> getMailLogPage(MailLogPageReqVO pageVO);
 
     /**
-     * 获得指定编号的邮件日志
+     * Get the email log with the specified ID
      *
-     * @param id 日志编号
-     * @return 邮件日志
+     * @param id Log ID
+     * @return Mail log
      */
     MailLogDO getMailLog(Long id);
 
     /**
-     * 创建邮件日志
+     * Create mail log
      *
-     * @param userId          用户编码
-     * @param userType        用户类型
-     * @param toMails         收件人邮件
-     * @param ccMails         收件人邮件
-     * @param bccMails        收件人邮件
-     * @param account         邮件账号信息
-     * @param template        模版信息
-     * @param templateContent 模版内容
-     * @param templateParams  模版参数
-     * @param isSend          是否发送成功
-     * @return 日志编号
+     * @param userId          user code
+     * @param userType        User type
+     * @param toMails         Recipient email
+     * @param ccMails         Recipient email
+     * @param bccMails        Recipient email
+     * @param account         Email account information
+     * @param template        Template information
+     * @param templateContent Template content
+     * @param templateParams  Template parameters
+     * @param isSend          Whether sent successfully
+     * @return Log ID
      */
     Long createMailLog(Long userId, Integer userType,
                        Collection<String> toMails, Collection<String> ccMails, Collection<String> bccMails,
@@ -55,11 +55,11 @@ public interface MailLogService {
                        String templateContent, Map<String, Object> templateParams, Boolean isSend);
 
     /**
-     * 更新邮件发送结果
+     * Update email sending results
      *
-     * @param logId  日志编号
-     * @param messageId 发送后的消息编号
-     * @param exception 发送异常
+     * @param logId  Log ID
+     * @param messageId Message ID after sending
+     * @param exception Send exception
      */
     void updateMailSendResult(Long logId, String messageId, Exception exception);
 

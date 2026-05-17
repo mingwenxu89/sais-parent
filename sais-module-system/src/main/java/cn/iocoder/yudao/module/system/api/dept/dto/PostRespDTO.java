@@ -4,33 +4,33 @@ import cn.iocoder.yudao.framework.common.enums.CommonStatusEnum;
 import lombok.Data;
 
 /**
- * 岗位 Response DTO
+ * Position Response DTO
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Data
 public class PostRespDTO {
 
     /**
-     * 岗位序号
+     * Position serial ID
      */
     private Long id;
     /**
-     * 岗位名称
+     * Job title
      */
     private String name;
     /**
-     * 岗位编码
+     * Position code
      */
     private String code;
     /**
-     * 岗位排序
+     * Position sorting
      */
     private Integer sort;
     /**
-     * 状态
+     * Status
      *
-     * 枚举 {@link CommonStatusEnum}
+     * Enum {@link CommonStatusEnum}
      */
     private Integer status;
 

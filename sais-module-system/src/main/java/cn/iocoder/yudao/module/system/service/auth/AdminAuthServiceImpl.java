@@ -47,9 +47,9 @@ import static cn.iocoder.yudao.framework.common.util.servlet.ServletUtils.getCli
 import static cn.iocoder.yudao.module.system.enums.ErrorCodeConstants.*;
 
 /**
- * Auth Service 实现类
+ * Auth Service implementation class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Service
 @Slf4j
@@ -73,28 +73,28 @@ public class AdminAuthServiceImpl implements AdminAuthService {
     private SmsCodeApi smsCodeApi;
 
     /**
-     * 验证码的开关，默认为 true
+     * Captcha switch, default is true
      */
     @Value("${yudao.captcha.enable:true}")
-    @Setter // 为了单测：开启或者关闭验证码
+    @Setter // For single testing: turn on or off captcha
     private Boolean captchaEnable;
 
     @Override
     public AdminUserDO authenticate(String username, String password) {
         final LoginLogTypeEnum logTypeEnum = LoginLogTypeEnum.LOGIN_USERNAME;
-        // 跨租户查找用户（忽略 tenant 过滤，根据用户名自动识别所属租户）
+        // Find users across tenants (ignore tenant filtering and automatically identify the tenant based on user name)
         AdminUserDO user = TenantUtils.executeIgnore(() -> userService.getUserByUsername(username));
         if (user == null) {
             createLoginLog(null, username, logTypeEnum, LoginResultEnum.BAD_CREDENTIALS);
             throw exception(AUTH_LOGIN_BAD_CREDENTIALS);
         }
-        // 恢复该用户所属租户的上下文，后续 token 创建等操作在正确租户下执行
+        // Restore the context of the tenant to which the user belongs, and subsequent token creation and other operations will be performed under the correct tenant.
         TenantContextHolder.setTenantId(user.getTenantId());
         if (!userService.isPasswordMatch(password, user.getPassword())) {
             createLoginLog(user.getId(), username, logTypeEnum, LoginResultEnum.BAD_CREDENTIALS);
             throw exception(AUTH_LOGIN_BAD_CREDENTIALS);
         }
-        // 校验是否禁用
+        // Check if it is disabled
         if (CommonStatusEnum.isDisable(user.getStatus())) {
             createLoginLog(user.getId(), username, logTypeEnum, LoginResultEnum.USER_DISABLED);
             throw exception(AUTH_LOGIN_USER_DISABLED);
@@ -105,24 +105,24 @@ public class AdminAuthServiceImpl implements AdminAuthService {
     @Override
     @DataPermission(enable = false)
     public AuthLoginRespVO login(AuthLoginReqVO reqVO) {
-        // 校验验证码
+        // Verify captcha
         validateCaptcha(reqVO);
 
-        // 使用账号密码，进行登录
+        // Use account password to log in
         AdminUserDO user = authenticate(reqVO.getUsername(), reqVO.getPassword());
 
-        // 如果 socialType 非空，说明需要绑定社交用户
+        // If socialType is non-empty, it means that social users need to be bound
         if (reqVO.getSocialType() != null) {
             socialUserService.bindSocialUser(new SocialUserBindReqDTO(user.getId(), getUserType().getValue(),
                     reqVO.getSocialType(), reqVO.getSocialCode(), reqVO.getSocialState()));
         }
-        // 创建 Token 令牌，记录登录日志
+        // Create Token and record login log
         return createTokenAfterLoginSuccess(user.getId(), reqVO.getUsername(), LoginLogTypeEnum.LOGIN_USERNAME);
     }
 
     @Override
     public void sendSmsCode(AuthSmsSendReqVO reqVO) {
-        // 如果是重置密码场景，需要校验图形验证码是否正确
+        // If it is a password reset scenario, you need to verify whether the graphic captcha is correct.
         if (Objects.equals(SmsSceneEnum.ADMIN_MEMBER_RESET_PASSWORD.getScene(), reqVO.getScene())) {
             ResponseModel response = doValidateCaptcha(reqVO);
             if (!response.isSuccess()) {
@@ -130,32 +130,32 @@ public class AdminAuthServiceImpl implements AdminAuthService {
             }
         }
 
-        // 登录场景，验证是否存在
+        // Log in to the scene and verify whether it exists
         if (userService.getUserByMobile(reqVO.getMobile()) == null) {
             throw exception(AUTH_MOBILE_NOT_EXISTS);
         }
-        // 发送验证码
+        // Send captcha
         smsCodeApi.sendSmsCode(AuthConvert.INSTANCE.convert(reqVO).setCreateIp(getClientIP()));
     }
 
     @Override
     public AuthLoginRespVO smsLogin(AuthSmsLoginReqVO reqVO) {
-        // 校验验证码
+        // Verify captcha
         smsCodeApi.useSmsCode(AuthConvert.INSTANCE.convert(reqVO, SmsSceneEnum.ADMIN_MEMBER_LOGIN.getScene(), getClientIP()));
 
-        // 获得用户信息
+        // Get user information
         AdminUserDO user = userService.getUserByMobile(reqVO.getMobile());
         if (user == null) {
             throw exception(USER_NOT_EXISTS);
         }
 
-        // 创建 Token 令牌，记录登录日志
+        // Create Token and record login log
         return createTokenAfterLoginSuccess(user.getId(), reqVO.getMobile(), LoginLogTypeEnum.LOGIN_MOBILE);
     }
 
     private void createLoginLog(Long userId, String username,
                                 LoginLogTypeEnum logTypeEnum, LoginResultEnum loginResult) {
-        // 插入登录日志
+        // Insert login log
         LoginLogCreateReqDTO reqDTO = new LoginLogCreateReqDTO();
         reqDTO.setLogType(logTypeEnum.getType());
         reqDTO.setTraceId(TracerUtils.getTraceId());
@@ -166,7 +166,7 @@ public class AdminAuthServiceImpl implements AdminAuthService {
         reqDTO.setUserIp(ServletUtils.getClientIP());
         reqDTO.setResult(loginResult.getResult());
         loginLogService.createLoginLog(reqDTO);
-        // 更新最后登录时间
+        // Update last login time
         if (userId != null && Objects.equals(LoginResultEnum.SUCCESS.getResult(), loginResult.getResult())) {
             userService.updateUserLogin(userId, ServletUtils.getClientIP());
         }
@@ -174,36 +174,36 @@ public class AdminAuthServiceImpl implements AdminAuthService {
 
     @Override
     public AuthLoginRespVO socialLogin(AuthSocialLoginReqVO reqVO) {
-        // 使用 code 授权码，进行登录。然后，获得到绑定的用户编号
+        // Use the code authorization code to log in. Then, get the bound user ID
         SocialUserRespDTO socialUser = socialUserService.getSocialUserByCode(UserTypeEnum.ADMIN.getValue(), reqVO.getType(),
                 reqVO.getCode(), reqVO.getState());
         if (socialUser == null || socialUser.getUserId() == null) {
             throw exception(AUTH_THIRD_LOGIN_NOT_BIND);
         }
 
-        // 获得用户
+        // Get users
         AdminUserDO user = userService.getUser(socialUser.getUserId());
         if (user == null) {
             throw exception(USER_NOT_EXISTS);
         }
 
-        // 创建 Token 令牌，记录登录日志
+        // Create Token and record login log
         return createTokenAfterLoginSuccess(user.getId(), user.getUsername(), LoginLogTypeEnum.LOGIN_SOCIAL);
     }
 
     @VisibleForTesting
     void validateCaptcha(AuthLoginReqVO reqVO) {
         ResponseModel response = doValidateCaptcha(reqVO);
-        // 校验验证码
+        // Verify captcha
         if (!response.isSuccess()) {
-            // 创建登录失败日志（验证码不正确)
+            // Create login failure log (captcha is incorrect)
             createLoginLog(null, reqVO.getUsername(), LoginLogTypeEnum.LOGIN_USERNAME, LoginResultEnum.CAPTCHA_CODE_ERROR);
             throw exception(AUTH_LOGIN_CAPTCHA_CODE_ERROR, response.getRepMsg());
         }
     }
 
     private ResponseModel doValidateCaptcha(CaptchaVerificationReqVO reqVO) {
-        // 如果验证码关闭，则不进行校验
+        // If the captcha is turned off, no verification will be performed
         if (!captchaEnable) {
             return ResponseModel.success();
         }
@@ -214,12 +214,12 @@ public class AdminAuthServiceImpl implements AdminAuthService {
     }
 
     private AuthLoginRespVO createTokenAfterLoginSuccess(Long userId, String username, LoginLogTypeEnum logType) {
-        // 插入登陆日志
+        // Insert login log
         createLoginLog(userId, username, logType, LoginResultEnum.SUCCESS);
-        // 创建访问令牌
+        // Create access token
         OAuth2AccessTokenDO accessTokenDO = oauth2TokenService.createAccessToken(userId, getUserType().getValue(),
                 OAuth2ClientConstants.CLIENT_ID_DEFAULT, null);
-        // 构建返回结果（含租户编号，供前端存储后用于后续请求 header）
+        // Build the return result (including the tenant ID, which can be stored by the front end and used in subsequent request headers)
         AuthLoginRespVO resp = BeanUtils.toBean(accessTokenDO, AuthLoginRespVO.class);
         resp.setTenantId(TenantContextHolder.getTenantId());
         return resp;
@@ -233,12 +233,12 @@ public class AdminAuthServiceImpl implements AdminAuthService {
 
     @Override
     public void logout(String token, Integer logType) {
-        // 删除访问令牌
+        // Delete access token
         OAuth2AccessTokenDO accessTokenDO = oauth2TokenService.removeAccessToken(token);
         if (accessTokenDO == null) {
             return;
         }
-        // 删除成功，则记录登出日志
+        // If the deletion is successful, the logout log will be recorded.
         createLogoutLog(accessTokenDO.getUserId(), accessTokenDO.getUserType(), logType);
     }
 
@@ -273,20 +273,20 @@ public class AdminAuthServiceImpl implements AdminAuthService {
 
     @Override
     public AuthLoginRespVO register(AuthRegisterReqVO registerReqVO) {
-        // 1. 校验验证码
+        // 1. Verify captcha
         validateCaptcha(registerReqVO);
 
-        // 2. 校验用户名是否已存在
+        // 2. Verify whether the username already exists
         Long userId = userService.registerUser(registerReqVO);
 
-        // 3. 创建 Token 令牌，记录登录日志
+        // 3. Create Token and record login log
         return createTokenAfterLoginSuccess(userId, registerReqVO.getUsername(), LoginLogTypeEnum.LOGIN_USERNAME);
     }
 
     @VisibleForTesting
     void validateCaptcha(AuthRegisterReqVO reqVO) {
         ResponseModel response = doValidateCaptcha(reqVO);
-        // 验证不通过
+        // Verification failed
         if (!response.isSuccess()) {
             throw exception(AUTH_REGISTER_CAPTCHA_CODE_ERROR, response.getRepMsg());
         }

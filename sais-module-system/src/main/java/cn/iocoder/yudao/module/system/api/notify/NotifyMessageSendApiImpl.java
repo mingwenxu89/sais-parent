@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import jakarta.annotation.Resource;
 
 /**
- * 站内信发送 API 实现类
+ * Site message sending API implementation class
  *
  * @author xrcoder
  */

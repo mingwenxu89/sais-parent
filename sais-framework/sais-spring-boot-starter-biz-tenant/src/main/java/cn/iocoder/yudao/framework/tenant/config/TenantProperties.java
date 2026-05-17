@@ -8,50 +8,50 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * 多租户配置
+ * Multi-tenant configuration
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @ConfigurationProperties(prefix = "yudao.tenant")
 @Data
 public class TenantProperties {
 
-    /**
-     * 租户是否开启
-     */
-    private static final Boolean ENABLE_DEFAULT = true;
+ /**
+     * Is the tenant enabled?
+ */
+ private static final Boolean ENABLE_DEFAULT = true;
 
-    /**
-     * 是否开启
-     */
-    private Boolean enable = ENABLE_DEFAULT;
+ /**
+     * Whether to turn on
+ */
+ private Boolean enable = ENABLE_DEFAULT;
 
-    /**
-     * 需要忽略多租户的请求
-     *
-     * 默认情况下，每个请求需要带上 tenant-id 的请求头。但是，部分请求是无需带上的，例如说短信回调、支付回调等 Open API！
-     */
-    private Set<String> ignoreUrls = new HashSet<>();
+ /**
+     * Multi-tenant requests need to be ignored
+ *
+     * By default, each request requires a tenant-ID request header. However, some requests do not need to be brought, such as SMS callbacks, payment callbacks, etc. Open API!
+ */
+ private Set<String> ignoreUrls = new HashSet<>();
 
-    /**
-     * 需要忽略跨（切换）租户访问的请求
-     *
-     * 原因是：某些接口，访问的是个人信息，在跨租户是获取不到的！
-     */
-    private Set<String> ignoreVisitUrls = Collections.emptySet();
+ /**
+     * Requests for cross (switch) tenant access need to be ignored
+ *
+     * The reason is: some interfaces access personal information, which cannot be obtained across tenants!
+ */
+ private Set<String> ignoreVisitUrls = Collections.emptySet();
 
-    /**
-     * 需要忽略多租户的表
-     *
-     * 即默认所有表都开启多租户的功能，所以记得添加对应的 tenant_id 字段哟
-     */
-    private Set<String> ignoreTables = Collections.emptySet();
+ /**
+     * Multi-tenant tables need to be ignored
+ *
+     * That is to say, all tables have multi-tenancy enabled by default, so remember to add the corresponding tenant_ID field.
+ */
+ private Set<String> ignoreTables = Collections.emptySet();
 
-    /**
-     * 需要忽略多租户的 Spring Cache 缓存
-     *
-     * 即默认所有缓存都开启多租户的功能，所以记得添加对应的 tenant_id 字段哟
-     */
-    private Set<String> ignoreCaches = Collections.emptySet();
+ /**
+     * Spring Cache cache that needs to be ignored for multi-tenancy
+ *
+     * That is, by default, all caches have multi-tenancy enabled, so remember to add the corresponding tenant_ID field.
+ */
+ private Set<String> ignoreCaches = Collections.emptySet();
 
 }

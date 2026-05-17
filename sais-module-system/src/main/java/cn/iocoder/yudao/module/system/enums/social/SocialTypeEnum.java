@@ -8,9 +8,9 @@ import lombok.Getter;
 import java.util.Arrays;
 
 /**
- * 社交平台的类型枚举
+ * Type enum for social platforms
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Getter
 @AllArgsConstructor
@@ -19,44 +19,44 @@ public enum SocialTypeEnum implements ArrayValuable<Integer> {
     /**
      * Gitee
      *
-     * @see <a href="https://gitee.com/api/v5/oauth_doc#/">接入文档</a>
+     * @see <a href="https://gitee.com/API/v5/oauth_doc#/">Access Document</a>
      */
     GITEE(10, "GITEE"),
     /**
-     * 钉钉
+     * DingTalk
      *
-     * @see <a href="https://developers.dingtalk.com/document/app/obtain-identity-credentials">接入文档</a>
+     * @see <a href="https://developers.dingtalk.com/document/app/obtain-identity-credentials">Access Document</a>
      */
     DINGTALK(20, "DINGTALK"),
 
     /**
-     * 企业微信
+     * Enterprise WeChat
      *
-     * @see <a href="https://xkcoding.com/2019/08/06/use-justauth-integration-wechat-enterprise.html">接入文档</a>
+     * @see <a href="https://xkcoding.com/2019/08/06/use-justauth-integration-WeChat-enterprise.html">Access documentation</a>
      */
     WECHAT_ENTERPRISE(30, "WECHAT_ENTERPRISE"),
     /**
-     * 微信公众平台 - 移动端 H5
+     * WeChat Public Platform - Mobile H5
      *
-     * @see <a href="https://www.cnblogs.com/juewuzhe/p/11905461.html">接入文档</a>
+     * @see <a href="https://www.cnblogs.com/juewuzhe/p/11905461.html">Access documents</a>
      */
     WECHAT_MP(31, "WECHAT_MP"),
     /**
-     * 微信开放平台 - 网站应用 PC 端扫码授权登录
+     * WeChat Open Platform - Website Application PC Scan QR Code to Authorize Login
      *
-     * @see <a href="https://justauth.wiki/guide/oauth/wechat_open/#_2-申请开发者资质认证">接入文档</a>
+     * @see <a href="https://justauth.wiki/guide/oauth/wechat_open/#_2-Application for Developer Qualification Certification">Access Document</a>
      */
     WECHAT_OPEN(32, "WECHAT_OPEN"),
     /**
-     * 微信小程序
+     * WeChat applet
      *
-     * @see <a href="https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/login.html">接入文档</a>
+     * @see <a href="https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/login.html">Access documentation</a>
      */
     WECHAT_MINI_PROGRAM(34, "WECHAT_MINI_PROGRAM"),
     /**
-     * 支付宝小程序
+     * Alipay applet
      *
-     * @see <a href="https://opendocs.alipay.com/mini/05dxgc?pathHash=1a3ecb13">接入文档</a>
+     * @see <a href="https://opendocs.alipay.com/mini/05dxgc?pathHash=1a3ecb13">Access documentation</a>
      */
     ALIPAY_MINI_PROGRAM(40, "ALIPAY"),
     ;
@@ -64,11 +64,11 @@ public enum SocialTypeEnum implements ArrayValuable<Integer> {
     public static final Integer[] ARRAYS = Arrays.stream(values()).map(SocialTypeEnum::getType).toArray(Integer[]::new);
 
     /**
-     * 类型
+     * Type
      */
     private final Integer type;
     /**
-     * 类型的标识
+     * type identifier
      */
     private final String source;
 

@@ -9,12 +9,12 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
 /**
- * 定时任务 DO
+ * Scheduled tasks DO
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @TableName("infra_job")
-@KeySequence("infra_job_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
+@KeySequence("infra_job_seq") // Primary key auto-increment for Oracle, PostgreSQL, Kingbase, DB2, H2 databases. If it is a database such as MySQL, you DO not need to write it.
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
@@ -25,51 +25,51 @@ import lombok.*;
 public class JobDO extends BaseDO {
 
     /**
-     * 任务编号
+     * Task ID
      */
     @TableId
     private Long id;
     /**
-     * 任务名称
+     * Task name
      */
     private String name;
     /**
-     * 任务状态
+     * Task status
      *
-     * 枚举 {@link JobStatusEnum}
+     * Enumeration {@link JobStatusEnum}
      */
     private Integer status;
     /**
-     * 处理器的名字
+     * processor name
      */
     private String handlerName;
     /**
-     * 处理器的参数
+     * Processor parameters
      */
     private String handlerParam;
     /**
-     * CRON 表达式
+     * CRON expression
      */
     private String cronExpression;
 
-    // ========== 重试相关字段 ==========
+    // ========== Retry related fields ==========
     /**
-     * 重试次数
-     * 如果不重试，则设置为 0
+     * ID of retries
+     * Set to 0 if not retrying
      */
     private Integer retryCount;
     /**
-     * 重试间隔，单位：毫秒
-     * 如果没有间隔，则设置为 0
+     * Retry interval, unit: milliseconds
+     * If there is no interval, set to 0
      */
     private Integer retryInterval;
 
-    // ========== 监控相关字段 ==========
+    // ========== Monitoring related fields ==========
     /**
-     * 监控超时时间，单位：毫秒
-     * 为空时，表示不监控
+     * Monitoring timeout, unit: milliseconds
+     * When empty, it means no monitoring
      *
-     * 注意，这里的超时的目的，不是进行任务的取消，而是告警任务的执行时间过长
+     * Note that the purpose of the timeout here is not to cancel the task, but to warn that the execution time of the task is too long.
      */
     private Integer monitorTimeout;
 

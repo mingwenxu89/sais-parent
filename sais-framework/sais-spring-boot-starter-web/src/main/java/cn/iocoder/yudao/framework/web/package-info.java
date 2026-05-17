@@ -1,4 +1,4 @@
 /**
- * 针对 SpringMVC 的基础封装
+ * Basic encapsulation for SpringMVC
  */
 package cn.iocoder.yudao.framework.web;

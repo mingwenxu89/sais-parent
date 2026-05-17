@@ -11,65 +11,65 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-@Schema(description = "管理后台 - 用户信息 Response VO")
+@Schema(description = "Management backend - User information Response VO")
 @Data
 @ExcelIgnoreUnannotated
 public class UserRespVO{
 
-    @Schema(description = "用户编号", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
-    @ExcelProperty("用户编号")
+    @Schema(description = "User ID", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
+    @ExcelProperty("User ID")
     private Long id;
 
-    @Schema(description = "用户账号", requiredMode = Schema.RequiredMode.REQUIRED, example = "yudao")
-    @ExcelProperty("用户名称")
+    @Schema(description = "User account", requiredMode = Schema.RequiredMode.REQUIRED, example = "yudao")
+    @ExcelProperty("Username")
     private String username;
 
-    @Schema(description = "用户昵称", requiredMode = Schema.RequiredMode.REQUIRED, example = "芋艿")
-    @ExcelProperty("用户昵称")
+    @Schema(description = "User nickname", requiredMode = Schema.RequiredMode.REQUIRED, example = "Yunai")
+    @ExcelProperty("User nickname")
     private String nickname;
 
-    @Schema(description = "备注", example = "我是一个用户")
+    @Schema(description = "Remark", example = "I am a user")
     private String remark;
 
-    @Schema(description = "部门ID", example = "我是一个用户")
+    @Schema(description = "Department ID", example = "I am a user")
     private Long deptId;
-    @Schema(description = "部门名称", example = "IT 部")
-    @ExcelProperty("部门名称")
+    @Schema(description = "Department name", example = "IT Department")
+    @ExcelProperty("Department name")
     private String deptName;
 
-    @Schema(description = "岗位编号数组", example = "1")
+    @Schema(description = "Position ID array", example = "1")
     private Set<Long> postIds;
 
-    @Schema(description = "用户邮箱", example = "yudao@iocoder.cn")
-    @ExcelProperty("用户邮箱")
+    @Schema(description = "User email", example = "yudao@iocoder.cn")
+    @ExcelProperty("User email")
     private String email;
 
-    @Schema(description = "手机号码", example = "15601691300")
-    @ExcelProperty("手机号码")
+    @Schema(description = "Mobile phone ID", example = "15601691300")
+    @ExcelProperty("Mobile phone ID")
     private String mobile;
 
-    @Schema(description = "用户性别，参见 SexEnum 枚举类", example = "1")
-    @ExcelProperty(value = "用户性别", converter = DictConvert.class)
+    @Schema(description = "User gender, see SexEnum enumeration class", example = "1")
+    @ExcelProperty(value = "User gender", converter = DictConvert.class)
     @DictFormat(DictTypeConstants.USER_SEX)
     private Integer sex;
 
-    @Schema(description = "用户头像", example = "https://www.iocoder.cn/xxx.png")
+    @Schema(description = "User avatar", example = "https://www.iocoder.cn/xxx.png")
     private String avatar;
 
-    @Schema(description = "状态，参见 CommonStatusEnum 枚举类", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
-    @ExcelProperty(value = "帐号状态", converter = DictConvert.class)
+    @Schema(description = "Status, see CommonStatusEnum enumeration class", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
+    @ExcelProperty(value = "Account status", converter = DictConvert.class)
     @DictFormat(DictTypeConstants.COMMON_STATUS)
     private Integer status;
 
-    @Schema(description = "最后登录 IP", requiredMode = Schema.RequiredMode.REQUIRED, example = "192.168.1.1")
-    @ExcelProperty("最后登录IP")
+    @Schema(description = "Last login IP", requiredMode = Schema.RequiredMode.REQUIRED, example = "192.168.1.1")
+    @ExcelProperty("Last login IP")
     private String loginIp;
 
-    @Schema(description = "最后登录时间", requiredMode = Schema.RequiredMode.REQUIRED, example = "时间戳格式")
-    @ExcelProperty("最后登录时间")
+    @Schema(description = "Last login time", requiredMode = Schema.RequiredMode.REQUIRED, example = "timestamp format")
+    @ExcelProperty("Last login time")
     private LocalDateTime loginDate;
 
-    @Schema(description = "创建时间", requiredMode = Schema.RequiredMode.REQUIRED, example = "时间戳格式")
+    @Schema(description = "Create Time", requiredMode = Schema.RequiredMode.REQUIRED, example = "timestamp format")
     private LocalDateTime createTime;
 
 }

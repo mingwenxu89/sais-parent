@@ -1,4 +1,4 @@
 /**
- * system 模块的数据权限配置
+ * Data permission configuration of system module
  */
 package cn.iocoder.yudao.module.system.framework.datapermission;

@@ -1,7 +1,7 @@
 /**
- * 基于 Spring Security 框架
- * 实现安全认证功能
+ * Based on Spring Security framework
+ * Implement security authentication function
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 package cn.iocoder.yudao.framework.security;

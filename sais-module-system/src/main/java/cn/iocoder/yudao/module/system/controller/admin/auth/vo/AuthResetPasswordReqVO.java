@@ -10,24 +10,24 @@ import org.hibernate.validator.constraints.Length;
 
 import jakarta.validation.constraints.NotEmpty;
 
-@Schema(description = "管理后台 - 短信重置账号密码 Request VO")
+@Schema(description = "Management backend - Reset account password via SMS Request VO")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class AuthResetPasswordReqVO {
 
-    @Schema(description = "密码", requiredMode = Schema.RequiredMode.REQUIRED, example = "1234")
-    @NotEmpty(message = "密码不能为空")
-    @Length(min = 4, max = 16, message = "密码长度为 4-16 位")
+    @Schema(description = "Password", requiredMode = Schema.RequiredMode.REQUIRED, example = "1234")
+    @NotEmpty(message = "Password cannot be empty")
+    @Length(min = 4, max = 16, message = "Password length is 4-16 characters")
     private String password;
 
-    @Schema(description = "手机号", requiredMode = Schema.RequiredMode.REQUIRED, example = "13312341234")
-    @NotEmpty(message = "手机号不能为空")
+    @Schema(description = "Mobile phone ID", requiredMode = Schema.RequiredMode.REQUIRED, example = "13312341234")
+    @NotEmpty(message = "Mobile phone ID cannot be empty")
     @Mobile
     private String mobile;
 
-    @Schema(description = "手机短信验证码", requiredMode = Schema.RequiredMode.REQUIRED, example = "123456")
-    @NotEmpty(message = "手机手机短信验证码不能为空")
+    @Schema(description = "SMS captcha", requiredMode = Schema.RequiredMode.REQUIRED, example = "123456")
+    @NotEmpty(message = "Mobile phone SMS captcha cannot be empty")
     private String code;
 }

@@ -8,27 +8,27 @@ import cn.idev.excel.metadata.data.WriteCellData;
 import cn.idev.excel.metadata.property.ExcelContentProperty;
 
 /**
- * Excel Json 转换器
+ * Excel JSON converter
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public class JsonConvert implements Converter<Object> {
 
-    @Override
-    public Class<?> supportJavaTypeKey() {
-        throw new UnsupportedOperationException("暂不支持，也不需要");
-    }
+ @Override
+ public Class<?> supportJavaTypeKey() {
+        throw new UnsupportedOperationException("Not supported and not required");
+ }
 
-    @Override
-    public CellDataTypeEnum supportExcelTypeKey() {
-        throw new UnsupportedOperationException("暂不支持，也不需要");
-    }
+ @Override
+ public CellDataTypeEnum supportExcelTypeKey() {
+        throw new UnsupportedOperationException("Not supported and not required");
+ }
 
-    @Override
-    public WriteCellData<String> convertToExcelData(Object value, ExcelContentProperty contentProperty,
-                                                    GlobalConfiguration globalConfiguration) {
-        // 生成 Excel 小表格
-        return new WriteCellData<>(JsonUtils.toJsonString(value));
-    }
+ @Override
+ public WriteCellData<String> convertToExcelData(Object value, ExcelContentProperty contentProperty,
+ GlobalConfiguration globalConfiguration) {
+        // Generate Excel small table
+ return new WriteCellData<>(JsonUtils.toJsonString(value));
+ }
 
 }

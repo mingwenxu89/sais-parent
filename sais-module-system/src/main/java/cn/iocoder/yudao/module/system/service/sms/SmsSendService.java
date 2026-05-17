@@ -6,72 +6,72 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 短信发送 Service 接口
+ * SMS sending Service API
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface SmsSendService {
 
     /**
-     * 发送单条短信给管理后台的用户
+     * Send a single text message to the user in the management background
      *
-     * 在 mobile 为空时，使用 userId 加载对应管理员的手机号
+     * When mobile is empty, use userId to load the mobile phone ID of the corresponding administrator.
      *
-     * @param mobile 手机号
-     * @param userId 用户编号
-     * @param templateCode 短信模板编号
-     * @param templateParams 短信模板参数
-     * @return 发送日志编号
+     * @param mobile Mobile phone ID
+     * @param userId User ID
+     * @param templateCode SMS template ID
+     * @param templateParams SMS template parameters
+     * @return Send log ID
      */
     Long sendSingleSmsToAdmin(String mobile, Long userId,
                               String templateCode, Map<String, Object> templateParams);
 
     /**
-     * 发送单条短信给用户 APP 的用户
+     * Send a single text message to the user of the user APP
      *
-     * 在 mobile 为空时，使用 userId 加载对应会员的手机号
+     * When mobile is empty, use userId to load the mobile phone ID of the corresponding member.
      *
-     * @param mobile 手机号
-     * @param userId 用户编号
-     * @param templateCode 短信模板编号
-     * @param templateParams 短信模板参数
-     * @return 发送日志编号
+     * @param mobile Mobile phone ID
+     * @param userId User ID
+     * @param templateCode SMS template ID
+     * @param templateParams SMS template parameters
+     * @return Send log ID
      */
     Long sendSingleSmsToMember(String mobile, Long userId,
                                String templateCode, Map<String, Object> templateParams);
 
     /**
-     * 发送单条短信给用户
+     * Send a single text message to the user
      *
-     * @param mobile 手机号
-     * @param userId 用户编号
-     * @param userType 用户类型
-     * @param templateCode 短信模板编号
-     * @param templateParams 短信模板参数
-     * @return 发送日志编号
+     * @param mobile Mobile phone ID
+     * @param userId User ID
+     * @param userType User type
+     * @param templateCode SMS template ID
+     * @param templateParams SMS template parameters
+     * @return Send log ID
      */
     Long sendSingleSms(String mobile, Long userId, Integer userType,
                        String templateCode, Map<String, Object> templateParams);
 
     default void sendBatchSms(List<String> mobiles, List<Long> userIds, Integer userType,
                               String templateCode, Map<String, Object> templateParams) {
-        throw new UnsupportedOperationException("暂时不支持该操作，感兴趣可以实现该功能哟！");
+        throw new UnsupportedOperationException("This operation is not supported for the time being. If you are interested, you can implement this function!");
     }
 
     /**
-     * 执行真正的短信发送
-     * 注意，该方法仅仅提供给 MQ Consumer 使用
+     * Perform real SMS sending
+     * Note that this method is only available to MQ Consumer
      *
-     * @param message 短信
+     * @param message SMS
      */
     void doSendSms(SmsSendMessage message);
 
     /**
-     * 接收短信的接收结果
+     * Receive SMS reception result
      *
-     * @param channelCode 渠道编码
-     * @param text 结果内容
-     * @throws Throwable 处理失败时，抛出异常
+     * @param channelCode Channel code
+     * @param text Result content
+     * @throws Throwable throws an exception when processing fails
      */
     void receiveSmsStatus(String channelCode, String text) throws Throwable;
 

@@ -7,24 +7,24 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 /**
- * 小程序订单上传购物详情
+ * Upload shopping details for miniapp orders
  *
- * @see <a href="https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/shopping-order/normal-shopping-detail/uploadShoppingInfo.html">上传购物详情</a>
- * @author 芋道源码
+ * @see <a href="https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/shopping-order/normal-shopping-detail/uploadShoppingInfo.html">Upload shopping details</a>
+ * @author Yudao Source Code
  */
 @Data
 public class SocialWxaOrderNotifyConfirmReceiveReqDTO {
 
     /**
-     * 原支付交易对应的微信订单号
+     * WeChat order ID corresponding to the original payment transaction
      */
-    @NotEmpty(message = "原支付交易对应的微信订单号不能为空")
+    @NotEmpty(message = "The WeChat order ID corresponding to the original payment transaction cannot be empty.")
     private String transactionId;
 
     /**
-     * 快递签收时间
+     * Express receipt time
      */
-    @NotNull(message = "快递签收时间不能为空")
+    @NotNull(message = "Express receipt time cannot be empty")
     private LocalDateTime receivedTime;
 
 }

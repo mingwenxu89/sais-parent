@@ -4,77 +4,77 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-@Schema(description = "管理后台 - 代码生成字段定义创建/修改 Request VO")
+@Schema(description = "Management background - code generation field definition creation/modification Request VO")
 @Data
 public class CodegenColumnSaveReqVO {
 
-    @Schema(description = "编号", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
+    @Schema(description = "ID", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
     private Long id;
 
-    @Schema(description = "表编号", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
-    @NotNull(message = "表编号不能为空")
+    @Schema(description = "table ID", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
+    @NotNull(message = "Table ID cannot be empty")
     private Long tableId;
 
-    @Schema(description = "字段名", requiredMode = Schema.RequiredMode.REQUIRED, example = "user_age")
-    @NotNull(message = "字段名不能为空")
+    @Schema(description = "Field name", requiredMode = Schema.RequiredMode.REQUIRED, example = "user_age")
+    @NotNull(message = "Field name cannot be empty")
     private String columnName;
 
-    @Schema(description = "字段类型", requiredMode = Schema.RequiredMode.REQUIRED, example = "int(11)")
-    @NotNull(message = "字段类型不能为空")
+    @Schema(description = "Field type", requiredMode = Schema.RequiredMode.REQUIRED, example = "int(11)")
+    @NotNull(message = "Field type cannot be empty")
     private String dataType;
 
-    @Schema(description = "字段描述", requiredMode = Schema.RequiredMode.REQUIRED, example = "年龄")
-    @NotNull(message = "字段描述不能为空")
+    @Schema(description = "Field description", requiredMode = Schema.RequiredMode.REQUIRED, example = "age")
+    @NotNull(message = "Field description cannot be empty")
     private String columnComment;
 
-    @Schema(description = "是否允许为空", requiredMode = Schema.RequiredMode.REQUIRED, example = "true")
-    @NotNull(message = "是否允许为空不能为空")
+    @Schema(description = "Whether to allow empty", requiredMode = Schema.RequiredMode.REQUIRED, example = "true")
+    @NotNull(message = "Whether it is allowed to be empty or not. It cannot be empty.")
     private Boolean nullable;
 
-    @Schema(description = "是否主键", requiredMode = Schema.RequiredMode.REQUIRED, example = "false")
-    @NotNull(message = "是否主键不能为空")
+    @Schema(description = "Is it a primary key?", requiredMode = Schema.RequiredMode.REQUIRED, example = "false")
+    @NotNull(message = "Whether the primary key cannot be empty")
     private Boolean primaryKey;
 
-    @Schema(description = "排序", requiredMode = Schema.RequiredMode.REQUIRED, example = "10")
-    @NotNull(message = "排序不能为空")
+    @Schema(description = "sort", requiredMode = Schema.RequiredMode.REQUIRED, example = "10")
+    @NotNull(message = "Sorting cannot be empty")
     private Integer ordinalPosition;
 
-    @Schema(description = "Java 属性类型", requiredMode = Schema.RequiredMode.REQUIRED, example = "userAge")
-    @NotNull(message = "Java 属性类型不能为空")
+    @Schema(description = "Java property types", requiredMode = Schema.RequiredMode.REQUIRED, example = "userAge")
+    @NotNull(message = "Java property type cannot be null")
     private String javaType;
 
-    @Schema(description = "Java 属性名", requiredMode = Schema.RequiredMode.REQUIRED, example = "Integer")
-    @NotNull(message = "Java 属性名不能为空")
+    @Schema(description = "Java attribute name", requiredMode = Schema.RequiredMode.REQUIRED, example = "Integer")
+    @NotNull(message = "Java property name cannot be empty")
     private String javaField;
 
-    @Schema(description = "字典类型", example = "sys_gender")
+    @Schema(description = "dict type", example = "sys_gender")
     private String dictType;
 
-    @Schema(description = "数据示例", example = "1024")
+    @Schema(description = "Data example", example = "1024")
     private String example;
 
-    @Schema(description = "是否为 Create 创建操作的字段", requiredMode = Schema.RequiredMode.REQUIRED, example = "true")
-    @NotNull(message = "是否为 Create 创建操作的字段不能为空")
+    @Schema(description = "Whether to create fields for the Create operation", requiredMode = Schema.RequiredMode.REQUIRED, example = "true")
+    @NotNull(message = "Whether the field for the Create creation operation cannot be empty")
     private Boolean createOperation;
 
-    @Schema(description = "是否为 Update 更新操作的字段", requiredMode = Schema.RequiredMode.REQUIRED, example = "false")
-    @NotNull(message = "是否为 Update 更新操作的字段不能为空")
+    @Schema(description = "Whether to update the fields for Update operation", requiredMode = Schema.RequiredMode.REQUIRED, example = "false")
+    @NotNull(message = "Whether the field for Update update operation cannot be empty")
     private Boolean updateOperation;
 
-    @Schema(description = "是否为 List 查询操作的字段", requiredMode = Schema.RequiredMode.REQUIRED, example = "true")
-    @NotNull(message = "是否为 List 查询操作的字段不能为空")
+    @Schema(description = "Whether it is a field for List query operation", requiredMode = Schema.RequiredMode.REQUIRED, example = "true")
+    @NotNull(message = "Whether it is a field for List query operation cannot be empty.")
     private Boolean listOperation;
 
-    @Schema(description = "List 查询操作的条件类型，参见 CodegenColumnListConditionEnum 枚举", requiredMode = Schema.RequiredMode.REQUIRED, example = "LIKE")
-    @NotNull(message = "List 查询操作的条件类型不能为空")
+    @Schema(description = "List condition type for query operation, see CodegenColumnListConditionEnum enumeration", requiredMode = Schema.RequiredMode.REQUIRED, example = "LIKE")
+    @NotNull(message = "The condition type of List query operation cannot be empty")
     private String listOperationCondition;
 
-    @Schema(description = "是否为 List 查询操作的返回字段", requiredMode = Schema.RequiredMode.REQUIRED, example = "true")
-    @NotNull(message = "是否为 List 查询操作的返回字段不能为空")
+    @Schema(description = "Whether it is the return field of List query operation", requiredMode = Schema.RequiredMode.REQUIRED, example = "true")
+    @NotNull(message = "Whether it is a List query operation, the return field cannot be empty.")
     private Boolean listOperationResult;
 
-    @Schema(description = "显示类型", requiredMode = Schema.RequiredMode.REQUIRED, example = "input")
-    @NotNull(message = "显示类型不能为空")
+    @Schema(description = "display type", requiredMode = Schema.RequiredMode.REQUIRED, example = "input")
+    @NotNull(message = "Display type cannot be empty")
     private String htmlType;
 
 }

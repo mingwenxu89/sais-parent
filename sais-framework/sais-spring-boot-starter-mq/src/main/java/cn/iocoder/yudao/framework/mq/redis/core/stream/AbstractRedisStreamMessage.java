@@ -4,20 +4,20 @@ import cn.iocoder.yudao.framework.mq.redis.core.message.AbstractRedisMessage;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
- * Redis Stream Message 抽象类
+ * Redis Stream Message abstract class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public abstract class AbstractRedisStreamMessage extends AbstractRedisMessage {
 
-    /**
-     * 获得 Redis Stream Key，默认使用类名
-     *
-     * @return Channel
-     */
-    @JsonIgnore // 避免序列化
-    public String getStreamKey() {
-        return getClass().getSimpleName();
-    }
+ /**
+     * Get the Redis Stream Key, using the class name by default
+ *
+ * @return Channel
+ */
+    @JsonIgnore // avoID serialization
+ public String getStreamKey() {
+ return getClass().getSimpleName();
+ }
 
 }

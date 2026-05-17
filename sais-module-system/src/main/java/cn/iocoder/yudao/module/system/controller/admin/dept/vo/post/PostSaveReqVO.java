@@ -9,32 +9,32 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-@Schema(description = "管理后台 - 岗位创建/修改 Request VO")
+@Schema(description = "Management backend - job creation/modification Request VO")
 @Data
 public class PostSaveReqVO {
 
-    @Schema(description = "岗位编号", example = "1024")
+    @Schema(description = "Position ID", example = "1024")
     private Long id;
 
-    @Schema(description = "岗位名称", requiredMode = Schema.RequiredMode.REQUIRED, example = "小土豆")
-    @NotBlank(message = "岗位名称不能为空")
-    @Size(max = 50, message = "岗位名称长度不能超过 50 个字符")
+    @Schema(description = "Job title", requiredMode = Schema.RequiredMode.REQUIRED, example = "small potatoes")
+    @NotBlank(message = "Position name cannot be empty")
+    @Size(max = 50, message = "Job title cannot exceed 50 characters in length")
     private String name;
 
-    @Schema(description = "岗位编码", requiredMode = Schema.RequiredMode.REQUIRED, example = "yudao")
-    @NotBlank(message = "岗位编码不能为空")
-    @Size(max = 64, message = "岗位编码长度不能超过64个字符")
+    @Schema(description = "Position code", requiredMode = Schema.RequiredMode.REQUIRED, example = "yudao")
+    @NotBlank(message = "Position code cannot be empty")
+    @Size(max = 64, message = "The length of the position code cannot exceed 64 characters")
     private String code;
 
-    @Schema(description = "显示顺序", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
-    @NotNull(message = "显示顺序不能为空")
+    @Schema(description = "Display order", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
+    @NotNull(message = "Display order cannot be empty")
     private Integer sort;
 
-    @Schema(description = "状态", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
+    @Schema(description = "Status", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
     @InEnum(CommonStatusEnum.class)
     private Integer status;
 
-    @Schema(description = "备注", example = "快乐的备注")
+    @Schema(description = "Remark", example = "happy note")
     private String remark;
 
 }

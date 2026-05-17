@@ -1,6 +1,6 @@
 /**
- * justauth 三方登录的拓展
+ * Expansion of justauth three-party login
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 package cn.iocoder.yudao.module.system.framework.justauth;

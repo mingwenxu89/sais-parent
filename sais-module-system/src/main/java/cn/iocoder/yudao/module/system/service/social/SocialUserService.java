@@ -12,77 +12,77 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 /**
- * 社交用户 Service 接口，例如说社交平台的授权登录
+ * Social user service API, such as authorized login of social platforms
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface SocialUserService {
 
     /**
-     * 获得指定用户的社交用户列表
+     * Get the social user list of the specified user
      *
-     * @param userId   用户编号
-     * @param userType 用户类型
-     * @return 社交用户列表
+     * @param userId   User ID
+     * @param userType User type
+     * @return Social user list
      */
     List<SocialUserDO> getSocialUserList(Long userId, Integer userType);
 
     /**
-     * 绑定社交用户
+     * Bind social users
      *
-     * @param reqDTO 绑定信息
-     * @return 社交用户 openid
+     * @param reqDTO binding information
+     * @return social user openid
      */
     String bindSocialUser(@Valid SocialUserBindReqDTO reqDTO);
 
     /**
-     * 取消绑定社交用户
+     * Unbind social users
      *
-     * @param userId 用户编号
-     * @param userType 全局用户类型
-     * @param socialType 社交平台的类型 {@link SocialTypeEnum}
-     * @param openid 社交平台的 openid
+     * @param userId User ID
+     * @param userType Global user type
+     * @param socialType Type of social platform {@link SocialTypeEnum}
+     * @param openid openid of social platform
      */
     void unbindSocialUser(Long userId, Integer userType, Integer socialType, String openid);
 
     /**
-     * 获得社交用户，基于 userId
+     * Get social users, based on userId
      *
-     * @param userType 用户类型
-     * @param userId 用户编号
-     * @param socialType 社交平台的类型
-     * @return 社交用户
+     * @param userType User type
+     * @param userId User ID
+     * @param socialType Types of social platforms
+     * @return social user
      */
     SocialUserRespDTO getSocialUserByUserId(Integer userType, Long userId, Integer socialType);
 
     /**
-     * 获得社交用户
+     * Get social users
      *
-     * 在认证信息不正确的情况下，也会抛出 {@link ServiceException} 业务异常
+     * When the authentication information is incorrect, {@link ServiceException} business exception will also be thrown.
      *
-     * @param userType 用户类型
-     * @param socialType 社交平台的类型
-     * @param code 授权码
+     * @param userType User type
+     * @param socialType Types of social platforms
+     * @param code Authorization code
      * @param state state
-     * @return 社交用户
+     * @return social user
      */
     SocialUserRespDTO getSocialUserByCode(Integer userType, Integer socialType, String code, String state);
 
-    // ==================== 社交用户 CRUD ====================
+    // ==================== Social User CRUD ====================
 
     /**
-     * 获得社交用户
+     * Get social users
      *
-     * @param id 编号
-     * @return 社交用户
+     * @param id ID
+     * @return social user
      */
     SocialUserDO getSocialUser(Long id);
 
     /**
-     * 获得社交用户分页
+     * Get social user pagination
      *
-     * @param pageReqVO 分页查询
-     * @return 社交用户分页
+     * @param pageReqVO Page query
+     * @return Social user pagination
      */
     PageResult<SocialUserDO> getSocialUserPage(SocialUserPageReqVO pageReqVO);
 

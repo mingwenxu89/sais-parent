@@ -10,81 +10,81 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * 岗位 Service 接口
+ * Position Service API
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface PostService {
 
     /**
-     * 创建岗位
+     * Create a position
      *
-     * @param createReqVO 岗位信息
-     * @return 岗位编号
+     * @param createReqVO Position information
+     * @return Position ID
      */
     Long createPost(PostSaveReqVO createReqVO);
 
     /**
-     * 更新岗位
+     * Update position
      *
-     * @param updateReqVO 岗位信息
+     * @param updateReqVO Position information
      */
     void updatePost(PostSaveReqVO updateReqVO);
 
     /**
-     * 删除岗位信息
+     * Delete job information
      *
-     * @param id 岗位编号
+     * @param id Position ID
      */
     void deletePost(Long id);
 
     /**
-     * 批量删除岗位信息
+     * Delete job information in batches
      *
-     * @param ids 岗位编号数组
+     * @param ids Position ID array
      */
     void deletePostList(List<Long> ids);
 
     /**
-     * 获得岗位列表
+     * Get job list
      *
-     * @param ids 岗位编号数组
-     * @return 部门列表
+     * @param ids Position ID array
+     * @return Department list
      */
     List<PostDO> getPostList(@Nullable Collection<Long> ids);
 
     /**
-     * 获得符合条件的岗位列表
+     * Get a list of eligible positions
      *
-     * @param ids 岗位编号数组。如果为空，不进行筛选
-     * @param statuses 状态数组。如果为空，不进行筛选
-     * @return 部门列表
+     * @param ids Array of position IDs. If empty, no filtering will be performed
+     * @param statuses Status array. If empty, no filtering will be performed
+     * @return Department list
      */
     List<PostDO> getPostList(@Nullable Collection<Long> ids,
                              @Nullable Collection<Integer> statuses);
 
     /**
-     * 获得岗位分页列表
+     * Get a paged list of positions
      *
-     * @param reqVO 分页条件
-     * @return 部门分页列表
+     * @param reqVO Paging conditions
+     * @return Department paging list
      */
     PageResult<PostDO> getPostPage(PostPageReqVO reqVO);
 
     /**
-     * 获得岗位信息
+     * Get job information
      *
-     * @param id 岗位编号
-     * @return 岗位信息
+     * @param id Position ID
+     * @return Position information
      */
     PostDO getPost(Long id);
 
     /**
-     * 校验岗位们是否有效。如下情况，视为无效：
-     * 1. 岗位编号不存在
-     * 2. 岗位被禁用
+     * Verify whether the positions are valid. The following situations will be deemed invalid:
+     * 1. The position ID does not exist
+     * 2. The position is disabled
      *
-     * @param ids 岗位编号数组
+     * @param ids Position ID array
      */
     void validatePostList(Collection<Long> ids);
 

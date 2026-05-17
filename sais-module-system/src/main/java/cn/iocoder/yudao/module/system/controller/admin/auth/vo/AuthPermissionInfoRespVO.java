@@ -9,91 +9,91 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 import java.util.Set;
 
-@Schema(description = "管理后台 - 登录用户的权限信息 Response VO，额外包括用户信息和角色列表")
+@Schema(description = "Management background - permission information of logged in user Response VO, additionally including user information and role list")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class AuthPermissionInfoRespVO {
 
-    @Schema(description = "用户信息", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "User information", requiredMode = Schema.RequiredMode.REQUIRED)
     private UserVO user;
 
-    @Schema(description = "角色标识数组", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "Role ID array", requiredMode = Schema.RequiredMode.REQUIRED)
     private Set<String> roles;
 
-    @Schema(description = "操作权限数组", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "Operation permission array", requiredMode = Schema.RequiredMode.REQUIRED)
     private Set<String> permissions;
 
-    @Schema(description = "菜单树", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "menu tree", requiredMode = Schema.RequiredMode.REQUIRED)
     private List<MenuVO> menus;
 
-    @Schema(description = "用户信息 VO")
+    @Schema(description = "User information VO")
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
     public static class UserVO {
 
-        @Schema(description = "用户编号", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
+        @Schema(description = "User ID", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
         private Long id;
 
-        @Schema(description = "用户昵称", requiredMode = Schema.RequiredMode.REQUIRED, example = "芋道源码")
+        @Schema(description = "User nickname", requiredMode = Schema.RequiredMode.REQUIRED, example = "Yudao Source Code")
         private String nickname;
 
-        @Schema(description = "用户头像", requiredMode = Schema.RequiredMode.REQUIRED, example = "https://www.iocoder.cn/xx.jpg")
+        @Schema(description = "User avatar", requiredMode = Schema.RequiredMode.REQUIRED, example = "https://www.iocoder.cn/xx.jpg")
         private String avatar;
 
-        @Schema(description = "部门编号", requiredMode = Schema.RequiredMode.REQUIRED, example = "2048")
+        @Schema(description = "Department ID", requiredMode = Schema.RequiredMode.REQUIRED, example = "2048")
         private Long deptId;
 
-        @Schema(description = "用户账号", requiredMode = Schema.RequiredMode.REQUIRED, example = "yudao")
+        @Schema(description = "User account", requiredMode = Schema.RequiredMode.REQUIRED, example = "yudao")
         private String username;
 
-        @Schema(description = "用户邮箱", example = "yudao@iocoder.cn")
+        @Schema(description = "User email", example = "yudao@iocoder.cn")
         private String email;
 
     }
 
-    @Schema(description = "管理后台 - 登录用户的菜单信息 Response VO")
+    @Schema(description = "Management backend - Menu information for logged in users Response VO")
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
     public static class MenuVO {
 
-        @Schema(description = "菜单名称", requiredMode = Schema.RequiredMode.REQUIRED, example = "芋道")
+        @Schema(description = "Menu name", requiredMode = Schema.RequiredMode.REQUIRED, example = "taro road")
         private Long id;
 
-        @Schema(description = "父菜单 ID", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
+        @Schema(description = "Parent menu ID", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
         private Long parentId;
 
-        @Schema(description = "菜单名称", requiredMode = Schema.RequiredMode.REQUIRED, example = "芋道")
+        @Schema(description = "Menu name", requiredMode = Schema.RequiredMode.REQUIRED, example = "taro road")
         private String name;
 
-        @Schema(description = "路由地址,仅菜单类型为菜单或者目录时，才需要传", example = "post")
+        @Schema(description = "Routing address, only needs to be passed when the menu type is menu or directory.", example = "post")
         private String path;
 
-        @Schema(description = "组件路径,仅菜单类型为菜单时，才需要传", example = "system/post/index")
+        @Schema(description = "Component path, only needs to be passed when the menu type is menu", example = "system/post/index")
         private String component;
 
-        @Schema(description = "组件名", example = "SystemUser")
+        @Schema(description = "Component name", example = "SystemUser")
         private String componentName;
 
-        @Schema(description = "菜单图标,仅菜单类型为菜单或者目录时，才需要传", example = "/menu/list")
+        @Schema(description = "Menu icon, only needs to be passed when the menu type is menu or directory.", example = "/menu/list")
         private String icon;
 
-        @Schema(description = "是否可见", requiredMode = Schema.RequiredMode.REQUIRED, example = "false")
+        @Schema(description = "visible or not", requiredMode = Schema.RequiredMode.REQUIRED, example = "false")
         private Boolean visible;
 
-        @Schema(description = "是否缓存", requiredMode = Schema.RequiredMode.REQUIRED, example = "false")
+        @Schema(description = "Whether to cache", requiredMode = Schema.RequiredMode.REQUIRED, example = "false")
         private Boolean keepAlive;
 
-        @Schema(description = "是否总是显示", example = "false")
+        @Schema(description = "Whether to always display", example = "false")
         private Boolean alwaysShow;
 
         /**
-         * 子路由
+         * Subroutes
          */
         private List<MenuVO> children;
 

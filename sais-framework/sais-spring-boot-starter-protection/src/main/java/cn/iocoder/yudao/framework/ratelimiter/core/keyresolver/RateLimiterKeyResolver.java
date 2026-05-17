@@ -4,17 +4,17 @@ import cn.iocoder.yudao.framework.ratelimiter.core.annotation.RateLimiter;
 import org.aspectj.lang.JoinPoint;
 
 /**
- * 限流 Key 解析器接口
+ * Current-limiting Key parser interface
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface RateLimiterKeyResolver {
 
     /**
-     * 解析一个 Key
+     * Parse a Key
      *
-     * @param rateLimiter 限流注解
-     * @param joinPoint  AOP 切面
+     * @param rateLimiter Current limiting annotation
+     * @param joinPoint AOP aspects
      * @return Key
      */
     String resolver(JoinPoint joinPoint, RateLimiter rateLimiter);

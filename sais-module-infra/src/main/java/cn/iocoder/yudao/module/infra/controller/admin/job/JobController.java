@@ -32,7 +32,7 @@ import java.util.List;
 import static cn.iocoder.yudao.framework.apilog.core.enums.OperateTypeEnum.EXPORT;
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 
-@Tag(name = "管理后台 - 定时任务")
+@Tag(name = "Management background - scheduled tasks")
 @RestController
 @RequestMapping("/infra/job")
 @Validated
@@ -42,7 +42,7 @@ public class JobController {
     private JobService jobService;
 
     @PostMapping("/create")
-    @Operation(summary = "创建定时任务")
+    @Operation(summary = "Create a scheduled task")
     @PreAuthorize("@ss.hasPermission('infra:job:create')")
     public CommonResult<Long> createJob(@Valid @RequestBody JobSaveReqVO createReqVO)
             throws SchedulerException {
@@ -50,7 +50,7 @@ public class JobController {
     }
 
     @PutMapping("/update")
-    @Operation(summary = "更新定时任务")
+    @Operation(summary = "Update scheduled tasks")
     @PreAuthorize("@ss.hasPermission('infra:job:update')")
     public CommonResult<Boolean> updateJob(@Valid @RequestBody JobSaveReqVO updateReqVO)
             throws SchedulerException {
@@ -59,10 +59,10 @@ public class JobController {
     }
 
     @PutMapping("/update-status")
-    @Operation(summary = "更新定时任务的状态")
+    @Operation(summary = "Update the status of scheduled tasks")
     @Parameters({
-            @Parameter(name = "id", description = "编号", required = true, example = "1024"),
-            @Parameter(name = "status", description = "状态", required = true, example = "1"),
+            @Parameter(name = "id", description = "ID", required = true, example = "1024"),
+            @Parameter(name = "status", description = "Status", required = true, example = "1"),
     })
     @PreAuthorize("@ss.hasPermission('infra:job:update')")
     public CommonResult<Boolean> updateJobStatus(@RequestParam(value = "id") Long id, @RequestParam("status") Integer status)
@@ -72,8 +72,8 @@ public class JobController {
     }
 
     @DeleteMapping("/delete")
-    @Operation(summary = "删除定时任务")
-    @Parameter(name = "id", description = "编号", required = true, example = "1024")
+    @Operation(summary = "Delete scheduled tasks")
+    @Parameter(name = "id", description = "ID", required = true, example = "1024")
     @PreAuthorize("@ss.hasPermission('infra:job:delete')")
     public CommonResult<Boolean> deleteJob(@RequestParam("id") Long id)
             throws SchedulerException {
@@ -82,8 +82,8 @@ public class JobController {
     }
 
     @DeleteMapping("/delete-list")
-    @Operation(summary = "批量删除定时任务")
-    @Parameter(name = "ids", description = "编号列表", required = true)
+    @Operation(summary = "Delete scheduled tasks in batches")
+    @Parameter(name = "ids", description = "IDed list", required = true)
     @PreAuthorize("@ss.hasPermission('infra:job:delete')")
     public CommonResult<Boolean> deleteJobList(@RequestParam("ids") List<Long> ids)
             throws SchedulerException {
@@ -92,8 +92,8 @@ public class JobController {
     }
 
     @PutMapping("/trigger")
-    @Operation(summary = "触发定时任务")
-    @Parameter(name = "id", description = "编号", required = true, example = "1024")
+    @Operation(summary = "Trigger scheduled tasks")
+    @Parameter(name = "id", description = "ID", required = true, example = "1024")
     @PreAuthorize("@ss.hasPermission('infra:job:trigger')")
     public CommonResult<Boolean> triggerJob(@RequestParam("id") Long id) throws SchedulerException {
         jobService.triggerJob(id);
@@ -101,7 +101,7 @@ public class JobController {
     }
 
     @PostMapping("/sync")
-    @Operation(summary = "同步定时任务")
+    @Operation(summary = "Synchronize scheduled tasks")
     @PreAuthorize("@ss.hasPermission('infra:job:create')")
     public CommonResult<Boolean> syncJob() throws SchedulerException {
         jobService.syncJob();
@@ -109,8 +109,8 @@ public class JobController {
     }
 
     @GetMapping("/get")
-    @Operation(summary = "获得定时任务")
-    @Parameter(name = "id", description = "编号", required = true, example = "1024")
+    @Operation(summary = "Get scheduled tasks")
+    @Parameter(name = "id", description = "ID", required = true, example = "1024")
     @PreAuthorize("@ss.hasPermission('infra:job:query')")
     public CommonResult<JobRespVO> getJob(@RequestParam("id") Long id) {
         JobDO job = jobService.getJob(id);
@@ -118,7 +118,7 @@ public class JobController {
     }
 
     @GetMapping("/page")
-    @Operation(summary = "获得定时任务分页")
+    @Operation(summary = "Get scheduled task pagination")
     @PreAuthorize("@ss.hasPermission('infra:job:query')")
     public CommonResult<PageResult<JobRespVO>> getJobPage(@Valid JobPageReqVO pageVO) {
         PageResult<JobDO> pageResult = jobService.getJobPage(pageVO);
@@ -126,23 +126,23 @@ public class JobController {
     }
 
     @GetMapping("/export-excel")
-    @Operation(summary = "导出定时任务 Excel")
+    @Operation(summary = "Export scheduled tasks to Excel")
     @PreAuthorize("@ss.hasPermission('infra:job:export')")
     @ApiAccessLog(operateType = EXPORT)
     public void exportJobExcel(@Valid JobPageReqVO exportReqVO,
                                HttpServletResponse response) throws IOException {
         exportReqVO.setPageSize(PageParam.PAGE_SIZE_NONE);
         List<JobDO> list = jobService.getJobPage(exportReqVO).getList();
-        // 导出 Excel
-        ExcelUtils.write(response, "定时任务.xls", "数据", JobRespVO.class,
+        // Export to Excel
+        ExcelUtils.write(response, "Scheduled tasks.xls", "Data", JobRespVO.class,
                 BeanUtils.toBean(list, JobRespVO.class));
     }
 
     @GetMapping("/get_next_times")
-    @Operation(summary = "获得定时任务的下 n 次执行时间")
+    @Operation(summary = "Get the next n execution times of the scheduled task")
     @Parameters({
-            @Parameter(name = "id", description = "编号", required = true, example = "1024"),
-            @Parameter(name = "count", description = "数量", example = "5")
+            @Parameter(name = "id", description = "ID", required = true, example = "1024"),
+            @Parameter(name = "count", description = "Quantity", example = "5")
     })
     @PreAuthorize("@ss.hasPermission('infra:job:query')")
     public CommonResult<List<LocalDateTime>> getJobNextTimes(

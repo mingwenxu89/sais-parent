@@ -4,18 +4,18 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 文档地址
+ * Document address
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Getter
 @AllArgsConstructor
 public enum DocumentEnum {
 
-    REDIS_INSTALL("https://gitee.com/zhijiantianya/ruoyi-vue-pro/issues/I4VCSJ", "Redis 安装文档"),
-    TENANT("https://doc.iocoder.cn", "SaaS 多租户文档");
+    REDIS_INSTALL("https:// gitee.com/zhijiantianya/ruoyi-vue-pro/issues/I4VCSJ", "Redis Installation Document"),
+    TENANT("https:// doc.iocoder.cn", "SaaS Multi-tenant Documentation");
 
-    private final String url;
-    private final String memo;
+ private final String url;
+ private final String memo;
 
 }

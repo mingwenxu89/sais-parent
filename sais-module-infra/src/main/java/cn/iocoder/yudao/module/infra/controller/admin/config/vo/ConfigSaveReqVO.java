@@ -8,38 +8,38 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-@Schema(description = "管理后台 - 参数配置创建/修改 Request VO")
+@Schema(description = "Management background - Parameter configuration creation/modification Request VO")
 @Data
 public class ConfigSaveReqVO {
 
-    @Schema(description = "参数配置序号", example = "1024")
+    @Schema(description = "Parameter configuration serial ID", example = "1024")
     private Long id;
 
-    @Schema(description = "参数分组", requiredMode = Schema.RequiredMode.REQUIRED, example = "biz")
-    @NotEmpty(message = "参数分组不能为空")
-    @Size(max = 50, message = "参数名称不能超过 50 个字符")
+    @Schema(description = "Parameter grouping", requiredMode = Schema.RequiredMode.REQUIRED, example = "biz")
+    @NotEmpty(message = "Parameter group cannot be empty")
+    @Size(max = 50, message = "Parameter names cannot exceed 50 characters")
     private String category;
 
-    @Schema(description = "参数名称", requiredMode = Schema.RequiredMode.REQUIRED, example = "数据库名")
-    @NotBlank(message = "参数名称不能为空")
-    @Size(max = 100, message = "参数名称不能超过 100 个字符")
+    @Schema(description = "Parameter name", requiredMode = Schema.RequiredMode.REQUIRED, example = "Database name")
+    @NotBlank(message = "Parameter name cannot be empty")
+    @Size(max = 100, message = "Parameter names cannot exceed 100 characters")
     private String name;
 
-    @Schema(description = "参数键名", requiredMode = Schema.RequiredMode.REQUIRED, example = "yunai.db.username")
-    @NotBlank(message = "参数键名长度不能为空")
-    @Size(max = 100, message = "参数键名长度不能超过 100 个字符")
+    @Schema(description = "Parameter key name", requiredMode = Schema.RequiredMode.REQUIRED, example = "yunai.db.username")
+    @NotBlank(message = "Parameter key name length cannot be empty")
+    @Size(max = 100, message = "Parameter key name length cannot exceed 100 characters")
     private String key;
 
-    @Schema(description = "参数键值", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
-    @NotBlank(message = "参数键值不能为空")
-    @Size(max = 500, message = "参数键值长度不能超过 500 个字符")
+    @Schema(description = "Parameter key value", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
+    @NotBlank(message = "Parameter key value cannot be empty")
+    @Size(max = 500, message = "Parameter key length cannot exceed 500 characters")
     private String value;
 
-    @Schema(description = "是否可见", requiredMode = Schema.RequiredMode.REQUIRED, example = "true")
-    @NotNull(message = "是否可见不能为空")
+    @Schema(description = "visible or not", requiredMode = Schema.RequiredMode.REQUIRED, example = "true")
+    @NotNull(message = "Whether visible cannot be empty")
     private Boolean visible;
 
-    @Schema(description = "备注", example = "备注一下很帅气！")
+    @Schema(description = "Remark", example = "Note that he is very handsome!")
     private String remark;
 
 }

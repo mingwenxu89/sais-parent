@@ -1,6 +1,6 @@
 /**
- * 属于 infra 模块的 framework 封装
+ * A framework package belonging to the infra module
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 package cn.iocoder.yudao.module.infra.framework;

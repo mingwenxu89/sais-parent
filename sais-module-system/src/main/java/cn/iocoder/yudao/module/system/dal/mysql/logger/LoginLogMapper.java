@@ -21,7 +21,7 @@ public interface LoginLogMapper extends BaseMapperX<LoginLogDO> {
         } else if (Boolean.FALSE.equals(reqVO.getStatus())) {
             query.gt(LoginLogDO::getResult, LoginResultEnum.SUCCESS.getResult());
         }
-        query.orderByDesc(LoginLogDO::getId); // 降序
+        query.orderByDesc(LoginLogDO::getId); // descending order
         return selectPage(reqVO, query);
     }
 

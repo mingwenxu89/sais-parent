@@ -16,7 +16,7 @@ import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionU
 import static cn.iocoder.yudao.module.system.enums.ErrorCodeConstants.*;
 
 /**
- * 站内信发送 Service 实现类
+ * Service implementation class for sending intra-site messages
  *
  * @author xrcoder
  */
@@ -43,25 +43,25 @@ public class NotifySendServiceImpl implements NotifySendService {
 
     @Override
     public Long sendSingleNotify(Long userId, Integer userType, String templateCode, Map<String, Object> templateParams) {
-        // 校验模版
+        // Validation template
         NotifyTemplateDO template = validateNotifyTemplate(templateCode);
         if (Objects.equals(template.getStatus(), CommonStatusEnum.DISABLE.getStatus())) {
-            log.info("[sendSingleNotify][模版({})已经关闭，无法给用户({}/{})发送]", templateCode, userId, userType);
+            log.info("[sendSingleNotify][The template ({}) has been closed and cannot be sent to the user ({}/{})]", templateCode, userId, userType);
             return null;
         }
-        // 校验参数
+        // Check parameters
         validateTemplateParams(template, templateParams);
 
-        // 发送站内信
+        // Send site message
         String content = notifyTemplateService.formatNotifyTemplateContent(template.getContent(), templateParams);
         return notifyMessageService.createNotifyMessage(userId, userType, template, content, templateParams);
     }
 
     @VisibleForTesting
     public NotifyTemplateDO validateNotifyTemplate(String templateCode) {
-        // 获得站内信模板。考虑到效率，从缓存中获取
+        // Get a site letter template. Taking into account efficiency, obtain from cache
         NotifyTemplateDO template = notifyTemplateService.getNotifyTemplateByCodeFromCache(templateCode);
-        // 站内信模板不存在
+        // The site letter template does not exist
         if (template == null) {
             throw exception(NOTICE_NOT_FOUND);
         }
@@ -69,10 +69,10 @@ public class NotifySendServiceImpl implements NotifySendService {
     }
 
     /**
-     * 校验站内信模版参数是否确实
+     * Verify whether the internal message template parameters are correct
      *
-     * @param template 邮箱模板
-     * @param templateParams 参数列表
+     * @param template Email template
+     * @param templateParams Parameter list
      */
     @VisibleForTesting
     public void validateTemplateParams(NotifyTemplateDO template, Map<String, Object> templateParams) {

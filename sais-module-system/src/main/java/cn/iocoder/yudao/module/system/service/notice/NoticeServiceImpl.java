@@ -16,9 +16,9 @@ import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionU
 import static cn.iocoder.yudao.module.system.enums.ErrorCodeConstants.NOTICE_NOT_FOUND;
 
 /**
- * 通知公告 Service 实现类
+ * Notification Announcement Service Implementation Class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Service
 public class NoticeServiceImpl implements NoticeService {
@@ -35,18 +35,18 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Override
     public void updateNotice(NoticeSaveReqVO updateReqVO) {
-        // 校验是否存在
+        // Check if it exists
         validateNoticeExists(updateReqVO.getId());
-        // 更新通知公告
+        // Update notification announcement
         NoticeDO updateObj = BeanUtils.toBean(updateReqVO, NoticeDO.class);
         noticeMapper.updateById(updateObj);
     }
 
     @Override
     public void deleteNotice(Long id) {
-        // 校验是否存在
+        // Check if it exists
         validateNoticeExists(id);
-        // 删除通知公告
+        // Delete notification announcement
         noticeMapper.deleteById(id);
     }
 

@@ -1,4 +1,4 @@
 /**
- * system 模块的 web 配置
+ * web configuration for system module
  */
 package cn.iocoder.yudao.module.system.framework.web;

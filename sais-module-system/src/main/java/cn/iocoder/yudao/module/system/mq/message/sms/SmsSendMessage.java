@@ -7,35 +7,35 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 /**
- * 短信发送消息
+ * Send message via SMS
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Data
 public class SmsSendMessage {
 
     /**
-     * 短信日志编号
+     * SMS log ID
      */
-    @NotNull(message = "短信日志编号不能为空")
+    @NotNull(message = "SMS log ID cannot be empty")
     private Long logId;
     /**
-     * 手机号
+     * Mobile phone ID
      */
-    @NotNull(message = "手机号不能为空")
+    @NotNull(message = "Mobile phone ID cannot be empty")
     private String mobile;
     /**
-     * 短信渠道编号
+     * SMS channel ID
      */
-    @NotNull(message = "短信渠道编号不能为空")
+    @NotNull(message = "SMS channel ID cannot be empty")
     private Long channelId;
     /**
-     * 短信 API 的模板编号
+     * SMS API template ID
      */
-    @NotNull(message = "短信 API 的模板编号不能为空")
+    @NotNull(message = "The template ID of SMS API cannot be empty")
     private String apiTemplateId;
     /**
-     * 短信模板参数
+     * SMS template parameters
      */
     private List<KeyValue<String, Object>> templateParams;
 

@@ -30,7 +30,7 @@ import static cn.iocoder.yudao.framework.apilog.core.enums.OperateTypeEnum.EXPOR
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 import static java.util.Collections.singleton;
 
-@Tag(name = "管理后台 - 角色")
+@Tag(name = "Admin Backend - Role")
 @RestController
 @RequestMapping("/system/role")
 @Validated
@@ -40,14 +40,14 @@ public class RoleController {
     private RoleService roleService;
 
     @PostMapping("/create")
-    @Operation(summary = "创建角色")
+    @Operation(summary = "Create a role")
     @PreAuthorize("@ss.hasPermission('system:role:create')")
     public CommonResult<Long> createRole(@Valid @RequestBody RoleSaveReqVO createReqVO) {
         return success(roleService.createRole(createReqVO, null));
     }
 
     @PutMapping("/update")
-    @Operation(summary = "修改角色")
+    @Operation(summary = "Modify role")
     @PreAuthorize("@ss.hasPermission('system:role:update')")
     public CommonResult<Boolean> updateRole(@Valid @RequestBody RoleSaveReqVO updateReqVO) {
         roleService.updateRole(updateReqVO);
@@ -55,8 +55,8 @@ public class RoleController {
     }
 
     @DeleteMapping("/delete")
-    @Operation(summary = "删除角色")
-    @Parameter(name = "id", description = "角色编号", required = true, example = "1024")
+    @Operation(summary = "Delete role")
+    @Parameter(name = "id", description = "role ID", required = true, example = "1024")
     @PreAuthorize("@ss.hasPermission('system:role:delete')")
     public CommonResult<Boolean> deleteRole(@RequestParam("id") Long id) {
         roleService.deleteRole(id);
@@ -64,8 +64,8 @@ public class RoleController {
     }
 
     @DeleteMapping("/delete-list")
-    @Operation(summary = "批量删除角色")
-    @Parameter(name = "ids", description = "编号列表", required = true)
+    @Operation(summary = "Delete roles in batches")
+    @Parameter(name = "ids", description = "ID list", required = true)
     @PreAuthorize("@ss.hasPermission('system:role:delete')")
     public CommonResult<Boolean> deleteRoleList(@RequestParam("ids") List<Long> ids) {
         roleService.deleteRoleList(ids);
@@ -73,7 +73,7 @@ public class RoleController {
     }
 
     @GetMapping("/get")
-    @Operation(summary = "获得角色信息")
+    @Operation(summary = "Get role information")
     @PreAuthorize("@ss.hasPermission('system:role:query')")
     public CommonResult<RoleRespVO> getRole(@RequestParam("id") Long id) {
         RoleDO role = roleService.getRole(id);
@@ -81,7 +81,7 @@ public class RoleController {
     }
 
     @GetMapping("/page")
-    @Operation(summary = "获得角色分页")
+    @Operation(summary = "Get role pagination")
     @PreAuthorize("@ss.hasPermission('system:role:query')")
     public CommonResult<PageResult<RoleRespVO>> getRolePage(RolePageReqVO pageReqVO) {
         PageResult<RoleDO> pageResult = roleService.getRolePage(pageReqVO);
@@ -89,7 +89,7 @@ public class RoleController {
     }
 
     @GetMapping({"/list-all-simple", "/simple-list"})
-    @Operation(summary = "获取角色精简信息列表", description = "只包含被开启的角色，主要用于前端的下拉选项")
+    @Operation(summary = "Get a simplified list of roles", description = "Only contains enabled roles, mainly used for frontend drop-down options")
     public CommonResult<List<RoleRespVO>> getSimpleRoleList() {
         List<RoleDO> list = roleService.getRoleListByStatus(singleton(CommonStatusEnum.ENABLE.getStatus()));
         list.sort(Comparator.comparing(RoleDO::getSort));
@@ -97,14 +97,14 @@ public class RoleController {
     }
 
     @GetMapping("/export-excel")
-    @Operation(summary = "导出角色 Excel")
+    @Operation(summary = "Export roles to Excel")
     @ApiAccessLog(operateType = EXPORT)
     @PreAuthorize("@ss.hasPermission('system:role:export')")
     public void export(HttpServletResponse response, @Validated RolePageReqVO exportReqVO) throws IOException {
         exportReqVO.setPageSize(PageParam.PAGE_SIZE_NONE);
         List<RoleDO> list = roleService.getRolePage(exportReqVO).getList();
-        // 输出
-        ExcelUtils.write(response, "角色数据.xls", "数据", RoleRespVO.class,
+        // output
+        ExcelUtils.write(response, "Role data.xls", "Data", RoleRespVO.class,
                 BeanUtils.toBean(list, RoleRespVO.class));
     }
 

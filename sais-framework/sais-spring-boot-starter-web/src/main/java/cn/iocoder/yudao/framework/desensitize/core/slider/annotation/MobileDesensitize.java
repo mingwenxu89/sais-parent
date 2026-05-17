@@ -11,7 +11,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 手机号
+ * Phone number
  *
  * @author gaibu
  */
@@ -22,26 +22,26 @@ import java.lang.annotation.Target;
 @DesensitizeBy(handler = MobileDesensitization.class)
 public @interface MobileDesensitize {
 
-    /**
-     * 前缀保留长度
-     */
-    int prefixKeep() default 3;
+ /**
+     * Prefix reserved length
+ */
+ int prefixKeep() default 3;
 
-    /**
-     * 后缀保留长度
-     */
-    int suffixKeep() default 4;
+ /**
+     * Suffix reserved length
+ */
+ int suffixKeep() default 4;
 
-    /**
-     * 替换规则，手机号;比如：13248765917 脱敏之后为 132****5917
-     */
-    String replacer() default "*";
+ /**
+     * Replacement rule, mobile phone number; for example: 13248765917 after desensitization is 132****5917
+ */
+ String replacer() default "*";
 
-    /**
-     * 是否禁用脱敏
-     *
-     * 支持 Spring EL 表达式，如果返回 true 则跳过脱敏
-     */
-    String disable() default "";
+ /**
+     * Whether to disable desensitization
+ *
+     * Support Spring EL expressions, skip desensitization if true is returned
+ */
+ String disable() default "";
 
 }

@@ -10,84 +10,84 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 /**
- * 文件配置 Service 接口
+ * File configuration Service API
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface FileConfigService {
 
     /**
-     * 创建文件配置
+     * Create file configuration
      *
-     * @param createReqVO 创建信息
-     * @return 编号
+     * @param createReqVO Create information
+     * @return ID
      */
     Long createFileConfig(@Valid FileConfigSaveReqVO createReqVO);
 
     /**
-     * 更新文件配置
+     * Update file configuration
      *
-     * @param updateReqVO 更新信息
+     * @param updateReqVO Update information
      */
     void updateFileConfig(@Valid FileConfigSaveReqVO updateReqVO);
 
     /**
-     * 更新文件配置为 Master
+     * Update file configuration as Master
      *
-     * @param id 编号
+     * @param id ID
      */
     void updateFileConfigMaster(Long id);
 
     /**
-     * 删除文件配置
+     * Delete file configuration
      *
-     * @param id 编号
+     * @param id ID
      */
     void deleteFileConfig(Long id);
 
     /**
-     * 批量删除文件配置
+     * Deleting file configurations in batches
      *
-     * @param ids 编号列表
+     * @param ids IDed list
      */
     void deleteFileConfigList(List<Long> ids);
 
     /**
-     * 获得文件配置
+     * Get file configuration
      *
-     * @param id 编号
-     * @return 文件配置
+     * @param id ID
+     * @return File configuration
      */
     FileConfigDO getFileConfig(Long id);
 
     /**
-     * 获得文件配置分页
+     * Get file configuration pagination
      *
-     * @param pageReqVO 分页查询
-     * @return 文件配置分页
+     * @param pageReqVO Page query
+     * @return File configuration paging
      */
     PageResult<FileConfigDO> getFileConfigPage(FileConfigPageReqVO pageReqVO);
 
     /**
-     * 测试文件配置是否正确，通过上传文件
+     * Test whether the file configuration is correct by uploading the file
      *
-     * @param id 编号
-     * @return 文件 URL
+     * @param id ID
+     * @return File URL
      */
     String testFileConfig(Long id) throws Exception;
 
     /**
-     * 获得指定编号的文件客户端
+     * Get the file client with the specified ID
      *
-     * @param id 配置编号
-     * @return 文件客户端
+     * @param id Configuration ID
+     * @return file client
      */
     FileClient getFileClient(Long id);
 
     /**
-     * 获得 Master 文件客户端
+     * Get the Master file client
      *
-     * @return 文件客户端
+     * @return file client
      */
     FileClient getMasterFileClient();
 

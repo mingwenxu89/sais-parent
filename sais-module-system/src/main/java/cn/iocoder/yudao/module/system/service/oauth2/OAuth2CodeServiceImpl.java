@@ -16,16 +16,16 @@ import static cn.iocoder.yudao.module.system.enums.ErrorCodeConstants.OAUTH2_COD
 import static cn.iocoder.yudao.module.system.enums.ErrorCodeConstants.OAUTH2_CODE_NOT_EXISTS;
 
 /**
- * OAuth2.0 授权码 Service 实现类
+ * OAuth2.0 authorization code Service implementation class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Service
 @Validated
 public class OAuth2CodeServiceImpl implements OAuth2CodeService {
 
     /**
-     * 授权码的过期时间，默认 5 分钟
+     * The expiration time of the authorization code, default is 5 minutes
      */
     private static final Integer TIMEOUT = 5 * 60;
 

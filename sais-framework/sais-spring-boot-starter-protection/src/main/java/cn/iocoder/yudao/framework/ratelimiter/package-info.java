@@ -1,4 +1,4 @@
 /**
- * 限流组件，基于 Redisson {@link org.redisson.api.RRateLimiter} 限流实现
+ * Current limiting component, based on Redisson {@link org.Redisson.API.RRateLimiter} current limiting implementation
  */
 package cn.iocoder.yudao.framework.ratelimiter;

@@ -31,14 +31,14 @@
 
     <artifactId>sais-framework</artifactId>
     <description>
-        该包是技术组件，每个子包，代表一个组件。每个组件包括两部分：
-            1. core 包：是该组件的核心封装
-            2. config 包：是该组件基于 Spring 的配置
+        This package contains technical components. Each sub-package represents a component, which consists of two parts:
+            1. core package: the core encapsulation of the component
+            2. config package: the Spring-based configuration of the component
 
-        技术组件，也分成两类：
-            1. 框架组件：和我们熟悉的 MyBatis、Redis 等等的拓展
-            2. 业务组件：和业务相关的组件的封装，例如说数据字典、操作日志等等。
-        如果是业务组件，Maven 名字会包含 biz
+        Technical components are divided into two categories:
+            1. Framework components: extensions of familiar frameworks such as MyBatis, Redis, etc.
+            2. Business components: encapsulation of business-related components, such as data dictionaries, operation logs, etc.
+        If it is a business component, the Maven artifact name will contain "biz"
     </description>
     <url>https://github.com/YunaiV/ruoyi-vue-pro</url>
 

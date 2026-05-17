@@ -15,22 +15,23 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 import java.lang.reflect.Method;
 
 /**
- * 基于 Spring EL 表达式，
+ * Based on Spring EL expressions,
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public class ExpressionIdempotentKeyResolver implements IdempotentKeyResolver {
 
     private final ParameterNameDiscoverer parameterNameDiscoverer = new DefaultParameterNameDiscoverer();
+
     private final ExpressionParser expressionParser = new SpelExpressionParser();
 
     @Override
     public String resolver(JoinPoint joinPoint, Idempotent idempotent) {
-        // 获得被拦截方法参数名列表
+        // Get the list of intercepted method parameter names
         Method method = getMethod(joinPoint);
         Object[] args = joinPoint.getArgs();
         String[] parameterNames = this.parameterNameDiscoverer.getParameterNames(method);
-        // 准备 Spring EL 表达式解析的上下文
+        // Prepare the context for Spring EL expression parsing
         StandardEvaluationContext evaluationContext = new StandardEvaluationContext();
         if (ArrayUtil.isNotEmpty(parameterNames)) {
             for (int i = 0; i < parameterNames.length; i++) {
@@ -38,20 +39,20 @@ public class ExpressionIdempotentKeyResolver implements IdempotentKeyResolver {
             }
         }
 
-        // 解析参数
+        // Parse parameters
         Expression expression = expressionParser.parseExpression(idempotent.keyArg());
         return expression.getValue(evaluationContext, String.class);
     }
 
     private static Method getMethod(JoinPoint point) {
-        // 处理，声明在类上的情况
+        // Handle the situation declared on the class
         MethodSignature signature = (MethodSignature) point.getSignature();
         Method method = signature.getMethod();
         if (!method.getDeclaringClass().isInterface()) {
             return method;
         }
 
-        // 处理，声明在接口上的情况
+        // Handle the situation declared on the API
         try {
             return point.getTarget().getClass().getDeclaredMethod(
                     point.getSignature().getName(), method.getParameterTypes());

@@ -5,62 +5,62 @@ import lombok.Data;
 import jakarta.validation.constraints.NotEmpty;
 
 /**
- * 获取小程序码 Request DTO
+ * Get applet code Request DTO
  *
  * @author HUIHUI
- * @see <a href="https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/qrcode-link/qr-code/getUnlimitedQRCode.html">获取不限制的小程序码</a>
+ * @see <a href="https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/qrcode-link/qr-code/getUnlimitedQRCode.html">Get unlimited miniapp code</a>
  */
 @Data
 public class SocialWxQrcodeReqDTO {
 
     /**
-     * 页面路径不能携带参数（参数请放在scene字段里）
+     * The page path cannot carry parameters (please put the parameters in the scene field)
      */
     public static final String SCENE = "";
     /**
-     * 二维码宽度
+     * QR code width
      */
     public static final Integer WIDTH = 430;
     /**
-     * 自动配置线条颜色，如果颜色依然是黑色，则说明不建议配置主色调
+     * Automatically configure the line color. If the color is still black, it means that it is not recommended to configure the main color.
      */
     public static final Boolean AUTO_COLOR = true;
     /**
-     * 检查 page 是否存在
+     * Check if page exists
      */
     public static final Boolean CHECK_PATH = true;
     /**
-     * 是否需要透明底色
+     * DO you need a transparent background?
      *
-     * hyaline 为 true 时，生成透明底色的小程序码
+     * When hyaline is true, a small program code with a transparent background is generated.
      */
     public static final Boolean HYALINE = true;
 
     /**
-     * 场景
+     * scene
      */
-    @NotEmpty(message = "场景不能为空")
+    @NotEmpty(message = "Scene cannot be empty")
     private String scene;
     /**
-     * 页面路径
+     * Page path
      */
-    @NotEmpty(message = "页面路径不能为空")
+    @NotEmpty(message = "Page path cannot be empty")
     private String path;
     /**
-     * 二维码宽度
+     * QR code width
      */
     private Integer width;
 
     /**
-     * 是否需要透明底色
+     * DO you need a transparent background?
      */
     private Boolean autoColor;
     /**
-     * 是否检查 page 是否存在
+     * Whether to check whether page exists
      */
     private Boolean checkPath;
     /**
-     * 是否需要透明底色
+     * DO you need a transparent background?
      */
     private Boolean hyaline;
 

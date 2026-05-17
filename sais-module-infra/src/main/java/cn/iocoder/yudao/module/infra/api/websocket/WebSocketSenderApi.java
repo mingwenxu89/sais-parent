@@ -3,39 +3,39 @@ package cn.iocoder.yudao.module.infra.api.websocket;
 import cn.iocoder.yudao.framework.common.util.json.JsonUtils;
 
 /**
- * WebSocket 发送器的 API 接口
+ * WebSocket sender API API
  *
- * 对 WebSocketMessageSender 进行封装，提供给其它模块使用
+ * Encapsulate WebSocketMessageSender and provide it for use by other modules
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface WebSocketSenderApi {
 
     /**
-     * 发送消息给指定用户
+     * Send message to specified user
      *
-     * @param userType 用户类型
-     * @param userId 用户编号
-     * @param messageType 消息类型
-     * @param messageContent 消息内容，JSON 格式
+     * @param userType User type
+     * @param userId User ID
+     * @param messageType Message type
+     * @param messageContent Message content, JSON format
      */
     void send(Integer userType, Long userId, String messageType, String messageContent);
 
     /**
-     * 发送消息给指定用户类型
+     * Send message to specified user type
      *
-     * @param userType 用户类型
-     * @param messageType 消息类型
-     * @param messageContent 消息内容，JSON 格式
+     * @param userType User type
+     * @param messageType Message type
+     * @param messageContent Message content, JSON format
      */
     void send(Integer userType, String messageType, String messageContent);
 
     /**
-     * 发送消息给指定 Session
+     * Send a message to the specified Session
      *
-     * @param sessionId Session 编号
-     * @param messageType 消息类型
-     * @param messageContent 消息内容，JSON 格式
+     * @param sessionId Session ID
+     * @param messageType Message type
+     * @param messageContent Message content, JSON format
      */
     void send(String sessionId, String messageType, String messageContent);
 

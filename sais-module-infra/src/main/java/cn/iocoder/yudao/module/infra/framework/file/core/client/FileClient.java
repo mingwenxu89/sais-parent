@@ -1,66 +1,66 @@
 package cn.iocoder.yudao.module.infra.framework.file.core.client;
 
 /**
- * 文件客户端
+ * file client
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface FileClient {
 
     /**
-     * 获得客户端编号
+     * Get client ID
      *
-     * @return 客户端编号
+     * @return client ID
      */
     Long getId();
 
     /**
-     * 上传文件
+     * Upload file
      *
-     * @param content 文件流
-     * @param path    相对路径
-     * @return 完整路径，即 HTTP 访问地址
-     * @throws Exception 上传文件时，抛出 Exception 异常
+     * @param content file stream
+     * @param path    relative path
+     * @return Full path, i.e. HTTP access address
+     * @throws Exception When uploading a file, an Exception is thrown.
      */
     String upload(byte[] content, String path, String type) throws Exception;
 
     /**
-     * 删除文件
+     * Delete files
      *
-     * @param path 相对路径
-     * @throws Exception 删除文件时，抛出 Exception 异常
+     * @param path relative path
+     * @throws Exception When deleting a file, an Exception exception is thrown
      */
     void delete(String path) throws Exception;
 
     /**
-     * 获得文件的内容
+     * Get the contents of the file
      *
-     * @param path 相对路径
-     * @return 文件的内容
+     * @param path relative path
+     * @return file content
      */
     byte[] getContent(String path) throws Exception;
 
-    // ========== 文件签名，目前仅 S3 支持 ==========
+    // ========== File signature, currently only supported by S3 ==========
 
     /**
-     * 获得文件预签名地址，用于上传
+     * Obtain the file pre-signed address for uploading
      *
-     * @param path 相对路径
-     * @return 文件预签名地址
+     * @param path relative path
+     * @return File pre-signed address
      */
     default String presignPutUrl(String path) {
-        throw new UnsupportedOperationException("不支持的操作");
+        throw new UnsupportedOperationException("Unsupported operation");
     }
 
     /**
-     * 生成文件预签名地址，用于读取
+     * Generate file pre-signed address for reading
      *
-     * @param url 完整的文件访问地址
-     * @param expirationSeconds 访问有效期，单位秒
-     * @return 文件预签名地址
+     * @param url Complete file access address
+     * @param expirationSeconds Access validity period, in seconds
+     * @return File pre-signed address
      */
     default String presignGetUrl(String url, Integer expirationSeconds) {
-        throw new UnsupportedOperationException("不支持的操作");
+        throw new UnsupportedOperationException("Unsupported operation");
     }
 
 }

@@ -8,18 +8,18 @@ import jakarta.validation.ConstraintValidatorContext;
 
 public class MobileValidator implements ConstraintValidator<Mobile, String> {
 
-    @Override
-    public void initialize(Mobile annotation) {
-    }
+ @Override
+ public void initialize(Mobile annotation) {
+ }
 
-    @Override
-    public boolean isValid(String value, ConstraintValidatorContext context) {
-        // 如果手机号为空，默认不校验，即校验通过
-        if (StrUtil.isEmpty(value)) {
-            return true;
-        }
-        // 校验手机
-        return ValidationUtils.isMobile(value);
-    }
+ @Override
+ public boolean isValid(String value, ConstraintValidatorContext context) {
+        // If the mobile phone number is empty, it will not be verified by default, that is, the verification is passed.
+ if (StrUtil.isEmpty(value)) {
+ return true;
+ }
+        // Verify mobile phone
+ return ValidationUtils.isMobile(value);
+ }
 
 }

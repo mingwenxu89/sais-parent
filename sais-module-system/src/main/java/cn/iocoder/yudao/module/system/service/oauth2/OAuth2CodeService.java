@@ -5,34 +5,34 @@ import cn.iocoder.yudao.module.system.dal.dataobject.oauth2.OAuth2CodeDO;
 import java.util.List;
 
 /**
- * OAuth2.0 授权码 Service 接口
+ * OAuth2.0 authorization code Service API
  *
- * 从功能上，和 Spring Security OAuth 的 JdbcAuthorizationCodeServices 的功能，提供授权码的操作
+ * Functionally, it is similar to the function of JdbcAuthorizationCodeServices of Spring Security OAuth, providing authorization code operations.
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface OAuth2CodeService {
 
     /**
-     * 创建授权码
+     * Create authorization code
      *
-     * 参考 JdbcAuthorizationCodeServices 的 createAuthorizationCode 方法
+     * Refer to the createAuthorizationCode method of JdbcAuthorizationCodeServices
      *
-     * @param userId 用户编号
-     * @param userType 用户类型
-     * @param clientId 客户端编号
-     * @param scopes 授权范围
-     * @param redirectUri 重定向 URI
-     * @param state 状态
-     * @return 授权码的信息
+     * @param userId User ID
+     * @param userType User type
+     * @param clientId client ID
+     * @param scopes Authorization scope
+     * @param redirectUri Redirect URI
+     * @param state Status
+     * @return Authorization code information
      */
     OAuth2CodeDO createAuthorizationCode(Long userId, Integer userType, String clientId,
                                          List<String> scopes, String redirectUri, String state);
 
     /**
-     * 使用授权码
+     * Use authorization code
      *
-     * @param code 授权码
+     * @param code Authorization code
      */
     OAuth2CodeDO consumeAuthorizationCode(String code);
 

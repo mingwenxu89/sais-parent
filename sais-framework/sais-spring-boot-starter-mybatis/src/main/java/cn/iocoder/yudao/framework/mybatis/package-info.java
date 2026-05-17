@@ -1,4 +1,4 @@
 /**
- * 使用 MyBatis Plus 提升使用 MyBatis 的开发效率
+ * Use MyBatis Plus to improve development efficiency using MyBatis
  */
 package cn.iocoder.yudao.framework.mybatis;

@@ -8,70 +8,70 @@ import cn.iocoder.yudao.module.system.dal.dataobject.dept.DeptDO;
 import java.util.*;
 
 /**
- * 部门 Service 接口
+ * Department Service API
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface DeptService {
 
     /**
-     * 创建部门
+     * Create department
      *
-     * @param createReqVO 部门信息
-     * @return 部门编号
+     * @param createReqVO Department information
+     * @return Department ID
      */
     Long createDept(DeptSaveReqVO createReqVO);
 
     /**
-     * 更新部门
+     * Update department
      *
-     * @param updateReqVO 部门信息
+     * @param updateReqVO Department information
      */
     void updateDept(DeptSaveReqVO updateReqVO);
 
     /**
-     * 删除部门
+     * Delete department
      *
-     * @param id 部门编号
+     * @param id Department ID
      */
     void deleteDept(Long id);
 
     /**
-     * 批量删除部门
+     * Delete departments in batches
      *
-     * @param ids 部门编号数组
+     * @param ids Department ID array
      */
     void deleteDeptList(List<Long> ids);
 
     /**
-     * 获得部门信息
+     * Get department information
      *
-     * @param id 部门编号
-     * @return 部门信息
+     * @param id Department ID
+     * @return Department information
      */
     DeptDO getDept(Long id);
 
     /**
-     * 获得部门信息数组
+     * Get department information array
      *
-     * @param ids 部门编号数组
-     * @return 部门信息数组
+     * @param ids Department ID array
+     * @return Department information array
      */
     List<DeptDO> getDeptList(Collection<Long> ids);
 
     /**
-     * 筛选部门列表
+     * Filter department list
      *
-     * @param reqVO 筛选条件请求 VO
-     * @return 部门列表
+     * @param reqVO Filter Request VO
+     * @return Department list
      */
     List<DeptDO> getDeptList(DeptListReqVO reqVO);
 
     /**
-     * 获得指定编号的部门 Map
+     * Get the department map with the specified ID
      *
-     * @param ids 部门编号数组
-     * @return 部门 Map
+     * @param ids Department ID array
+     * @return Department Map
      */
     default Map<Long, DeptDO> getDeptMap(Collection<Long> ids) {
         List<DeptDO> list = getDeptList(ids);
@@ -79,45 +79,45 @@ public interface DeptService {
     }
 
     /**
-     * 获得指定部门的所有子部门
+     * Get all sub-departments of the specified department
      *
-     * @param id 部门编号
-     * @return 子部门列表
+     * @param id Department ID
+     * @return List of subdepartments
      */
     default List<DeptDO> getChildDeptList(Long id) {
         return getChildDeptList(Collections.singleton(id));
     }
 
     /**
-     * 获得指定部门的所有子部门
+     * Get all sub-departments of the specified department
      *
-     * @param ids 部门编号数组
-     * @return 子部门列表
+     * @param ids Department ID array
+     * @return List of subdepartments
      */
     List<DeptDO> getChildDeptList(Collection<Long> ids);
 
     /**
-     * 获得指定领导者的部门列表
+     * Get a list of departments with designated leaders
      *
-     * @param id 领导者编号
-     * @return 部门列表
+     * @param id leader ID
+     * @return Department list
      */
     List<DeptDO> getDeptListByLeaderUserId(Long id);
 
     /**
-     * 获得所有子部门，从缓存中
+     * Get all sub-departments, from cache
      *
-     * @param id 父部门编号
-     * @return 子部门列表
+     * @param id Parent department ID
+     * @return List of subdepartments
      */
     Set<Long> getChildDeptIdListFromCache(Long id);
 
     /**
-     * 校验部门们是否有效。如下情况，视为无效：
-     * 1. 部门编号不存在
-     * 2. 部门被禁用
+     * Check whether the departments are valid. The following situations will be deemed invalid:
+     * 1. The department ID does not exist
+     * 2. Department is disabled
      *
-     * @param ids 角色编号数组
+     * @param ids Role ID array
      */
     void validateDeptList(Collection<Long> ids);
 

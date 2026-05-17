@@ -4,26 +4,26 @@ import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 文件客户端的抽象类，提供模板方法，减少子类的冗余代码
+ * Abstract class of file client, providing template methods to reduce redundant code in subclasses
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Slf4j
 public abstract class AbstractFileClient<Config extends FileClientConfig> implements FileClient {
 
     /**
-     * 配置编号
+     * Configuration ID
      */
     private final Long id;
     /**
-     * 文件配置
+     * File configuration
      */
     protected Config config;
     /**
-     * 原始的文件配置
+     * original file configuration
      *
-     * 原因：{@link #config} 可能被子类所修改，无法用于判断配置是否变更
-     * @link <a href="https://t.zsxq.com/29wkW">相关案例</a>
+     * Reason: {@link #config} may be modified by subclasses and cannot be used to determine whether the configuration has changed.
+     * @link <a href="https://t.zsxq.com/29wkW">Related cases</a>
      */
     private Config originalConfig;
 
@@ -34,27 +34,27 @@ public abstract class AbstractFileClient<Config extends FileClientConfig> implem
     }
 
     /**
-     * 初始化
+     * initialization
      */
     public final void init() {
         doInit();
-        log.debug("[init][配置({}) 初始化完成]", config);
+        log.debug("[init][Configuration ({}) initialization completed]", config);
     }
 
     /**
-     * 自定义初始化
+     * Custom initialization
      */
     protected abstract void doInit();
 
     public final void refresh(Config config) {
-        // 判断是否更新
+        // Determine whether to update
         if (config.equals(this.originalConfig)) {
             return;
         }
-        log.info("[refresh][配置({})发生变化，重新初始化]", config);
+        log.info("[refresh][Configuration ({}) changes, reinitialize]", config);
         this.config = config;
         this.originalConfig = config;
-        // 初始化
+        // initialization
         this.init();
     }
 
@@ -64,12 +64,12 @@ public abstract class AbstractFileClient<Config extends FileClientConfig> implem
     }
 
     /**
-     * 格式化文件的 URL 访问地址
-     * 使用场景：local、ftp、db，通过 FileController 的 getFile 来获取文件内容
+     * URL access address of the formatted file
+     * Usage scenarios: local, FTP, DB, obtain file content through getFile of FileController
      *
-     * @param domain 自定义域名
-     * @param path 文件路径
-     * @return URL 访问地址
+     * @param domain Custom domain name
+     * @param path file path
+     * @return URL access address
      */
     protected String formatFileUrl(String domain, String path) {
         return StrUtil.format("{}/admin-api/infra/file/{}/get/{}", domain, getId(), path);

@@ -11,24 +11,24 @@ import lombok.NoArgsConstructor;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
-@Schema(description = "管理后台 - 社交绑定登录 Request VO，使用 code 授权码 + 账号密码")
+@Schema(description = "Management backend - social binding login Request VO, use code authorization code + account password")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class AuthSocialLoginReqVO {
 
-    @Schema(description = "社交平台的类型，参见 UserSocialTypeEnum 枚举值", requiredMode = Schema.RequiredMode.REQUIRED, example = "10")
+    @Schema(description = "Type of social platform, see UserSocialTypeEnum enumeration value", requiredMode = Schema.RequiredMode.REQUIRED, example = "10")
     @InEnum(SocialTypeEnum.class)
-    @NotNull(message = "社交平台的类型不能为空")
+    @NotNull(message = "The type of social platform cannot be empty")
     private Integer type;
 
-    @Schema(description = "授权码", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
-    @NotEmpty(message = "授权码不能为空")
+    @Schema(description = "Authorization code", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
+    @NotEmpty(message = "Authorization code cannot be empty")
     private String code;
 
     @Schema(description = "state", requiredMode = Schema.RequiredMode.REQUIRED, example = "9b2ffbc1-7425-4155-9894-9d5c08541d62")
-    @NotEmpty(message = "state 不能为空")
+    @NotEmpty(message = "state cannot be empty")
     private String state;
 
 }

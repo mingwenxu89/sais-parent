@@ -8,54 +8,54 @@ import java.io.File;
 import java.util.Collection;
 
 /**
- * 邮箱发送消息
+ * Send message via email
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Data
 public class MailSendMessage {
 
     /**
-     * 邮件日志编号
+     * Mail log ID
      */
-    @NotNull(message = "邮件日志编号不能为空")
+    @NotNull(message = "Mail log ID cannot be empty")
     private Long logId;
     /**
-     * 接收邮件地址
+     * Receiving email address
      */
-    @NotEmpty(message = "接收邮件地址不能为空")
+    @NotEmpty(message = "The receiving email address cannot be empty")
     private Collection<String> toMails;
     /**
-     * 抄送邮件地址
+     * Cc email address
      */
     private Collection<String> ccMails;
     /**
-     * 密送邮件地址
+     * Bcc email address
      */
     private Collection<String> bccMails;
     /**
-     * 邮件账号编号
+     * Email account ID
      */
-    @NotNull(message = "邮件账号编号不能为空")
+    @NotNull(message = "Email account ID cannot be empty")
     private Long accountId;
 
     /**
-     * 邮件发件人
+     * Email sender
      */
     private String nickname;
     /**
-     * 邮件标题
+     * Email title
      */
-    @NotEmpty(message = "邮件标题不能为空")
+    @NotEmpty(message = "Email title cannot be empty")
     private String title;
     /**
-     * 邮件内容
+     * Email content
      */
-    @NotEmpty(message = "邮件内容不能为空")
+    @NotEmpty(message = "Email content cannot be empty")
     private String content;
 
     /**
-     * 附件
+     * Accessories
      */
     private File[] attachments;
 

@@ -40,7 +40,7 @@ import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 import static cn.iocoder.yudao.framework.common.util.collection.CollectionUtils.convertSet;
 import static cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils.getLoginUserId;
 
-@Tag(name = "管理后台 - 认证")
+@Tag(name = "Management backend - certification")
 @RestController
 @RequestMapping("/system/auth")
 @Validated
@@ -66,14 +66,14 @@ public class AuthController {
     @PostMapping("/login")
     @PermitAll
     @TenantIgnore
-    @Operation(summary = "使用账号密码登录")
+    @Operation(summary = "Log in using account and password")
     public CommonResult<AuthLoginRespVO> login(@RequestBody @Valid AuthLoginReqVO reqVO) {
         return success(authService.login(reqVO));
     }
 
     @PostMapping("/logout")
     @PermitAll
-    @Operation(summary = "登出系统")
+    @Operation(summary = "Log out of the system")
     public CommonResult<Boolean> logout(HttpServletRequest request) {
         String token = SecurityFrameworkUtils.obtainAuthorization(request,
                 securityProperties.getTokenHeader(), securityProperties.getTokenParameter());
@@ -85,51 +85,51 @@ public class AuthController {
 
     @PostMapping("/refresh-token")
     @PermitAll
-    @Operation(summary = "刷新令牌")
-    @Parameter(name = "refreshToken", description = "刷新令牌", required = true)
+    @Operation(summary = "Refresh Token")
+    @Parameter(name = "refreshToken", description = "Refresh Token", required = true)
     public CommonResult<AuthLoginRespVO> refreshToken(@RequestParam("refreshToken") String refreshToken) {
         return success(authService.refreshToken(refreshToken));
     }
 
     @GetMapping("/get-permission-info")
-    @Operation(summary = "获取登录用户的权限信息")
+    @Operation(summary = "Get the permission information of the logged in user")
     public CommonResult<AuthPermissionInfoRespVO> getPermissionInfo() {
-        // 1.1 获得用户信息
+        // 1.1 Obtain user information
         AdminUserDO user = userService.getUser(getLoginUserId());
         if (user == null) {
             return success(null);
         }
 
-        // 1.2 获得角色列表
+        // 1.2 Get the role list
         Set<Long> roleIds = permissionService.getUserRoleIdListByUserId(getLoginUserId());
         if (CollUtil.isEmpty(roleIds)) {
             return success(AuthConvert.INSTANCE.convert(user, Collections.emptyList(), Collections.emptyList()));
         }
         List<RoleDO> roles = roleService.getRoleList(roleIds);
-        roles.removeIf(role -> !CommonStatusEnum.ENABLE.getStatus().equals(role.getStatus())); // 移除禁用的角色
+        roles.removeIf(role -> !CommonStatusEnum.ENABLE.getStatus().equals(role.getStatus())); // Remove disabled characters
 
-        // 1.3 获得菜单列表
+        // 1.3 Get menu list
         Set<Long> menuIds = permissionService.getRoleMenuListByRoleId(convertSet(roles, RoleDO::getId));
         List<MenuDO> menuList = menuService.getMenuList(menuIds);
         menuList = menuService.filterDisableMenus(menuList);
 
-        // 2. 拼接结果返回
+        // 2. Return the splicing result
         return success(AuthConvert.INSTANCE.convert(user, roles, menuList));
     }
 
     @PostMapping("/register")
     @PermitAll
-    @Operation(summary = "注册用户")
+    @Operation(summary = "Registered user")
     public CommonResult<AuthLoginRespVO> register(@RequestBody @Valid AuthRegisterReqVO registerReqVO) {
         return success(authService.register(registerReqVO));
     }
 
-    // ========== 短信登录相关 ==========
+    // ========== SMS login related ==========
 
     @PostMapping("/sms-login")
     @PermitAll
-    @Operation(summary = "使用短信验证码登录")
-    // 可按需开启限流：https://github.com/YunaiV/ruoyi-vue-pro/issues/851
+    @Operation(summary = "Log in using SMS captcha")
+    // Current limiting can be enabled on demand: https://github.com/YunaiV/ruoyi-vue-pro/issues/851
     // @RateLimiter(time = 60, count = 6, keyResolver = ExpressionRateLimiterKeyResolver.class, keyArg = "#reqVO.mobile")
     public CommonResult<AuthLoginRespVO> smsLogin(@RequestBody @Valid AuthSmsLoginReqVO reqVO) {
         return success(authService.smsLogin(reqVO));
@@ -137,7 +137,7 @@ public class AuthController {
 
     @PostMapping("/send-sms-code")
     @PermitAll
-    @Operation(summary = "发送手机验证码")
+    @Operation(summary = "Send mobile phone captcha")
     public CommonResult<Boolean> sendLoginSmsCode(@RequestBody @Valid AuthSmsSendReqVO reqVO) {
         authService.sendSmsCode(reqVO);
         return success(true);
@@ -145,20 +145,20 @@ public class AuthController {
 
     @PostMapping("/reset-password")
     @PermitAll
-    @Operation(summary = "重置密码")
+    @Operation(summary = "reset password")
     public CommonResult<Boolean> resetPassword(@RequestBody @Valid AuthResetPasswordReqVO reqVO) {
         authService.resetPassword(reqVO);
         return success(true);
     }
 
-    // ========== 社交登录相关 ==========
+    // ========== Social login related ==========
 
     @GetMapping("/social-auth-redirect")
     @PermitAll
-    @Operation(summary = "社交授权的跳转")
+    @Operation(summary = "Social empowerment jump")
     @Parameters({
-            @Parameter(name = "type", description = "社交类型", required = true),
-            @Parameter(name = "redirectUri", description = "回调路径")
+            @Parameter(name = "type", description = "social type", required = true),
+            @Parameter(name = "redirectUri", description = "callback path")
     })
     public CommonResult<String> socialLogin(@RequestParam("type") Integer type,
                                             @RequestParam("redirectUri") String redirectUri) {
@@ -168,7 +168,7 @@ public class AuthController {
 
     @PostMapping("/social-login")
     @PermitAll
-    @Operation(summary = "社交快捷登录，使用 code 授权码", description = "适合未登录的用户，但是社交账号已绑定用户")
+    @Operation(summary = "Quick social login, use code authorization code", description = "Suitable for users who are not logged in, but the social account has been bound to the user")
     public CommonResult<AuthLoginRespVO> socialQuickLogin(@RequestBody @Valid AuthSocialLoginReqVO reqVO) {
         return success(authService.socialLogin(reqVO));
     }

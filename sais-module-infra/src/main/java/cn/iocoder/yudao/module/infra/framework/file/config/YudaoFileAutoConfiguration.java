@@ -6,9 +6,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * 文件配置类
+ * File configuration class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Configuration(proxyBeanMethods = false)
 public class YudaoFileAutoConfiguration {

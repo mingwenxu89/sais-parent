@@ -4,33 +4,33 @@ import cn.iocoder.yudao.framework.common.enums.CommonStatusEnum;
 import lombok.Data;
 
 /**
- * 部门 Response DTO
+ * Department Response DTO
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Data
 public class DeptRespDTO {
 
     /**
-     * 部门编号
+     * Department ID
      */
     private Long id;
     /**
-     * 部门名称
+     * Department name
      */
     private String name;
     /**
-     * 父部门编号
+     * Parent department ID
      */
     private Long parentId;
     /**
-     * 负责人的用户编号
+     * User ID of the person in charge
      */
     private Long leaderUserId;
     /**
-     * 部门状态
+     * Department status
      *
-     * 枚举 {@link CommonStatusEnum}
+     * Enum {@link CommonStatusEnum}
      */
     private Integer status;
 

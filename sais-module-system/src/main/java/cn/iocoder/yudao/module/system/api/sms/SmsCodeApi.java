@@ -8,32 +8,32 @@ import cn.iocoder.yudao.module.system.api.sms.dto.code.SmsCodeUseReqDTO;
 import jakarta.validation.Valid;
 
 /**
- * 短信验证码 API 接口
+ * SMS captcha API API
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface SmsCodeApi {
 
     /**
-     * 创建短信验证码，并进行发送
+     * Create an SMS captcha and send it
      *
-     * @param reqDTO 发送请求
+     * @param reqDTO Send request
      */
     void sendSmsCode(@Valid SmsCodeSendReqDTO reqDTO);
 
     /**
-     * 验证短信验证码，并进行使用
-     * 如果正确，则将验证码标记成已使用
-     * 如果错误，则抛出 {@link ServiceException} 异常
+     * Verify the SMS captcha and use it
+     * If correct, mark the captcha as used
+     * If error occurs, throw {@link ServiceException} exception
      *
-     * @param reqDTO 使用请求
+     * @param reqDTO Use request
      */
     void useSmsCode(@Valid SmsCodeUseReqDTO reqDTO);
 
     /**
-     * 检查验证码是否有效
+     * Check if the captcha is valid
      *
-     * @param reqDTO 校验请求
+     * @param reqDTO Verification request
      */
     void validateSmsCode(@Valid SmsCodeValidateReqDTO reqDTO);
 

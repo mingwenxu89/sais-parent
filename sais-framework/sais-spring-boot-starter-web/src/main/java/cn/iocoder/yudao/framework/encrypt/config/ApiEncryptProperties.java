@@ -1,16 +1,15 @@
 package cn.iocoder.yudao.framework.encrypt.config;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-
 /**
- * HTTP API 加解密配置
+ * HTTP API encryption and decryption configuration
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @ConfigurationProperties(prefix = "yudao.api-encrypt")
 @Validated
@@ -18,54 +17,54 @@ import jakarta.validation.constraints.NotNull;
 public class ApiEncryptProperties {
 
     /**
-     * 是否开启
+     * Whether to turn on
      */
-    @NotNull(message = "是否开启不能为空")
+    @NotNull(message = "whether to enable or not cannot be empty")
     private Boolean enable;
 
     /**
-     * 请求头（响应头）名称
+     * Request Header (response Header) name
      *
-     * 1. 如果该请求头非空，则表示请求参数已被「前端」加密，「后端」需要解密
-     * 2. 如果该响应头非空，则表示响应结果已被「后端」加密，「前端」需要解密
+     * 1. If the request Header is not empty, it means that the request parameters have been encrypted by the "front end" and need to be decrypted by the "back end"
+     * 2. If the response Header is not empty, it means that the response result has been encrypted by the "backend" and needs to be decrypted by the "frontend"
      */
-    @NotEmpty(message = "请求头（响应头）名称不能为空")
+    @NotEmpty(message = "request Header (response Header) name cannot be empty")
     private String header = "X-Api-Encrypt";
 
     /**
-     * 对称加密算法，用于请求/响应的加解密
+     * Symmetric encryption algorithm, used for request/response encryption and decryption
      *
-     * 目前支持
-     * 【对称加密】：
+     * Currently supported
+     * [Symmetric encryption]:
      *      1. {@link cn.hutool.crypto.symmetric.SymmetricAlgorithm#AES}
-     *      2. {@link cn.hutool.crypto.symmetric.SM4#ALGORITHM_NAME} （需要自己二次开发，成本低）
-     * 【非对称加密】
+     * 2. {@link cn.hutool.crypto.symmetric.SM4#ALGORITHM_NAME} (requires secondary development by yourself, low cost)
+     * 【Asymmetric Encryption】
      *      1. {@link cn.hutool.crypto.asymmetric.AsymmetricAlgorithm#RSA}
-     *      2. {@link cn.hutool.crypto.asymmetric.SM2} （需要自己二次开发，成本低）
+     * 2. {@link cn.hutool.crypto.asymmetric.SM2} (requires secondary development by yourself, low cost)
      *
-     * @see <a href="https://help.aliyun.com/zh/ssl-certificate/what-are-a-public-key-and-a-private-key">什么是公钥和私钥？</a>
+     * @see <a href="https://help.aliyun.com/zh/ssl-certificate/what-are-a-public-key-and-a-private-key">What are public keys and private keys? </a>
      */
-    @NotEmpty(message = "对称加密算法不能为空")
+    @NotEmpty(message = "symmetric encryption algorithm cannot be empty")
     private String algorithm;
 
     /**
-     * 请求的解密密钥
+     * Requested decryption key
      *
-     * 注意：
-     * 1. 如果是【对称加密】时，它「后端」对应的是“密钥”。对应的，「前端」也对应的也是“密钥”。
-     * 2. 如果是【非对称加密】时，它「后端」对应的是“私钥”。对应的，「前端」对应的是“公钥”。（重要！！！）
+     * Note:
+     * 1. If it is [symmetric encryption], its "backend" corresponds to the "key". Correspondingly, the "front end" also corresponds to the "key".
+     * 2. If it is [asymmetric encryption], its "backend" corresponds to the "private key". Correspondingly, the "front end" corresponds to the "public key". (Important!!!)
      */
-    @NotEmpty(message = "请求的解密密钥不能为空")
+    @NotEmpty(message = "request decryption secret key cannot be empty")
     private String requestKey;
 
     /**
-     * 响应的加密密钥
+     * Response encryption key
      *
-     * 注意：
-     * 1. 如果是【对称加密】时，它「后端」对应的是“密钥”。对应的，「前端」也对应的也是“密钥”。
-     * 2. 如果是【非对称加密】时，它「后端」对应的是“公钥”。对应的，「前端」对应的是“私钥”。（重要！！！）
+     * Note:
+     * 1. If it is [symmetric encryption], its "backend" corresponds to the "key". Correspondingly, the "front end" also corresponds to the "key".
+     * 2. If it is [asymmetric encryption], its "backend" corresponds to the "public key". Correspondingly, the "front end" corresponds to the "private key". (Important!!!)
      */
-    @NotEmpty(message = "响应的加密密钥不能为空")
+    @NotEmpty(message = "response encryption secret key cannot be empty")
     private String responseKey;
 
 }

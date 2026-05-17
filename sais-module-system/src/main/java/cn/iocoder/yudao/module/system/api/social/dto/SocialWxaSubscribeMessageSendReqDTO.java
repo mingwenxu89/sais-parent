@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 微信小程序订阅消息发送 Request DTO
+ * WeChat applet subscription message sending Request DTO
  *
  * @author HUIHUI
  */
@@ -17,36 +17,36 @@ import java.util.Map;
 public class SocialWxaSubscribeMessageSendReqDTO {
 
     /**
-     * 用户编号
+     * User ID
      *
-     * 关联 MemberUserDO 的 id 编号
-     * 关联 AdminUserDO 的 id 编号
+     * The id ID associated with MemberUserDO
+     * The id ID associated with AdminUserDO
      */
-    @NotNull(message = "用户编号不能为空")
+    @NotNull(message = "User ID cannot be empty")
     private Long userId;
     /**
-     * 用户类型
+     * User type
      *
-     * 关联 {@link UserTypeEnum}
+     * Association {@link UserTypeEnum}
      */
-    @NotNull(message = "用户类型不能为空")
+    @NotNull(message = "User type cannot be empty")
     private Integer userType;
 
     /**
-     * 消息模版标题
+     * Message template title
      */
-    @NotEmpty(message = "消息模版标题不能为空")
+    @NotEmpty(message = "Message template title cannot be empty")
     private String templateTitle;
 
     /**
-     * 点击模板卡片后的跳转页面，仅限本小程序内的页面
+     * The jump page after clicking the template card is limited to pages within this miniapp.
      *
-     * 支持带参数，（示例 index?foo=bar ）。该字段不填则模板无跳转。
+     * Supports parameters, (example index?foo=bar). If this field is not filled in, the template will not jump.
      */
     private String page;
 
     /**
-     * 模板内容的参数
+     * Template content parameters
      */
     private Map<String, String> messages;
 

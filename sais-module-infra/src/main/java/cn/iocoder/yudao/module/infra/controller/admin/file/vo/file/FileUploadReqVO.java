@@ -9,26 +9,26 @@ import org.springframework.web.multipart.MultipartFile;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
 
-@Schema(description = "管理后台 - 上传文件 Request VO")
+@Schema(description = "Management backend - Upload files Request VO")
 @Data
 public class FileUploadReqVO {
 
-    @Schema(description = "文件附件", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotNull(message = "文件附件不能为空")
+    @Schema(description = "file attachment", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotNull(message = "file attachment cannot be empty")
     private MultipartFile file;
 
-    @Schema(description = "文件目录", example = "XXX/YYY")
+    @Schema(description = "File directory", example = "XXX/YYY")
     private String directory;
 
-    @AssertTrue(message = "文件目录不正确")
+    @AssertTrue(message = "file directory is incorrect")
     @JsonIgnore
     public boolean isDirectoryValid() {
         return isDirectoryValid(directory);
     }
 
     public static boolean isDirectoryValid(String directory) {
-        // 1. 不能包含 .. 防止目录穿越
-        // 2. 不能以 / 或 \ 开头，防止上传到根目录
+        // 1. Cannot contain .. to prevent directory traversal
+        // 2. Cannot start with / or \ to prevent uploading to the root directory
         return !StrUtil.contains(directory, "..")
                 && !StrUtil.startWithAny(directory, "/", "\\");
     }

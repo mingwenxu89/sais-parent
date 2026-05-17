@@ -13,62 +13,62 @@ import lombok.EqualsAndHashCode;
 import java.util.List;
 
 /**
- * 邮件模版 DO
+ * Email template DO
  *
  * @author wangjingyi
  * @since 2022-03-21
  */
 @TableName(value = "system_mail_template", autoResultMap = true)
-@KeySequence("system_mail_template_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
+@KeySequence("system_mail_template_seq") // Primary key auto-increment for Oracle, PostgreSQL, Kingbase, DB2, H2 databases. If it is a database such as MySQL, you DO not need to write it.
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TenantIgnore
 public class MailTemplateDO extends BaseDO {
 
     /**
-     * 主键
+     * primary key
      */
     private Long id;
     /**
-     * 模版名称
+     * Template name
      */
     private String name;
     /**
-     * 模版编号
+     * Template ID
      */
     private String code;
     /**
-     * 发送的邮箱账号编号
+     * Email account ID sent
      *
-     * 关联 {@link MailAccountDO#getId()}
+     * Association {@link MailAccountDO#getId()}
      */
     private Long accountId;
 
     /**
-     * 发送人名称
+     * Sender name
      */
     private String nickname;
     /**
-     * 标题
+     * Title
      */
     private String title;
     /**
-     * 内容
+     * Content
      */
     private String content;
     /**
-     * 参数数组(自动根据内容生成)
+     * Parameter array (automatically generated based on content)
      */
     @TableField(typeHandler = JacksonTypeHandler.class)
     private List<String> params;
     /**
-     * 状态
+     * Status
      *
-     * 枚举 {@link CommonStatusEnum}
+     * Enum {@link CommonStatusEnum}
      */
     private Integer status;
     /**
-     * 备注
+     * Remark
      */
     private String remark;
 

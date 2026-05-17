@@ -13,30 +13,30 @@ import org.springframework.web.socket.server.HandshakeInterceptor;
 import java.util.Map;
 
 /**
- * 登录用户的 {@link HandshakeInterceptor} 实现类
+ * Login user’s {@link HandshakeInterceptor} implementation class
  *
- * 流程如下：
- * 1. 前端连接 websocket 时，会通过拼接 ?token={token} 到 ws:// 连接后，这样它可以被 {@link TokenAuthenticationFilter} 所认证通过
- * 2. {@link LoginUserHandshakeInterceptor} 负责把 {@link LoginUser} 添加到 {@link WebSocketSession} 中
+ * The process is as follows:
+ * 1. When the front end connects to WebSocket, it will connect ?token={token} to ws:// so that it can be authenticated by {@link TokenAuthenticationFilter}
+ * 2. {@link LoginUserHandshakeInterceptor} is responsible for adding {@link LoginUser} to {@link WebSocketSession}
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public class LoginUserHandshakeInterceptor implements HandshakeInterceptor {
 
-    @Override
-    public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response,
-                                   WebSocketHandler wsHandler, Map<String, Object> attributes) {
-        LoginUser loginUser = SecurityFrameworkUtils.getLoginUser();
-        if (loginUser != null) {
-            WebSocketFrameworkUtils.setLoginUser(loginUser, attributes);
-        }
-        return true;
-    }
+ @Override
+ public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response,
+ WebSocketHandler wsHandler, Map<String, Object> attributes) {
+ LoginUser loginUser = SecurityFrameworkUtils.getLoginUser();
+ if (loginUser != null) {
+ WebSocketFrameworkUtils.setLoginUser(loginUser, attributes);
+ }
+ return true;
+ }
 
-    @Override
-    public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response,
-                               WebSocketHandler wsHandler, Exception exception) {
-        // do nothing
-    }
+ @Override
+ public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response,
+ WebSocketHandler wsHandler, Exception exception) {
+ // do nothing
+ }
 
 }

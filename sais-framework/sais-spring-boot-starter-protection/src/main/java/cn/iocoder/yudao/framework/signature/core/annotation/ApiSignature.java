@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 
 /**
- * HTTP API 签名注解
+ * HTTP API signature annotations
  *
  * @author Zhougang
  */
@@ -17,43 +17,43 @@ import java.util.concurrent.TimeUnit;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ApiSignature {
 
-    /**
-     * 同一个请求多长时间内有效 默认 60 秒
-     */
-    int timeout() default 60;
+ /**
+     * How long is the same request valid? Default 60 seconds
+ */
+ int timeout() default 60;
 
-    /**
-     * 时间单位，默认为 SECONDS 秒
-     */
-    TimeUnit timeUnit() default TimeUnit.SECONDS;
+ /**
+     * Time unit, default is SECONDS seconds
+ */
+ TimeUnit timeUnit() default TimeUnit.SECONDS;
 
-    // ========================== 签名参数 ==========================
+    // ========================== Signature parameters ==========================
 
-    /**
-     * 提示信息，签名失败的提示
-     *
-     * @see GlobalErrorCodeConstants#BAD_REQUEST
-     */
-    String message() default "签名不正确"; // 为空时，使用 BAD_REQUEST 错误提示
+ /**
+     * Prompt message, prompt for signature failure
+ *
+ * @see GlobalErrorCodeConstants#BAD_REQUEST
+ */
+    String message() default "Incorrect signature"; // When empty, use BAD_REQUEST error message
 
-    /**
-     * 签名字段：appId 应用ID
-     */
-    String appId() default "appId";
+ /**
+     * Signature field: appID application ID
+ */
+ String appId() default "appId";
 
-    /**
-     * 签名字段：timestamp 时间戳
-     */
-    String timestamp() default "timestamp";
+ /**
+     * Signature field: timestamp timestamp
+ */
+ String timestamp() default "timestamp";
 
-    /**
-     * 签名字段：nonce 随机数，10 位以上
-     */
-    String nonce() default "nonce";
+ /**
+     * Signature field: nonce random number, more than 10 digits
+ */
+ String nonce() default "nonce";
 
-    /**
-     * sign 客户端签名
-     */
-    String sign() default "sign";
+ /**
+     * sign client signature
+ */
+ String sign() default "sign";
 
 }

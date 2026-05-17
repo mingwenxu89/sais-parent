@@ -11,20 +11,20 @@ import lombok.NoArgsConstructor;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
-@Schema(description = "管理后台 - 取消社交绑定 Request VO")
+@Schema(description = "Management backend - Cancel social binding Request VO")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class SocialUserUnbindReqVO {
 
-    @Schema(description = "社交平台的类型，参见 UserSocialTypeEnum 枚举值", requiredMode = Schema.RequiredMode.REQUIRED, example = "10")
+    @Schema(description = "Type of social platform, see UserSocialTypeEnum enumeration value", requiredMode = Schema.RequiredMode.REQUIRED, example = "10")
     @InEnum(SocialTypeEnum.class)
-    @NotNull(message = "社交平台的类型不能为空")
+    @NotNull(message = "The type of social platform cannot be empty")
     private Integer type;
 
-    @Schema(description = "社交用户的 openid", requiredMode = Schema.RequiredMode.REQUIRED, example = "IPRmJ0wvBptiPIlGEZiPewGwiEiE")
-    @NotEmpty(message = "社交用户的 openid 不能为空")
+    @Schema(description = "openid of social user", requiredMode = Schema.RequiredMode.REQUIRED, example = "IPRmJ0wvBptiPIlGEZiPewGwiEiE")
+    @NotEmpty(message = "The openid of social users cannot be empty")
     private String openid;
 
 }

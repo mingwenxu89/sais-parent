@@ -3,24 +3,24 @@ package cn.iocoder.yudao.module.infra.websocket.message;
 import lombok.Data;
 
 /**
- * 示例：server -> client 同步消息
+ * Example: server -> client synchronization message
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Data
 public class DemoReceiveMessage {
 
     /**
-     * 接收人的编号
+     * Recipient's ID
      */
     private Long fromUserId;
     /**
-     * 内容
+     * content
      */
     private String text;
 
     /**
-     * 是否单聊
+     * Whether to chat alone
      */
     private Boolean single;
 

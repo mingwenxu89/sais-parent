@@ -18,7 +18,7 @@ import java.util.Properties;
 
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 
-@Tag(name = "管理后台 - Redis 监控")
+@Tag(name = "Management background - Redis monitoring")
 @RestController
 @RequestMapping("/infra/redis")
 public class RedisController {
@@ -27,16 +27,16 @@ public class RedisController {
     private StringRedisTemplate stringRedisTemplate;
 
     @GetMapping("/get-monitor-info")
-    @Operation(summary = "获得 Redis 监控信息")
+    @Operation(summary = "Get Redis monitoring information")
     @PreAuthorize("@ss.hasPermission('infra:redis:get-monitor-info')")
     public CommonResult<RedisMonitorRespVO> getRedisMonitorInfo() {
-        // 获得 Redis 统计信息
+        // Get Redis statistics
         Properties info = stringRedisTemplate.execute((RedisCallback<Properties>) RedisServerCommands::info);
         Long dbSize = stringRedisTemplate.execute(RedisServerCommands::dbSize);
         Properties commandStats = stringRedisTemplate.execute((
                 RedisCallback<Properties>) connection -> connection.serverCommands().info("commandstats"));
-        assert commandStats != null; // 断言，避免警告
-        // 拼接结果返回
+        assert commandStats != null; // Assert, avoid warnings
+        // The splicing result returns
         return success(RedisConvert.INSTANCE.build(info, dbSize, commandStats));
     }
 

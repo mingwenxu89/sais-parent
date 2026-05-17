@@ -1,6 +1,6 @@
 /**
- * Banner 用于在 console 控制台，打印开发文档、接口文档等
+ * Banner is used to print development documents, interface documents, etc. in the console console.
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 package cn.iocoder.yudao.framework.banner;

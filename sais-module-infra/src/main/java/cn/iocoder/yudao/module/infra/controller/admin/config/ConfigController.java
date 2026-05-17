@@ -29,7 +29,7 @@ import static cn.iocoder.yudao.framework.apilog.core.enums.OperateTypeEnum.EXPOR
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 
-@Tag(name = "管理后台 - 参数配置")
+@Tag(name = "Management background - parameter configuration")
 @RestController
 @RequestMapping("/infra/config")
 @Validated
@@ -39,14 +39,14 @@ public class ConfigController {
     private ConfigService configService;
 
     @PostMapping("/create")
-    @Operation(summary = "创建参数配置")
+    @Operation(summary = "Create parameter configuration")
     @PreAuthorize("@ss.hasPermission('infra:config:create')")
     public CommonResult<Long> createConfig(@Valid @RequestBody ConfigSaveReqVO createReqVO) {
         return success(configService.createConfig(createReqVO));
     }
 
     @PutMapping("/update")
-    @Operation(summary = "修改参数配置")
+    @Operation(summary = "Modify parameter configuration")
     @PreAuthorize("@ss.hasPermission('infra:config:update')")
     public CommonResult<Boolean> updateConfig(@Valid @RequestBody ConfigSaveReqVO updateReqVO) {
         configService.updateConfig(updateReqVO);
@@ -54,8 +54,8 @@ public class ConfigController {
     }
 
     @DeleteMapping("/delete")
-    @Operation(summary = "删除参数配置")
-    @Parameter(name = "id", description = "编号", required = true, example = "1024")
+    @Operation(summary = "Delete parameter configuration")
+    @Parameter(name = "id", description = "ID", required = true, example = "1024")
     @PreAuthorize("@ss.hasPermission('infra:config:delete')")
     public CommonResult<Boolean> deleteConfig(@RequestParam("id") Long id) {
         configService.deleteConfig(id);
@@ -63,8 +63,8 @@ public class ConfigController {
     }
 
     @DeleteMapping("/delete-list")
-    @Operation(summary = "批量删除参数配置")
-    @Parameter(name = "ids", description = "编号列表", required = true)
+    @Operation(summary = "Delete parameter configurations in batches")
+    @Parameter(name = "ids", description = "IDed list", required = true)
     @PreAuthorize("@ss.hasPermission('infra:config:delete')")
     public CommonResult<Boolean> deleteConfigList(@RequestParam("ids") List<Long> ids) {
         configService.deleteConfigList(ids);
@@ -72,16 +72,16 @@ public class ConfigController {
     }
 
     @GetMapping(value = "/get")
-    @Operation(summary = "获得参数配置")
-    @Parameter(name = "id", description = "编号", required = true, example = "1024")
+    @Operation(summary = "Get parameter configuration")
+    @Parameter(name = "id", description = "ID", required = true, example = "1024")
     @PreAuthorize("@ss.hasPermission('infra:config:query')")
     public CommonResult<ConfigRespVO> getConfig(@RequestParam("id") Long id) {
         return success(ConfigConvert.INSTANCE.convert(configService.getConfig(id)));
     }
 
     @GetMapping(value = "/get-value-by-key")
-    @Operation(summary = "根据参数键名查询参数值", description = "不可见的配置，不允许返回给前端")
-    @Parameter(name = "key", description = "参数键", required = true, example = "yunai.biz.username")
+    @Operation(summary = "Query parameter value based on parameter key name", description = "Invisible configuration is not allowed to be returned to the front end")
+    @Parameter(name = "key", description = "parameter key", required = true, example = "yunai.biz.username")
     public CommonResult<String> getConfigKey(@RequestParam("key") String key) {
         ConfigDO config = configService.getConfigByKey(key);
         if (config == null) {
@@ -94,7 +94,7 @@ public class ConfigController {
     }
 
     @GetMapping("/page")
-    @Operation(summary = "获取参数配置分页")
+    @Operation(summary = "Get parameter configuration page")
     @PreAuthorize("@ss.hasPermission('infra:config:query')")
     public CommonResult<PageResult<ConfigRespVO>> getConfigPage(@Valid ConfigPageReqVO pageReqVO) {
         PageResult<ConfigDO> page = configService.getConfigPage(pageReqVO);
@@ -102,15 +102,15 @@ public class ConfigController {
     }
 
     @GetMapping("/export-excel")
-    @Operation(summary = "导出参数配置")
+    @Operation(summary = "Export parameter configuration")
     @PreAuthorize("@ss.hasPermission('infra:config:export')")
     @ApiAccessLog(operateType = EXPORT)
     public void exportConfig(ConfigPageReqVO exportReqVO,
                              HttpServletResponse response) throws IOException {
         exportReqVO.setPageSize(PageParam.PAGE_SIZE_NONE);
         List<ConfigDO> list = configService.getConfigPage(exportReqVO).getList();
-        // 输出
-        ExcelUtils.write(response, "参数配置.xls", "数据", ConfigRespVO.class,
+        // output
+        ExcelUtils.write(response, "Parameter configuration.xls", "Data", ConfigRespVO.class,
                 ConfigConvert.INSTANCE.convertList(list));
     }
 

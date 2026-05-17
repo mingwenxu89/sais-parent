@@ -30,7 +30,7 @@ import static cn.iocoder.yudao.module.system.enums.ErrorCodeConstants.MAIL_TEMPL
 import static cn.iocoder.yudao.module.system.enums.ErrorCodeConstants.MAIL_TEMPLATE_NOT_EXISTS;
 
 /**
- * 邮箱模版 Service 实现类
+ * Email template Service implementation class
  *
  * @author wangjingyi
  * @since 2022-03-21
@@ -41,7 +41,7 @@ import static cn.iocoder.yudao.module.system.enums.ErrorCodeConstants.MAIL_TEMPL
 public class MailTemplateServiceImpl implements MailTemplateService {
 
     /**
-     * 正则表达式，匹配 {} 中的变量
+     * Regular expression to match variables in {}
      */
     private static final Pattern PATTERN_PARAMS = Pattern.compile("\\{(.*?)}");
 
@@ -50,10 +50,10 @@ public class MailTemplateServiceImpl implements MailTemplateService {
 
     @Override
     public Long createMailTemplate(MailTemplateSaveReqVO createReqVO) {
-        // 校验 code 是否唯一
+        // Verify whether the code is unique
         validateCodeUnique(null, createReqVO.getCode());
 
-        // 插入
+        // Insert
         MailTemplateDO template = BeanUtils.toBean(createReqVO, MailTemplateDO.class)
                 .setParams(parseTemplateTitleAndContentParams(createReqVO.getTitle(), createReqVO.getContent()));
         mailTemplateMapper.insert(template);
@@ -62,14 +62,14 @@ public class MailTemplateServiceImpl implements MailTemplateService {
 
     @Override
     @CacheEvict(cacheNames = RedisKeyConstants.MAIL_TEMPLATE,
-            allEntries = true) // allEntries 清空所有缓存，因为可能修改到 code 字段，不好清理
+            allEntries = true) // allEntries Clear all caches, because the code field may be modified and it is difficult to clean.
     public void updateMailTemplate(@Valid MailTemplateSaveReqVO updateReqVO) {
-        // 校验是否存在
+        // Check if it exists
         validateMailTemplateExists(updateReqVO.getId());
-        // 校验 code 是否唯一
+        // Verify whether the code is unique
         validateCodeUnique(updateReqVO.getId(),updateReqVO.getCode());
 
-        // 更新
+        // Update
         MailTemplateDO updateObj = BeanUtils.toBean(updateReqVO, MailTemplateDO.class)
                 .setParams(parseTemplateTitleAndContentParams(updateReqVO.getTitle(), updateReqVO.getContent()));
         mailTemplateMapper.updateById(updateObj);
@@ -81,27 +81,27 @@ public class MailTemplateServiceImpl implements MailTemplateService {
         if (template == null) {
             return;
         }
-        // 存在 template 记录的情况下
-        if (id == null // 新增时，说明重复
-                || ObjUtil.notEqual(id, template.getId())) { // 更新时，如果 id 不一致，说明重复
+        // When template record exists
+        if (id == null // When adding, the description is repeated
+                || ObjUtil.notEqual(id, template.getId())) { // When updating, if the ids are inconsistent, it means duplication
             throw exception(MAIL_TEMPLATE_CODE_EXISTS);
         }
     }
 
     @Override
     @CacheEvict(cacheNames = RedisKeyConstants.MAIL_TEMPLATE,
-            allEntries = true) // allEntries 清空所有缓存，因为 id 不是直接的缓存 code，不好清理
+            allEntries = true) // allEntries Clear all caches, because the id is not a direct cache code and is not easy to clean.
     public void deleteMailTemplate(Long id) {
-        // 校验是否存在
+        // Check if it exists
         validateMailTemplateExists(id);
 
-        // 删除
+        // Delete
         mailTemplateMapper.deleteById(id);
     }
 
     @Override
     @CacheEvict(cacheNames = RedisKeyConstants.MAIL_TEMPLATE,
-            allEntries = true) // allEntries 清空所有缓存，因为 id 不是直接的缓存 code，不好清理
+            allEntries = true) // allEntries Clear all caches, because the id is not a direct cache code and is not easy to clean.
     public void deleteMailTemplateList(List<Long> ids) {
         mailTemplateMapper.deleteByIds(ids);
     }
@@ -131,15 +131,15 @@ public class MailTemplateServiceImpl implements MailTemplateService {
 
     @Override
     public String formatMailTemplateContent(String content, Map<String, Object> params) {
-        // 1. 先替换模板变量
+        // 1. Replace template variables first
         String formattedContent = StrUtil.format(content, params);
 
-        // 关联 Pull Request：https://gitee.com/zhijiantianya/ruoyi-vue-pro/pulls/1461 讨论
-        // 2.1 反转义HTML特殊字符
+        // Related Pull Request: https://gitee.com/zhijiantianya/ruoyi-vue-pro/pulls/1461 Discussion
+        // 2.1 Anti-escape HTML special characters
         formattedContent = unescapeHtml(formattedContent);
-        // 2.2 处理代码块（确保<pre><code>标签格式正确）
+        // 2.2 Process code blocks (make sure the <pre><code> tags are in the correct format)
         formattedContent = formatHtmlCodeBlocks(formattedContent);
-        // 2.3 将最外层的 pre 标签替换为 div 标签
+        // 2.3 Replace the outermost pre tag with a div tag
         formattedContent = replaceOuterPreWithDiv(formattedContent);
         return formattedContent;
     }
@@ -148,15 +148,15 @@ public class MailTemplateServiceImpl implements MailTemplateService {
         if (StrUtil.isEmpty(content)) {
             return content;
         }
-        // 使用正则表达式匹配所有的 <pre> 标签，包括嵌套的 <code> 标签
+        // Use regular expressions to match all <pre> tags, including nested <code> tags
         String regex = "(?s)<pre[^>]*>(.*?)</pre>";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(content);
         StringBuffer sb = new StringBuffer();
         while (matcher.find()) {
-            // 提取 <pre> 标签内的内容
+            // Extract the content within the <pre> tag
             String innerContent = matcher.group(1);
-            // 返回 div 标签包裹的内容
+            // Returns the content wrapped by the div tag
             matcher.appendReplacement(sb, "<div>" + innerContent + "</div>");
         }
         matcher.appendTail(sb);
@@ -164,10 +164,10 @@ public class MailTemplateServiceImpl implements MailTemplateService {
     }
 
     /**
-     * 反转义 HTML 特殊字符
+     * Unescape HTML special characters
      *
-     * @param input 输入字符串
-     * @return 反转义后的字符串
+     * @param input input string
+     * @return Unescaped string
      */
     private String unescapeHtml(String input) {
         if (StrUtil.isEmpty(input)) {
@@ -183,20 +183,20 @@ public class MailTemplateServiceImpl implements MailTemplateService {
     }
 
     /**
-     * 格式化 HTML 中的代码块
+     * Format code blocks in HTML
      *
-     * @param content 邮件内容
-     * @return 格式化后的邮件内容
+     * @param content Email content
+     * @return Formatted email content
      */
     private String formatHtmlCodeBlocks(String content) {
-        // 匹配 <pre><code> 标签的代码块
+        // Code blocks matching <pre><code> tags
         Pattern codeBlockPattern = Pattern.compile("<pre\\s*.*?><code\\s*.*?>(.*?)</code></pre>", Pattern.DOTALL);
         Matcher matcher = codeBlockPattern.matcher(content);
         StringBuffer sb = new StringBuffer();
         while (matcher.find()) {
-            // 获取代码块内容
+            // Get code block content
             String codeBlock = matcher.group(1);
-            // 为代码块添加样式
+            // Add styles to code blocks
             String replacement = "<pre style=\"background-color: #f5f5f5; padding: 10px; border-radius: 5px; overflow-x: auto;\"><code>" + codeBlock + "</code></pre>";
             matcher.appendReplacement(sb, replacement);
         }
@@ -210,13 +210,13 @@ public class MailTemplateServiceImpl implements MailTemplateService {
     }
 
     /**
-     * 解析标题和内容中的参数
+     * Parse parameters in title and content
      */
     @VisibleForTesting
     public List<String> parseTemplateTitleAndContentParams(String title, String content) {
         List<String> titleParams = ReUtil.findAllGroup1(PATTERN_PARAMS, title);
         List<String> contentParams = ReUtil.findAllGroup1(PATTERN_PARAMS, content);
-        // 合并参数并去重
+        // mergeparametersand remove duplicates
         List<String> allParams = new ArrayList<>(titleParams);
         for (String param : contentParams) {
             if (!allParams.contains(param)) {
@@ -227,10 +227,10 @@ public class MailTemplateServiceImpl implements MailTemplateService {
     }
 
     /**
-     * 获得邮件模板中的参数，形如 {key}
+     * Get the parameters in the email template, in the form of {key}
      *
-     * @param content 内容
-     * @return 参数列表
+     * @param content Content
+     * @return Parameter list
      */
     List<String> parseTemplateContentParams(String content) {
         return ReUtil.findAllGroup1(PATTERN_PARAMS, content);

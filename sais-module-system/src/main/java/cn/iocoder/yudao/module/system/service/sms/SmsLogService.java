@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 /**
- * 短信日志 Service 接口
+ * SMS Log Service API
  *
  * @author zzf
  * @since 13:48 2021/3/2
@@ -17,60 +17,60 @@ import java.util.Map;
 public interface SmsLogService {
 
     /**
-     * 创建短信日志
+     * Create SMS log
      *
-     * @param mobile 手机号
-     * @param userId 用户编号
-     * @param userType 用户类型
-     * @param isSend 是否发送
-     * @param template 短信模板
-     * @param templateContent 短信内容
-     * @param templateParams 短信参数
-     * @return 发送日志编号
+     * @param mobile Mobile phone ID
+     * @param userId User ID
+     * @param userType User type
+     * @param isSend Whether to send
+     * @param template SMS template
+     * @param templateContent SMS content
+     * @param templateParams SMS parameters
+     * @return Send log ID
      */
     Long createSmsLog(String mobile, Long userId, Integer userType, Boolean isSend,
                       SmsTemplateDO template, String templateContent, Map<String, Object> templateParams);
 
     /**
-     * 更新日志的发送结果
+     * Update log sending results
      *
-     * @param id 日志编号
-     * @param success 发送是否成功
-     * @param apiSendCode 短信 API 发送结果的编码
-     * @param apiSendMsg 短信 API 发送失败的提示
-     * @param apiRequestId 短信 API 发送返回的唯一请求 ID
-     * @param apiSerialNo 短信 API 发送返回的序号
+     * @param id Log ID
+     * @param success Is the sending successful?
+     * @param apiSendCode Encoding of results sent by SMS API
+     * @param apiSendMsg SMS API sending failure prompt
+     * @param apiRequestId Unique request ID returned by SMS API send
+     * @param apiSerialNo Serial ID returned by SMS API sending
      */
     void updateSmsSendResult(Long id, Boolean success,
                              String apiSendCode, String apiSendMsg,
                              String apiRequestId, String apiSerialNo);
 
     /**
-     * 更新日志的接收结果
+     * Update log reception results
      *
-     * @param id 日志编号
-     * @param apiSerialNo 发送编号
-     * @param success 是否接收成功
-     * @param receiveTime 用户接收时间
-     * @param apiReceiveCode API 接收结果的编码
-     * @param apiReceiveMsg API 接收结果的说明
+     * @param id Log ID
+     * @param apiSerialNo Send ID
+     * @param success Whether the reception is successful
+     * @param receiveTime User reception time
+     * @param apiReceiveCode Encoding of API received results
+     * @param apiReceiveMsg Description of API receiving results
      */
     void updateSmsReceiveResult(Long id, String apiSerialNo, Boolean success,
                                 LocalDateTime receiveTime, String apiReceiveCode, String apiReceiveMsg);
 
     /**
-     * 获得短信日志
+     * Get SMS log
      *
-     * @param id 日志编号
-     * @return 短信日志
+     * @param id Log ID
+     * @return SMS log
      */
     SmsLogDO getSmsLog(Long id);
 
     /**
-     * 获得短信日志分页
+     * Get SMS log pagination
      *
-     * @param pageReqVO 分页查询
-     * @return 短信日志分页
+     * @param pageReqVO Page query
+     * @return SMS log paging
      */
     PageResult<SmsLogDO> getSmsLogPage(SmsLogPageReqVO pageReqVO);
 

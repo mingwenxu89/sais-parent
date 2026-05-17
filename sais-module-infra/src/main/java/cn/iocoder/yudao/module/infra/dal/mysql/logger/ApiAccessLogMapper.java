@@ -12,9 +12,9 @@ import org.apache.ibatis.annotations.Param;
 import java.time.LocalDateTime;
 
 /**
- * API 访问日志 Mapper
+ * API access log Mapper
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Mapper
 public interface ApiAccessLogMapper extends BaseMapperX<ApiAccessLogDO> {
@@ -33,11 +33,11 @@ public interface ApiAccessLogMapper extends BaseMapperX<ApiAccessLogDO> {
     }
 
     /**
-     * 物理删除指定时间之前的日志
+     * Physically delete logs before the specified time
      *
-     * @param createTime 最大时间
-     * @param limit      删除条数，防止一次删除太多
-     * @return 删除条数
+     * @param createTime maximum time
+     * @param limit      Delete the ID of items to prevent deleting too many items at one time
+     * @return ID of items deleted
      */
     @Delete("DELETE FROM infra_api_access_log WHERE create_time < #{createTime} LIMIT #{limit}")
     Integer deleteByCreateTimeLt(@Param("createTime") LocalDateTime createTime, @Param("limit") Integer limit);

@@ -23,9 +23,9 @@ import static cn.iocoder.yudao.module.infra.enums.ErrorCodeConstants.API_ERROR_L
 import static cn.iocoder.yudao.module.infra.enums.ErrorCodeConstants.API_ERROR_LOG_PROCESSED;
 
 /**
- * API 错误日志 Service 实现类
+ * API error log Service implementation class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Service
 @Validated
@@ -44,12 +44,12 @@ public class ApiErrorLogServiceImpl implements ApiErrorLogService {
             if (TenantContextHolder.getTenantId() != null) {
                 apiErrorLogMapper.insert(apiErrorLog);
             } else {
-                // 极端情况下，上下文中没有租户时，此时忽略租户上下文，避免插入失败！
+                // In extreme cases, when there is no tenant in the context, the tenant context is ignored at this time to avoid insertion failure!
                 TenantUtils.executeIgnore(() -> apiErrorLogMapper.insert(apiErrorLog));
             }
         } catch (Exception ex) {
-            // 兜底处理，目前只有 sar-cloud 会发生：https://gitee.com/yudaocode/sar-cloud-mini/issues/IC1O0A
-            log.error("[createApiErrorLog][记录时({}) 发生异常]", createDTO, ex);
+            // Cover-up processing, currently only occurs in sar-cloud: https://gitee.com/yudaocode/sar-cloud-mini/issues/IC1O0A
+            log.error("[createApiErrorLog][Exception occurred while logging ({})]", createDTO, ex);
         }
     }
 
@@ -72,7 +72,7 @@ public class ApiErrorLogServiceImpl implements ApiErrorLogService {
         if (!ApiErrorLogProcessStatusEnum.INIT.getStatus().equals(errorLog.getProcessStatus())) {
             throw exception(API_ERROR_LOG_PROCESSED);
         }
-        // 标记处理
+        // Mark processing
         apiErrorLogMapper.updateById(ApiErrorLogDO.builder().id(id).processStatus(processStatus)
                 .processUserId(processUserId).processTime(LocalDateTime.now()).build());
     }
@@ -82,11 +82,11 @@ public class ApiErrorLogServiceImpl implements ApiErrorLogService {
     public Integer cleanErrorLog(Integer exceedDay, Integer deleteLimit) {
         int count = 0;
         LocalDateTime expireDate = LocalDateTime.now().minusDays(exceedDay);
-        // 循环删除，直到没有满足条件的数据
+        // Delete in a loop until there is no data that meets the condition
         for (int i = 0; i < Short.MAX_VALUE; i++) {
             int deleteCount = apiErrorLogMapper.deleteByCreateTimeLt(expireDate, deleteLimit);
             count += deleteCount;
-            // 达到删除预期条数，说明到底了
+            // Reaching the expected ID of deletions means it’s over
             if (deleteCount < deleteLimit) {
                 break;
             }

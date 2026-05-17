@@ -1,4 +1,4 @@
 /**
- * 消息队列，基于 RabbitMQ 提供
+ * Message queue, provided based on RabbitMQ
  */
 package cn.iocoder.yudao.framework.mq.rabbitmq;

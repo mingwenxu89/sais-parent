@@ -5,16 +5,16 @@ import cn.iocoder.yudao.module.system.api.logger.dto.LoginLogCreateReqDTO;
 import jakarta.validation.Valid;
 
 /**
- * 登录日志的 API 接口
+ * Login log API API
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface LoginLogApi {
 
     /**
-     * 创建登录日志
+     * Create login log
      *
-     * @param reqDTO 日志信息
+     * @param reqDTO Log information
      */
     void createLoginLog(@Valid LoginLogCreateReqDTO reqDTO);
 

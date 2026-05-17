@@ -5,18 +5,18 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-@Schema(description = "管理后台 - 岗位分页 Request VO")
+@Schema(description = "Management backend - Job paging Request VO")
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class PostPageReqVO extends PageParam {
 
-    @Schema(description = "岗位编码，模糊匹配", example = "yudao")
+    @Schema(description = "Position coding, fuzzy matching", example = "yudao")
     private String code;
 
-    @Schema(description = "岗位名称，模糊匹配", example = "芋道")
+    @Schema(description = "Job title, fuzzy matching", example = "taro road")
     private String name;
 
-    @Schema(description = "展示状态，参见 CommonStatusEnum 枚举类", example = "1")
+    @Schema(description = "Display status, see CommonStatusEnum enumeration class", example = "1")
     private Integer status;
 
 }

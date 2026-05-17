@@ -1,4 +1,4 @@
 /**
- * 代码生成器
+ * code generator
  */
 package cn.iocoder.yudao.module.infra.framework.codegen;

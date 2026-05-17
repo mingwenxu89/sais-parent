@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 通知模板类型枚举
+ * Notification template type enum
  *
  * @author HUIHUI
  */
@@ -13,11 +13,11 @@ import lombok.Getter;
 public enum NotifyTemplateTypeEnum {
 
     /**
-     * 系统消息
+     * System messages
      */
     SYSTEM_MESSAGE(2),
     /**
-     * 通知消息
+     * notification message
      */
     NOTIFICATION_MESSAGE(1);
 

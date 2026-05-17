@@ -4,23 +4,23 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 登录日志的类型枚举
+ * Login log type enumeration
  */
 @Getter
 @AllArgsConstructor
 public enum LoginLogTypeEnum {
 
-    LOGIN_USERNAME(100), // 使用账号登录
-    LOGIN_SOCIAL(101), // 使用社交登录
-    LOGIN_MOBILE(103), // 使用手机登陆
-    LOGIN_SMS(104), // 使用短信登陆
+    LOGIN_USERNAME(100), // Log in with account
+    LOGIN_SOCIAL(101), // Use social login
+    LOGIN_MOBILE(103), // Log in using your mobile phone
+    LOGIN_SMS(104), // Login using SMS
 
-    LOGOUT_SELF(200),  // 自己主动登出
-    LOGOUT_DELETE(202), // 强制退出
+    LOGOUT_SELF(200),  // Log out on your own initiative
+    LOGOUT_DELETE(202), // force quit
     ;
 
     /**
-     * 日志类型
+     * Log type
      */
     private final Integer type;
 

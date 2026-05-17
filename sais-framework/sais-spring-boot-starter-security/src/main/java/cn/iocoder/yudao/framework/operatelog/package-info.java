@@ -1,6 +1,6 @@
 /**
- * 基于 mzt-log 框架
- * 实现操作日志功能
+ * Based on mzt-log framework
+ * Implement operation log function
  *
  * @author HUIHUI
  */

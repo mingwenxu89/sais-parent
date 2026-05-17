@@ -9,62 +9,62 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 /**
- * 参数配置 Service 接口
+ * Parameter configuration Service API
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface ConfigService {
 
     /**
-     * 创建参数配置
+     * Create parameter configuration
      *
-     * @param createReqVO 创建信息
-     * @return 配置编号
+     * @param createReqVO Create information
+     * @return Configuration ID
      */
     Long createConfig(@Valid ConfigSaveReqVO createReqVO);
 
     /**
-     * 更新参数配置
+     * Update parameter configuration
      *
-     * @param updateReqVO 更新信息
+     * @param updateReqVO Update information
      */
     void updateConfig(@Valid ConfigSaveReqVO updateReqVO);
 
     /**
-     * 删除参数配置
+     * Delete parameter configuration
      *
-     * @param id 配置编号
+     * @param id Configuration ID
      */
     void deleteConfig(Long id);
 
     /**
-     * 批量删除参数配置
+     * Delete parameter configurations in batches
      *
-     * @param ids 配置编号列表
+     * @param ids Configuration ID list
      */
     void deleteConfigList(List<Long> ids);
 
     /**
-     * 获得参数配置
+     * Get parameter configuration
      *
-     * @param id 配置编号
-     * @return 参数配置
+     * @param id Configuration ID
+     * @return Parameter configuration
      */
     ConfigDO getConfig(Long id);
 
     /**
-     * 根据参数键，获得参数配置
+     * According to the parameter key, obtain the parameter configuration
      *
-     * @param key 配置键
-     * @return 参数配置
+     * @param key configuration key
+     * @return Parameter configuration
      */
     ConfigDO getConfigByKey(String key);
 
     /**
-     * 获得参数配置分页列表
+     * Get the paginated list of parameter configurations
      *
-     * @param reqVO 分页条件
-     * @return 分页列表
+     * @param reqVO Paging conditions
+     * @return Paginated list
      */
     PageResult<ConfigDO> getConfigPage(ConfigPageReqVO reqVO);
 

@@ -37,9 +37,9 @@ import static cn.iocoder.yudao.framework.common.util.collection.CollectionUtils.
 import static cn.iocoder.yudao.framework.common.util.json.JsonUtils.toJsonString;
 
 /**
- * 权限 Service 实现类
+ * Permission Service implementation class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Service
 @Slf4j
@@ -61,48 +61,48 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public boolean hasAnyPermissions(Long userId, String... permissions) {
-        // 如果为空，说明已经有权限
+        // If it is empty, it means you already have permission.
         if (ArrayUtil.isEmpty(permissions)) {
             return true;
         }
 
-        // 获得当前登录的角色。如果为空，说明没有权限
+        // Get the currently logged in role. If it is empty, it means there is no permission
         List<RoleDO> roles = getEnableUserRoleListByUserIdFromCache(userId);
         if (CollUtil.isEmpty(roles)) {
             return false;
         }
 
-        // 情况一：遍历判断每个权限，如果有一满足，说明有权限
+        // Case 1: Traverse and judge each permission. If one of them is satisfied, it means you have permission.
         for (String permission : permissions) {
             if (hasAnyPermission(roles, permission)) {
                 return true;
             }
         }
 
-        // 情况二：如果是超管，也说明有权限
+        // Scenario 2: If it is over-administration, it also means that you have permission.
         return roleService.hasAnySuperAdmin(convertSet(roles, RoleDO::getId));
     }
 
     /**
-     * 判断指定角色，是否拥有该 permission 权限
+     * Determine whether the specified role has the permission permission
      *
-     * @param roles 指定角色数组
-     * @param permission 权限标识
-     * @return 是否拥有
+     * @param roles Specify role array
+     * @param permission Permission ID
+     * @return DO you have
      */
     private boolean hasAnyPermission(List<RoleDO> roles, String permission) {
         List<Long> menuIds = menuService.getMenuIdListByPermissionFromCache(permission);
-        // 采用严格模式，如果权限找不到对应的 Menu 的话，也认为没有权限
+        // Using strict mode, if the permission cannot find the corresponding Menu, it will be considered that there is no permission.
         if (CollUtil.isEmpty(menuIds)) {
             return false;
         }
 
-        // 判断是否有权限
+        // Determine whether there is permission
         Set<Long> roleIds = convertSet(roles, RoleDO::getId);
         for (Long menuId : menuIds) {
-            // 获得拥有该菜单的角色编号集合
+            // Get the collection of character IDs that own this menu
             Set<Long> menuRoleIds = getSelf().getMenuRoleIdListByMenuIdFromCache(menuId);
-            // 如果有交集，说明有权限
+            // If there is an intersection, it means you have permission.
             if (CollUtil.containsAny(menuRoleIds, roleIds)) {
                 return true;
             }
@@ -112,40 +112,40 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public boolean hasAnyRoles(Long userId, String... roles) {
-        // 如果为空，说明已经有权限
+        // If it is empty, it means you already have permission.
         if (ArrayUtil.isEmpty(roles)) {
             return true;
         }
 
-        // 获得当前登录的角色。如果为空，说明没有权限
+        // Get the currently logged in role. If it is empty, it means there is no permission
         List<RoleDO> roleList = getEnableUserRoleListByUserIdFromCache(userId);
         if (CollUtil.isEmpty(roleList)) {
             return false;
         }
 
-        // 判断是否有角色
+        // Determine if there is a role
         Set<String> userRoles = convertSet(roleList, RoleDO::getCode);
         return CollUtil.containsAny(userRoles, Sets.newHashSet(roles));
     }
 
-    // ========== 角色-菜单的相关方法  ==========
+    // ========== Role-menu related methods ==========
 
     @Override
-    @DSTransactional // 多数据源，使用 @DSTransactional 保证本地事务，以及数据源的切换
+    @DSTransactional // Multiple data sources, using @DSTransactional Ensure local transactions and data source switching
     @Caching(evict = {
             @CacheEvict(value = RedisKeyConstants.MENU_ROLE_ID_LIST,
             allEntries = true),
             @CacheEvict(value = RedisKeyConstants.PERMISSION_MENU_ID_LIST,
-            allEntries = true) // allEntries 清空所有缓存，主要一次更新涉及到的 menuIds 较多，反倒批量会更快
+            allEntries = true) // allEntries Clear all caches, mainly because one update involves more menuIds, but batching will be faster.
     })
     public void assignRoleMenu(Long roleId, Set<Long> menuIds) {
-        // 获得角色拥有菜单编号
+        // Get the character's menu ID
         Set<Long> dbMenuIds = convertSet(roleMenuMapper.selectListByRoleId(roleId), RoleMenuDO::getMenuId);
-        // 计算新增和删除的菜单编号
+        // Calculate new and deleted menu IDs
         Set<Long> menuIdList = CollUtil.emptyIfNull(menuIds);
         Collection<Long> createMenuIds = CollUtil.subtract(menuIdList, dbMenuIds);
         Collection<Long> deleteMenuIds = CollUtil.subtract(dbMenuIds, menuIdList);
-        // 执行新增和删除。对于已经授权的菜单，不用做任何处理
+        // Perform additions and deletions. For menus that have been authorized, no processing is required.
         if (CollUtil.isNotEmpty(createMenuIds)) {
             roleMenuMapper.insertBatch(CollectionUtils.convertList(createMenuIds, menuId -> {
                 RoleMenuDO entity = new RoleMenuDO();
@@ -163,14 +163,14 @@ public class PermissionServiceImpl implements PermissionService {
     @Transactional(rollbackFor = Exception.class)
     @Caching(evict = {
             @CacheEvict(value = RedisKeyConstants.MENU_ROLE_ID_LIST,
-                    allEntries = true), // allEntries 清空所有缓存，此处无法方便获得 roleId 对应的 menu 缓存们
+                    allEntries = true), // allEntries Clear all caches. The menu caches corresponding to roleId cannot be easily obtained here.
             @CacheEvict(value = RedisKeyConstants.USER_ROLE_ID_LIST,
-                    allEntries = true) // allEntries 清空所有缓存，此处无法方便获得 roleId 对应的 user 缓存们
+                    allEntries = true) // allEntries Clear all caches. The user caches corresponding to roleId cannot be easily obtained here.
     })
     public void processRoleDeleted(Long roleId) {
-        // 标记删除 UserRole
+        // Mark Delete UserRole
         userRoleMapper.deleteListByRoleId(roleId);
-        // 标记删除 RoleMenu
+        // Mark Delete RoleMenu
         roleMenuMapper.deleteListByRoleId(roleId);
     }
 
@@ -186,11 +186,11 @@ public class PermissionServiceImpl implements PermissionService {
             return Collections.emptySet();
         }
 
-        // 如果是管理员的情况下，获取全部菜单编号
+        // If you are an administrator, get all menu IDs
         if (roleService.hasAnySuperAdmin(roleIds)) {
             return convertSet(menuService.getMenuList(), MenuDO::getId);
         }
-        // 如果是非管理员的情况下，获得拥有的菜单编号
+        // If you are a non-administrator, get the menu ID you own.
         return convertSet(roleMenuMapper.selectListByRoleId(roleIds), RoleMenuDO::getMenuId);
     }
 
@@ -200,20 +200,20 @@ public class PermissionServiceImpl implements PermissionService {
         return convertSet(roleMenuMapper.selectListByMenuId(menuId), RoleMenuDO::getRoleId);
     }
 
-    // ========== 用户-角色的相关方法  ==========
+    // ========== User-role related methods ==========
 
     @Override
-    @DSTransactional // 多数据源，使用 @DSTransactional 保证本地事务，以及数据源的切换
+    @DSTransactional // Multiple data sources, using @DSTransactional Ensure local transactions and data source switching
     @CacheEvict(value = RedisKeyConstants.USER_ROLE_ID_LIST, key = "#userId")
     public void assignUserRole(Long userId, Set<Long> roleIds) {
-        // 获得角色拥有角色编号
+        // Get the role ID owned by the character
         Set<Long> dbRoleIds = convertSet(userRoleMapper.selectListByUserId(userId),
                 UserRoleDO::getRoleId);
-        // 计算新增和删除的角色编号
+        // Calculate newly added and deleted role IDs
         Set<Long> roleIdList = CollUtil.emptyIfNull(roleIds);
         Collection<Long> createRoleIds = CollUtil.subtract(roleIdList, dbRoleIds);
         Collection<Long> deleteMenuIds = CollUtil.subtract(dbRoleIds, roleIdList);
-        // 执行新增和删除。对于已经授权的角色，不用做任何处理
+        // Perform additions and deletions. For already authorized roles, no processing is required.
         if (!CollectionUtil.isEmpty(createRoleIds)) {
             userRoleMapper.insertBatch(CollectionUtils.convertList(createRoleIds, roleId -> {
                 UserRoleDO entity = new UserRoleDO();
@@ -250,22 +250,22 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     /**
-     * 获得用户拥有的角色，并且这些角色是开启状态的
+     * Get the roles owned by the user and these roles are enabled
      *
-     * @param userId 用户编号
-     * @return 用户拥有的角色
+     * @param userId User ID
+     * @return Roles owned by the user
      */
     @VisibleForTesting
     List<RoleDO> getEnableUserRoleListByUserIdFromCache(Long userId) {
-        // 获得用户拥有的角色编号
+        // Get the role ID owned by the user
         Set<Long> roleIds = getSelf().getUserRoleIdListByUserIdFromCache(userId);
-        // 获得角色数组，并移除被禁用的
+        // Get the role array and remove the disabled ones
         List<RoleDO> roles = roleService.getRoleListFromCache(roleIds);
         roles.removeIf(role -> !CommonStatusEnum.ENABLE.getStatus().equals(role.getStatus()));
         return roles;
     }
 
-    // ========== 用户-部门的相关方法  ==========
+    // ========== User-department related methods ==========
 
     @Override
     public void assignRoleDataScope(Long roleId, Integer dataScope, Set<Long> dataScopeDeptIds) {
@@ -273,66 +273,66 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    @DataPermission(enable = false) // 关闭数据权限，不然就会出现递归获取数据权限的问题
+    @DataPermission(enable = false) // Turn off data permissions, otherwise there will be problems with recursively obtaining data permissions.
     public DeptDataPermissionRespDTO getDeptDataPermission(Long userId) {
-        // 获得用户的角色
+        // Get user's role
         List<RoleDO> roles = getEnableUserRoleListByUserIdFromCache(userId);
 
-        // 如果角色为空，则只能查看自己
+        // If the role is empty, you can only view yourself
         DeptDataPermissionRespDTO result = new DeptDataPermissionRespDTO();
         if (CollUtil.isEmpty(roles)) {
             result.setSelf(true);
             return result;
         }
 
-        // 获得用户的部门编号的缓存，通过 Guava 的 Suppliers 惰性求值，即有且仅有第一次发起 DB 的查询
+        // Obtain the cache of the user's department ID through lazy evaluation of Guava's Suppliers, that is, there is and is only the first time the DB query is initiated.
         Supplier<Long> userDeptId = Suppliers.memoize(() -> userService.getUser(userId).getDeptId());
-        // 遍历每个角色，计算
+        // Iterate through each role and calculate
         for (RoleDO role : roles) {
-            // 为空时，跳过
+            // When empty, skip
             if (role.getDataScope() == null) {
                 continue;
             }
-            // 情况一，ALL
+            // Situation 1, ALL
             if (Objects.equals(role.getDataScope(), DataScopeEnum.ALL.getScope())) {
                 result.setAll(true);
                 continue;
             }
-            // 情况二，DEPT_CUSTOM
+            // Case 2, DEPT_CUSTOM
             if (Objects.equals(role.getDataScope(), DataScopeEnum.DEPT_CUSTOM.getScope())) {
                 CollUtil.addAll(result.getDeptIds(), role.getDataScopeDeptIds());
-                // 自定义可见部门时，保证可以看到自己所在的部门。否则，一些场景下可能会有问题。
-                // 例如说，登录时，基于 t_user 的 username 查询会可能被 dept_id 过滤掉
+                // When customizing visible departments, you are guaranteed to be able to see the department you are in. Otherwise, there may be problems in some scenarios.
+                // For example, when logging in, the username query based on t_user may be filtered out by dept_id
                 CollUtil.addAll(result.getDeptIds(), userDeptId.get());
                 continue;
             }
-            // 情况三，DEPT_ONLY
+            // Case three, DEPT_ONLY
             if (Objects.equals(role.getDataScope(), DataScopeEnum.DEPT_ONLY.getScope())) {
                 CollectionUtils.addIfNotNull(result.getDeptIds(), userDeptId.get());
                 continue;
             }
-            // 情况四，DEPT_DEPT_AND_CHILD
+            // Case 4, DEPT_DEPT_AND_CHILD
             if (Objects.equals(role.getDataScope(), DataScopeEnum.DEPT_AND_CHILD.getScope())) {
                 CollUtil.addAll(result.getDeptIds(), deptService.getChildDeptIdListFromCache(userDeptId.get()));
-                // 添加本身部门编号
+                // Add own department ID
                 CollUtil.addAll(result.getDeptIds(), userDeptId.get());
                 continue;
             }
-            // 情况五，SELF
+            // Situation five, SELF
             if (Objects.equals(role.getDataScope(), DataScopeEnum.SELF.getScope())) {
                 result.setSelf(true);
                 continue;
             }
-            // 未知情况，error log 即可
-            log.error("[getDeptDataPermission][LoginUser({}) role({}) 无法处理]", userId, toJsonString(result));
+            // Unknown situation, error log can be
+            log.error("[getDeptDataPermission][LoginUser({}) role({}) cannot be processed]", userId, toJsonString(result));
         }
         return result;
     }
 
     /**
-     * 获得自身的代理对象，解决 AOP 生效问题
+     * Obtain its own proxy object to solve the problem of AOP taking effect
      *
-     * @return 自己
+     * @return myself
      */
     private PermissionServiceImpl getSelf() {
         return SpringUtil.getBean(getClass());

@@ -10,71 +10,71 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 站内信模版 Service 接口
+ * Site message template Service API
  *
  * @author xrcoder
  */
 public interface NotifyTemplateService {
 
     /**
-     * 创建站内信模版
+     * Create an on-site letter template
      *
-     * @param createReqVO 创建信息
-     * @return 编号
+     * @param createReqVO Create information
+     * @return ID
      */
     Long createNotifyTemplate(@Valid NotifyTemplateSaveReqVO createReqVO);
 
     /**
-     * 更新站内信模版
+     * Update site letter template
      *
-     * @param updateReqVO 更新信息
+     * @param updateReqVO Update information
      */
     void updateNotifyTemplate(@Valid NotifyTemplateSaveReqVO updateReqVO);
 
     /**
-     * 删除站内信模版
+     * Delete site letter template
      *
-     * @param id 编号
+     * @param id ID
      */
     void deleteNotifyTemplate(Long id);
 
     /**
-     * 批量删除站内信模版
+     * Delete site letter templates in batches
      *
-     * @param ids 编号列表
+     * @param ids ID list
      */
     void deleteNotifyTemplateList(List<Long> ids);
 
     /**
-     * 获得站内信模版
+     * Get the on-site letter template
      *
-     * @param id 编号
-     * @return 站内信模版
+     * @param id ID
+     * @return Site letter template
      */
     NotifyTemplateDO getNotifyTemplate(Long id);
 
     /**
-     * 获得站内信模板，从缓存中
+     * Get the site letter template from the cache
      *
-     * @param code 模板编码
-     * @return 站内信模板
+     * @param code template encoding
+     * @return Site letter template
      */
     NotifyTemplateDO getNotifyTemplateByCodeFromCache(String code);
 
     /**
-     * 获得站内信模版分页
+     * Get site letter template pagination
      *
-     * @param pageReqVO 分页查询
-     * @return 站内信模版分页
+     * @param pageReqVO Page query
+     * @return Site letter template pagination
      */
     PageResult<NotifyTemplateDO> getNotifyTemplatePage(NotifyTemplatePageReqVO pageReqVO);
 
     /**
-     * 格式化站内信内容
+     * Format content of in-site messages
      *
-     * @param content 站内信模板的内容
-     * @param params 站内信内容的参数
-     * @return 格式化后的内容
+     * @param content Contents of site letter template
+     * @param params Parameters of site message content
+     * @return Formatted content
      */
     String formatNotifyTemplateContent(String content, Map<String, Object> params);
 

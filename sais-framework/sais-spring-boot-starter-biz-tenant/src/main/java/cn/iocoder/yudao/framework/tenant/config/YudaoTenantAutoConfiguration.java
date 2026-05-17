@@ -22,6 +22,7 @@ import cn.iocoder.yudao.framework.web.config.WebProperties;
 import cn.iocoder.yudao.framework.web.core.handler.GlobalExceptionHandler;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
+import jakarta.annotation.Resource;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -43,16 +44,12 @@ import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import org.springframework.web.util.pattern.PathPattern;
 
-import jakarta.annotation.Resource;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 import static cn.iocoder.yudao.framework.common.util.collection.CollectionUtils.convertList;
 
 @AutoConfiguration
-@ConditionalOnProperty(prefix = "yudao.tenant", value = "enable", matchIfMissing = true) // 允许使用 yudao.tenant.enable=false 禁用多租户
+@ConditionalOnProperty(prefix = "yudao.tenant", value = "enable", matchIfMissing = true) // Allow multi-tenancy to be disabled using yudao.tenant.enable=false
 @EnableConfigurationProperties(TenantProperties.class)
 public class YudaoTenantAutoConfiguration {
 
@@ -77,8 +74,8 @@ public class YudaoTenantAutoConfiguration {
     public TenantLineInnerInterceptor tenantLineInnerInterceptor(TenantProperties properties,
                                                                  MybatisPlusInterceptor interceptor) {
         TenantLineInnerInterceptor inner = new TenantLineInnerInterceptor(new TenantDatabaseInterceptor(properties));
-        // 添加到 interceptor 中
-        // 需要加在首个，主要是为了在分页插件前面。这个是 MyBatis Plus 的规定
+        // Add to interceptor
+        // It needs to be added first, mainly in front of the paging plug-in. This is the rule of MyBatis Plus
         MyBatisUtils.addInterceptor(interceptor, inner, 0);
         return inner;
     }
@@ -127,24 +124,24 @@ public class YudaoTenantAutoConfiguration {
     }
 
     /**
-     * 如果 Controller 接口上，有 {@link TenantIgnore} 注解，则添加到忽略租户的 URL 集合中
+     * If there is {@link TenantIgnore} annotation on the Controller API, it will be added to the URL collection of ignored tenants.
      *
-     * @return 忽略租户的 URL 集合
+     * @return Ignore tenant's URL collection
      */
     private Set<String> getTenantIgnoreUrls() {
         Set<String> ignoreUrls = new HashSet<>();
-        // 获得接口对应的 HandlerMethod 集合
+        // Get the HandlerMethod collection corresponding to the API
         RequestMappingHandlerMapping requestMappingHandlerMapping = (RequestMappingHandlerMapping)
                 applicationContext.getBean("requestMappingHandlerMapping");
         Map<RequestMappingInfo, HandlerMethod> handlerMethodMap = requestMappingHandlerMapping.getHandlerMethods();
-        // 获得有 @TenantIgnore 注解的接口
+        // Get the API annotated with @TenantIgnore
         for (Map.Entry<RequestMappingInfo, HandlerMethod> entry : handlerMethodMap.entrySet()) {
             HandlerMethod handlerMethod = entry.getValue();
-            if (!handlerMethod.hasMethodAnnotation(TenantIgnore.class) // 方法级
-                && !handlerMethod.getBeanType().isAnnotationPresent(TenantIgnore.class)) { // 接口级
+            if (!handlerMethod.hasMethodAnnotation(TenantIgnore.class) // method level
+                && !handlerMethod.getBeanType().isAnnotationPresent(TenantIgnore.class)) { // API level
                 continue;
             }
-            // 添加到忽略的 URL 中
+            // Add to ignored URLs
             if (entry.getKey().getPatternsCondition() != null) {
                 ignoreUrls.addAll(entry.getKey().getPatternsCondition().getPatterns());
             }
@@ -185,16 +182,16 @@ public class YudaoTenantAutoConfiguration {
     // ========== Redis ==========
 
     @Bean
-    @Primary // 引入租户时，tenantRedisCacheManager 为主 Bean
+    @Primary // When introducing a tenant, tenantRedisCacheManager is the main Bean
     public RedisCacheManager tenantRedisCacheManager(RedisTemplate<String, Object> redisTemplate,
                                                      RedisCacheConfiguration redisCacheConfiguration,
                                                      YudaoCacheProperties yudaoCacheProperties,
                                                      TenantProperties tenantProperties) {
-        // 创建 RedisCacheWriter 对象
+        // Create RedisCacheWriter object
         RedisConnectionFactory connectionFactory = Objects.requireNonNull(redisTemplate.getConnectionFactory());
         RedisCacheWriter cacheWriter = RedisCacheWriter.nonLockingRedisCacheWriter(connectionFactory,
                 BatchStrategies.scan(yudaoCacheProperties.getRedisScanBatchSize()));
-        // 创建 TenantRedisCacheManager 对象
+        // Create TenantRedisCacheManager object
         return new TenantRedisCacheManager(cacheWriter, redisCacheConfiguration, tenantProperties.getIgnoreCaches());
     }
 

@@ -10,39 +10,39 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-@Schema(description = "管理后台 - 角色创建/更新 Request VO")
+@Schema(description = "Management backend - role creation/update Request VO")
 @Data
 public class RoleSaveReqVO {
 
-    @Schema(description = "角色编号", example = "1")
+    @Schema(description = "role ID", example = "1")
     private Long id;
 
-    @Schema(description = "角色名称", requiredMode = Schema.RequiredMode.REQUIRED, example = "管理员")
-    @NotBlank(message = "角色名称不能为空")
-    @Size(max = 30, message = "角色名称长度不能超过 30 个字符")
-    @DiffLogField(name = "角色名称")
+    @Schema(description = "Character name", requiredMode = Schema.RequiredMode.REQUIRED, example = "Administrator")
+    @NotBlank(message = "Role name cannot be empty")
+    @Size(max = 30, message = "Role name cannot exceed 30 characters in length")
+    @DiffLogField(name = "Character name")
     private String name;
 
-    @NotBlank(message = "角色标志不能为空")
-    @Size(max = 100, message = "角色标志长度不能超过 100 个字符")
-    @Schema(description = "角色标志", requiredMode = Schema.RequiredMode.REQUIRED, example = "ADMIN")
-    @DiffLogField(name = "角色标志")
+    @NotBlank(message = "Role flag cannot be empty")
+    @Size(max = 100, message = "Character logo cannot exceed 100 characters in length")
+    @Schema(description = "character mark", requiredMode = Schema.RequiredMode.REQUIRED, example = "ADMIN")
+    @DiffLogField(name = "character mark")
     private String code;
 
-    @Schema(description = "显示顺序", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
-    @NotNull(message = "显示顺序不能为空")
-    @DiffLogField(name = "显示顺序")
+    @Schema(description = "Display order", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
+    @NotNull(message = "Display order cannot be empty")
+    @DiffLogField(name = "Display order")
     private Integer sort;
 
-    @Schema(description = "状态", requiredMode = Schema.RequiredMode.REQUIRED, example = "0")
-    @DiffLogField(name = "状态")
-    @NotNull(message = "状态不能为空")
-    @InEnum(value = CommonStatusEnum.class, message = "状态必须是 {value}")
+    @Schema(description = "Status", requiredMode = Schema.RequiredMode.REQUIRED, example = "0")
+    @DiffLogField(name = "Status")
+    @NotNull(message = "Status cannot be empty")
+    @InEnum(value = CommonStatusEnum.class, message = "status must be {value}")
     private Integer status;
 
-    @Schema(description = "备注", example = "我是一个角色")
-    @Size(max = 500, message = "备注长度不能超过 500 个字符")
-    @DiffLogField(name = "备注")
+    @Schema(description = "Remark", example = "i am a character")
+    @Size(max = 500, message = "Comment length cannot exceed 500 characters")
+    @DiffLogField(name = "Remark")
     private String remark;
 
 }

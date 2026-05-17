@@ -11,9 +11,9 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 /**
- * 取消绑定社交用户 Request DTO
+ * Unbind social user Request DTO
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Data
 @NoArgsConstructor
@@ -21,32 +21,32 @@ import jakarta.validation.constraints.NotNull;
 public class SocialUserBindReqDTO {
 
     /**
-     * 用户编号
+     * User ID
      */
-    @NotNull(message = "用户编号不能为空")
+    @NotNull(message = "User ID cannot be empty")
     private Long userId;
     /**
-     * 用户类型
+     * User type
      */
     @InEnum(UserTypeEnum.class)
-    @NotNull(message = "用户类型不能为空")
+    @NotNull(message = "User type cannot be empty")
     private Integer userType;
 
     /**
-     * 社交平台的类型
+     * Types of social platforms
      */
     @InEnum(SocialTypeEnum.class)
-    @NotNull(message = "社交平台的类型不能为空")
+    @NotNull(message = "The type of social platform cannot be empty")
     private Integer socialType;
     /**
-     * 授权码
+     * Authorization code
      */
-    @NotEmpty(message = "授权码不能为空")
+    @NotEmpty(message = "Authorization code cannot be empty")
     private String code;
     /**
      * state
      */
-    @NotNull(message = "state 不能为空")
+    @NotNull(message = "state cannot be empty")
     private String state;
 
 }

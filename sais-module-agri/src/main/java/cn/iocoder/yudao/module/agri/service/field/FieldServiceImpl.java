@@ -17,7 +17,6 @@ import org.springframework.validation.annotation.Validated;
 import jakarta.annotation.Resource;
 
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
-import static cn.iocoder.yudao.module.agri.enums.ErrorCodeConstants.FARM_NOT_EXISTS;
 import static cn.iocoder.yudao.module.agri.enums.ErrorCodeConstants.FIELD_NOT_EXISTS;
 
 @Service
@@ -33,6 +32,9 @@ public class FieldServiceImpl implements FieldService {
     @Override
     public Long createField(FieldSaveReqVO createReqVO) {
         Long farmId = getCurrentTenantFarmId();
+        if (farmId == null) {
+            return null;
+        }
         FieldDO fieldInfo = FieldConvert.INSTANCE.convert(createReqVO);
         fieldInfo.setFarmId(farmId);
         fieldMapper.insert(fieldInfo);
@@ -42,6 +44,9 @@ public class FieldServiceImpl implements FieldService {
     @Override
     public void updateField(FieldSaveReqVO updateReqVO) {
         Long farmId = getCurrentTenantFarmId();
+        if (farmId == null) {
+            return;
+        }
         FieldDO dbField = validateFieldExists(updateReqVO.getId());
         if (!farmId.equals(dbField.getFarmId())) {
             throw exception(FIELD_NOT_EXISTS);
@@ -54,6 +59,9 @@ public class FieldServiceImpl implements FieldService {
     @Override
     public void deleteField(Long id) {
         Long farmId = getCurrentTenantFarmId();
+        if (farmId == null) {
+            return;
+        }
         FieldDO dbField = validateFieldExists(id);
         if (!farmId.equals(dbField.getFarmId())) {
             throw exception(FIELD_NOT_EXISTS);
@@ -64,6 +72,9 @@ public class FieldServiceImpl implements FieldService {
     @Override
     public FieldDO getField(Long id) {
         Long farmId = getCurrentTenantFarmId();
+        if (farmId == null) {
+            return null;
+        }
         FieldDO fieldInfo = fieldMapper.selectById(id);
         if (fieldInfo == null || !farmId.equals(fieldInfo.getFarmId())) {
             throw exception(FIELD_NOT_EXISTS);
@@ -73,7 +84,11 @@ public class FieldServiceImpl implements FieldService {
 
     @Override
     public PageResult<FieldDO> getFieldPage(FieldPageReqVO pageReqVO) {
-        pageReqVO.setFarmId(getCurrentTenantFarmId());
+        Long farmId = getCurrentTenantFarmId();
+        if (farmId == null) {
+            return PageResult.empty();
+        }
+        pageReqVO.setFarmId(farmId);
         return fieldMapper.selectPage(pageReqVO);
     }
 
@@ -81,7 +96,7 @@ public class FieldServiceImpl implements FieldService {
         Long tenantId = TenantContextHolder.getRequiredTenantId();
         FarmDO farmInfo = farmMapper.selectOne(FarmDO::getTenantId, tenantId);
         if (farmInfo == null) {
-            throw exception(FARM_NOT_EXISTS);
+            return null;
         }
         return farmInfo.getId();
     }

@@ -5,20 +5,20 @@ import cn.hutool.extra.spring.SpringUtil;
 import java.util.Objects;
 
 /**
- * Spring 工具类
+ * Spring tool class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public class SpringUtils extends SpringUtil {
 
-    /**
-     * 是否为生产环境
-     *
-     * @return 是否生产环境
-     */
-    public static boolean isProd() {
-        String activeProfile = getActiveProfile();
-        return Objects.equals("prod", activeProfile);
-    }
+ /**
+     * Is it a production environment?
+ *
+     * @return Is it a production environment?
+ */
+ public static boolean isProd() {
+ String activeProfile = getActiveProfile();
+ return Objects.equals("prod", activeProfile);
+ }
 
 }

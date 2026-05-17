@@ -1,13 +1,12 @@
 package cn.iocoder.yudao.framework.common.biz.system.logger.dto;
 
 import cn.iocoder.yudao.framework.common.enums.UserTypeEnum;
-import lombok.Data;
-
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 
 /**
- * 系统操作日志 Create Request DTO
+ * System operation log Create Request DTO
  *
  * @author HUIHUI
  */
@@ -15,71 +14,71 @@ import jakarta.validation.constraints.NotNull;
 public class OperateLogCreateReqDTO {
 
     /**
-     * 链路追踪编号
+     * link tracking number
      *
-     * 一般来说，通过链路追踪编号，可以将访问日志，错误日志，链路追踪日志，logger 打印日志等，结合在一起，从而进行排错。
+     * Generally speaking, through the link tracking number, access logs, error logs, link tracking logs, logger print logs, etc. can be combined together for troubleshooting.
      */
     private String traceId;
     /**
-     * 用户编号
+     * User ID
      *
-     * 关联 MemberUserDO 的 id 属性，或者 AdminUserDO 的 id 属性
+     * Associate the ID attribute of MemberUserDO, or the ID attribute of AdminUserDO
      */
-    @NotNull(message = "用户编号不能为空")
+    @NotNull(message = "user ID cannot be empty")
     private Long userId;
     /**
-     * 用户类型
+     * User type
      *
-     * 关联 {@link  UserTypeEnum}
+     * Association {@link UserTypeEnum}
      */
-    @NotNull(message = "用户类型不能为空")
+    @NotNull(message = "user type cannot be empty")
     private Integer userType;
     /**
-     * 操作模块类型
+     * Operation module type
      */
-    @NotEmpty(message = "操作模块类型不能为空")
+    @NotEmpty(message = "operation module type cannot be empty")
     private String type;
     /**
-     * 操作名
+     * Operation name
      */
-    @NotEmpty(message = "操作名不能为空")
+    @NotEmpty(message = "operation name cannot be empty")
     private String subType;
     /**
-     * 操作模块业务编号
+     * Operation module business number
      */
-    @NotNull(message = "操作模块业务编号不能为空")
+    @NotNull(message = "the operation module business number cannot be empty.")
     private Long bizId;
     /**
-     * 操作内容，记录整个操作的明细
-     * 例如说，修改编号为 1 的用户信息，将性别从男改成女，将姓名从芋道改成源码。
+     * Operation content, record the details of the entire operation
+     * For example, modify the user information numbered 1, change the gender from male to female, and change the name from Yudao to Yuandao.
      */
-    @NotEmpty(message = "操作内容不能为空")
+    @NotEmpty(message = "the operation content cannot be empty")
     private String action;
     /**
-     * 拓展字段，有些复杂的业务，需要记录一些字段 ( JSON 格式 )
-     * 例如说，记录订单编号，{ orderId: "1"}
+     * Expand fields, some complex businesses need to record some fields (JSON format)
+     * For example, record the order number, { orderId: "1"}
      */
     private String extra;
 
     /**
-     * 请求方法名
+     * Request method name
      */
-    @NotEmpty(message = "请求方法名不能为空")
+    @NotEmpty(message = "the request method name cannot be empty")
     private String requestMethod;
     /**
-     * 请求地址
+     * Request address
      */
-    @NotEmpty(message = "请求地址不能为空")
+    @NotEmpty(message = "the request address cannot be empty")
     private String requestUrl;
     /**
-     * 用户 IP
+     * User IP
      */
-    @NotEmpty(message = "用户 IP 不能为空")
+    @NotEmpty(message = "user IP cannot be empty")
     private String userIp;
     /**
-     * 浏览器 UA
+     * Browser UA
      */
-    @NotEmpty(message = "浏览器 UA 不能为空")
+    @NotEmpty(message = "browser UA cannot be empty")
     private String userAgent;
 
 }

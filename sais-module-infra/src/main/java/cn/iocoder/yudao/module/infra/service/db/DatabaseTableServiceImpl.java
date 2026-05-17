@@ -20,9 +20,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * 数据库表 Service 实现类
+ * Database table Service implementation class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Service
 public class DatabaseTableServiceImpl implements DatabaseTableService {
@@ -44,31 +44,31 @@ public class DatabaseTableServiceImpl implements DatabaseTableService {
     }
 
     private List<TableInfo> getTableList0(Long dataSourceConfigId, String name) {
-        // 获得数据源配置
+        // Get data source configuration
         DataSourceConfigDO config = dataSourceConfigService.getDataSourceConfig(dataSourceConfigId);
-        Assert.notNull(config, "数据源({}) 不存在！", dataSourceConfigId);
+        Assert.notNull(config, "Data source ({}) does not exist!", dataSourceConfigId);
 
-        // 使用 MyBatis Plus Generator 解析表结构
+        // Use MyBatis Plus Generator to parse table structure
         DataSourceConfig.Builder dataSourceConfigBuilder = new DataSourceConfig.Builder(config.getUrl(), config.getUsername(),
                 config.getPassword());
-        if (JdbcUtils.isSQLServer(config.getUrl())) { // 特殊：SQLServer jdbc 非标准，参见 https://github.com/baomidou/mybatis-plus/issues/5419
+        if (JdbcUtils.isSQLServer(config.getUrl())) { // Special: SQLServer jdbc is non-standard, see https://github.com/baomidou/mybatis-plus/issues/5419
             dataSourceConfigBuilder.databaseQueryClass(SQLQuery.class);
         }
-        StrategyConfig.Builder strategyConfig = new StrategyConfig.Builder().enableSkipView(); // 忽略视图，业务上一般用不到
+        StrategyConfig.Builder strategyConfig = new StrategyConfig.Builder().enableSkipView(); // Ignore the view, it is generally not used in business
         if (StrUtil.isNotEmpty(name)) {
             strategyConfig.addInclude(name);
         } else {
-            // 移除工作流和定时任务前缀的表名
+            // Remove table names from workflow and scheduled task prefixes
             strategyConfig.addExclude("ACT_[\\S\\s]+|QRTZ_[\\S\\s]+|FLW_[\\S\\s]+|act_[\\S\\s]+|qrtz_[\\S\\s]+|flw_[\\S\\s]+");
-            // 移除 ORACLE 相关的系统表
+            // Remove Oracle related system tables
             strategyConfig.addExclude("IMPDP_[\\S\\s]+|ALL_[\\S\\s]+|HS_[\\S\\s]+|impdp_[\\S\\s]+|all_[\\S\\s]+|hs_[\\S\\s]+");
-            strategyConfig.addExclude("[\\S\\s]+\\$[\\S\\s]+|[\\S\\s]+\\$"); // 表里不能有 $，一般有都是系统的表
+            strategyConfig.addExclude("[\\S\\s]+\\$[\\S\\s]+|[\\S\\s]+\\$"); // There cannot be $ in the table. Generally, it is a system table.
         }
 
-        GlobalConfig globalConfig = new GlobalConfig.Builder().dateType(DateType.TIME_PACK).build(); // 只使用 LocalDateTime 类型，不使用 LocalDate
+        GlobalConfig globalConfig = new GlobalConfig.Builder().dateType(DateType.TIME_PACK).build(); // Only use LocalDateTime type, not LocalDate
         ConfigBuilder builder = new ConfigBuilder(null, dataSourceConfigBuilder.build(), strategyConfig.build(),
                 null, globalConfig, null);
-        // 按照名字排序
+        // Sort by name
         List<TableInfo> tables = builder.getTableInfoList();
         tables.sort(Comparator.comparing(TableInfo::getName));
         return tables;

@@ -9,9 +9,9 @@ import org.springframework.validation.annotation.Validated;
 import jakarta.annotation.Resource;
 
 /**
- * API 访问日志的 API 实现类
+ * API implementation class for API access log
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Service
 @Validated

@@ -10,87 +10,87 @@ import lombok.Data;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
 
-@Schema(description = "管理后台 - 代码生成表定义创建/修改 Response VO")
+@Schema(description = "Management background - code generation table definition creation/modification Response VO")
 @Data
 public class CodegenTableSaveReqVO {
 
-    @Schema(description = "编号", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
+    @Schema(description = "ID", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
     private Long id;
 
-    @Schema(description = "生成场景，参见 CodegenSceneEnum 枚举", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
-    @NotNull(message = "导入类型不能为空")
+    @Schema(description = "Generate scenes, see CodegenSceneEnum enumeration", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
+    @NotNull(message = "Import type cannot be empty")
     private Integer scene;
 
-    @Schema(description = "表名称", requiredMode = Schema.RequiredMode.REQUIRED, example = "yudao")
-    @NotNull(message = "表名称不能为空")
+    @Schema(description = "table name", requiredMode = Schema.RequiredMode.REQUIRED, example = "yudao")
+    @NotNull(message = "Table name cannot be empty")
     private String tableName;
 
-    @Schema(description = "表描述", requiredMode = Schema.RequiredMode.REQUIRED, example = "芋道")
-    @NotNull(message = "表描述不能为空")
+    @Schema(description = "Table description", requiredMode = Schema.RequiredMode.REQUIRED, example = "taro road")
+    @NotNull(message = "Table description cannot be empty")
     private String tableComment;
 
-    @Schema(description = "备注", example = "我是备注")
+    @Schema(description = "Remark", example = "I am a note")
     private String remark;
 
-    @Schema(description = "模块名", requiredMode = Schema.RequiredMode.REQUIRED, example = "system")
-    @NotNull(message = "模块名不能为空")
+    @Schema(description = "module name", requiredMode = Schema.RequiredMode.REQUIRED, example = "system")
+    @NotNull(message = "Module name cannot be empty")
     private String moduleName;
 
-    @Schema(description = "业务名", requiredMode = Schema.RequiredMode.REQUIRED, example = "codegen")
-    @NotNull(message = "业务名不能为空")
+    @Schema(description = "Business name", requiredMode = Schema.RequiredMode.REQUIRED, example = "codegen")
+    @NotNull(message = "Business name cannot be empty")
     private String businessName;
 
-    @Schema(description = "类名称", requiredMode = Schema.RequiredMode.REQUIRED, example = "CodegenTable")
-    @NotNull(message = "类名称不能为空")
+    @Schema(description = "class name", requiredMode = Schema.RequiredMode.REQUIRED, example = "CodegenTable")
+    @NotNull(message = "Class name cannot be empty")
     private String className;
 
-    @Schema(description = "类描述", requiredMode = Schema.RequiredMode.REQUIRED, example = "代码生成器的表定义")
-    @NotNull(message = "类描述不能为空")
+    @Schema(description = "Class description", requiredMode = Schema.RequiredMode.REQUIRED, example = "Table definition for code generator")
+    @NotNull(message = "Class description cannot be empty")
     private String classComment;
 
-    @Schema(description = "作者", requiredMode = Schema.RequiredMode.REQUIRED, example = "芋道源码")
-    @NotNull(message = "作者不能为空")
+    @Schema(description = "Author", requiredMode = Schema.RequiredMode.REQUIRED, example = "Yudao Source Code")
+    @NotNull(message = "Author cannot be empty")
     private String author;
 
-    @Schema(description = "模板类型，参见 CodegenTemplateTypeEnum 枚举", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
-    @NotNull(message = "模板类型不能为空")
+    @Schema(description = "Template type, see CodegenTemplateTypeEnum enumeration", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
+    @NotNull(message = "Template type cannot be empty")
     private Integer templateType;
 
-    @Schema(description = "前端类型，参见 CodegenFrontTypeEnum 枚举", requiredMode = Schema.RequiredMode.REQUIRED, example = "20")
-    @NotNull(message = "前端类型不能为空")
+    @Schema(description = "Front-end type, see CodegenFrontTypeEnum enumeration", requiredMode = Schema.RequiredMode.REQUIRED, example = "20")
+    @NotNull(message = "Frontend type cannot be empty")
     private Integer frontType;
 
-    @Schema(description = "父菜单编号", example = "1024")
+    @Schema(description = "Parent menu ID", example = "1024")
     private Long parentMenuId;
 
-    @Schema(description = "主表的编号", example = "2048")
+    @Schema(description = "Main table ID", example = "2048")
     private Long masterTableId;
-    @Schema(description = "子表关联主表的字段编号", example = "4096")
+    @Schema(description = "The field ID of the main table associated with the subtable", example = "4096")
     private Long subJoinColumnId;
-    @Schema(description = "主表与子表是否一对多", example = "4096")
+    @Schema(description = "Whether the main table and sub-table are one-to-many", example = "4096")
     private Boolean subJoinMany;
 
-    @Schema(description = "树表的父字段编号", example = "8192")
+    @Schema(description = "The parent field ID of the tree table", example = "8192")
     private Long treeParentColumnId;
-    @Schema(description = "树表的名字字段编号", example = "16384")
+    @Schema(description = "The name field ID of the tree table", example = "16384")
     private Long treeNameColumnId;
 
-    @AssertTrue(message = "上级菜单不能为空，请前往 [修改生成配置 -> 生成信息] 界面，设置“上级菜单”字段")
+    @AssertTrue(message = "The upper-level menu cannot be empty, please go to the [Modify generation configuration -> Generation information] API and set the upper-level menu")
     @JsonIgnore
     public boolean isParentMenuIdValid() {
-        // 生成场景为管理后台时，必须设置上级菜单，不然生成的菜单 SQL 是无父级菜单的
+        // When the generated scene is the management background, the upper-level menu must be set, otherwise the generated menu SQL will have no parent menu.
         return ObjectUtil.notEqual(getScene(), CodegenSceneEnum.ADMIN.getScene())
                 || getParentMenuId() != null;
     }
 
-    @AssertTrue(message = "关联的父表信息不全")
+    @AssertTrue(message = "The associated parent table information is incomplete")
     @JsonIgnore
     public boolean isSubValid() {
         return ObjectUtil.notEqual(getTemplateType(), CodegenTemplateTypeEnum.SUB)
                 || (ObjectUtil.isAllNotEmpty(masterTableId, subJoinColumnId, subJoinMany));
     }
 
-    @AssertTrue(message = "关联的树表信息不全")
+    @AssertTrue(message = "The associated tree table information is incomplete")
     @JsonIgnore
     public boolean isTreeValid() {
         return ObjectUtil.notEqual(templateType, CodegenTemplateTypeEnum.TREE)

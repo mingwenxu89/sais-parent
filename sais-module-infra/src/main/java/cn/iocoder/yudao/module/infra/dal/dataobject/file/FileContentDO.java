@@ -9,14 +9,14 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
 /**
- * 文件内容表
+ * File content table
  *
- * 专门用于存储 {@link DBFileClient} 的文件内容
+ * Specifically used to store the file contents of {@link DBFileClient}
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @TableName("infra_file_content")
-@KeySequence("infra_file_content_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
+@KeySequence("infra_file_content_seq") // Primary key auto-increment for Oracle, PostgreSQL, Kingbase, DB2, H2 databases. If it is a database such as MySQL, you DO not need to write it.
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
@@ -27,22 +27,22 @@ import lombok.*;
 public class FileContentDO extends BaseDO {
 
     /**
-     * 编号，数据库自增
+     * ID, automatically incremented by the database
      */
     @TableId
     private Long id;
     /**
-     * 配置编号
+     * Configuration ID
      *
-     * 关联 {@link FileConfigDO#getId()}
+     * Association {@link FileConfigDO#getId()}
      */
     private Long configId;
     /**
-     * 路径，即文件名
+     * path, i.e. file name
      */
     private String path;
     /**
-     * 文件内容
+     * File content
      */
     private byte[] content;
 

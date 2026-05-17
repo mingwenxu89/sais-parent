@@ -29,7 +29,7 @@ import java.util.List;
 import static cn.iocoder.yudao.framework.apilog.core.enums.OperateTypeEnum.EXPORT;
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 
-@Tag(name = "管理后台 - API 访问日志")
+@Tag(name = "Management backend - API access log")
 @RestController
 @RequestMapping("/infra/api-access-log")
 @Validated
@@ -39,8 +39,8 @@ public class ApiAccessLogController {
     private ApiAccessLogService apiAccessLogService;
 
     @GetMapping("/get")
-    @Operation(summary = "获得 API 访问日志")
-    @Parameter(name = "id", description = "编号", required = true, example = "1024")
+    @Operation(summary = "Get API access logs")
+    @Parameter(name = "id", description = "ID", required = true, example = "1024")
     @PreAuthorize("@ss.hasPermission('infra:api-access-log:query')")
     public CommonResult<ApiAccessLogRespVO> getApiAccessLog(@RequestParam("id") Long id) {
         ApiAccessLogDO apiAccessLog = apiAccessLogService.getApiAccessLog(id);
@@ -48,7 +48,7 @@ public class ApiAccessLogController {
     }
 
     @GetMapping("/page")
-    @Operation(summary = "获得API 访问日志分页")
+    @Operation(summary = "Get API access log pagination")
     @PreAuthorize("@ss.hasPermission('infra:api-access-log:query')")
     public CommonResult<PageResult<ApiAccessLogRespVO>> getApiAccessLogPage(@Valid ApiAccessLogPageReqVO pageReqVO) {
         PageResult<ApiAccessLogDO> pageResult = apiAccessLogService.getApiAccessLogPage(pageReqVO);
@@ -56,15 +56,15 @@ public class ApiAccessLogController {
     }
 
     @GetMapping("/export-excel")
-    @Operation(summary = "导出API 访问日志 Excel")
+    @Operation(summary = "Export API access log to Excel")
     @PreAuthorize("@ss.hasPermission('infra:api-access-log:export')")
     @ApiAccessLog(operateType = EXPORT)
     public void exportApiAccessLogExcel(@Valid ApiAccessLogPageReqVO exportReqVO,
                                         HttpServletResponse response) throws IOException {
         exportReqVO.setPageSize(PageParam.PAGE_SIZE_NONE);
         List<ApiAccessLogDO> list = apiAccessLogService.getApiAccessLogPage(exportReqVO).getList();
-        // 导出 Excel
-        ExcelUtils.write(response, "API 访问日志.xls", "数据", ApiAccessLogRespVO.class,
+        // Export to Excel
+        ExcelUtils.write(response, "API Access Log.xls", "Data", ApiAccessLogRespVO.class,
                 BeanUtils.toBean(list, ApiAccessLogRespVO.class));
     }
 

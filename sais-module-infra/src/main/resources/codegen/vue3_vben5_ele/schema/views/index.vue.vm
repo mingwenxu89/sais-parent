@@ -11,13 +11,13 @@ import { downloadFileFromBlobPart#if ($table.templateType != 2 && $deleteBatchEn
 import { ElLoading, ElMessage#if ($table.templateType == 11), ElTabs, ElTabPane#end } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-#if (${table.templateType} == 2)## 树表接口
+#if (${table.templateType} == 2)## tree table API
 import {
   delete${simpleClassName},
   export${simpleClassName},
   get${simpleClassName}List,
 } from '#/api/${table.moduleName}/${table.businessName}';
-#else## 标准表接口
+#else## Standard table API
 import {
   delete${simpleClassName},#if ($deleteBatchEnable)
 
@@ -30,7 +30,7 @@ import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
-## 特殊：主子表专属逻辑
+## Special: Exclusive logic for master and sub-tables
 #if ( $table.templateType == 11 || $table.templateType == 12 )
     #foreach ($subSimpleClassName in $subSimpleClassNames)
     #set ($index = $foreach.count - 1)
@@ -39,8 +39,8 @@ import ${subSimpleClassName}List from './modules/${subSimpleClassName_strikeCase
     #end
 #end
 
-#if ($table.templateType == 12 || $table.templateType == 11) ## 内嵌和erp情况
-/** 子表的列表 */
+#if ($table.templateType == 12 || $table.templateType == 11) ## Embedded and erp situations
+/** List of child tables */
 const subTabsName = ref('$subClassNameVars.get(0)')
 #if ($table.templateType == 11)
 const select${simpleClassName} = ref<${apiName}.${simpleClassName}>();
@@ -50,9 +50,9 @@ const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
   destroyOnClose: true,
 });
-#if (${table.templateType} == 2)## 树表特有：控制表格展开收缩
+#if (${table.templateType} == 2)## Unique to tree tables: control table expansion and contraction
 
-/** 切换树形展开/收缩状态 */
+/** Toggle tree expansion/collapse state */
 const isExpanded = ref(true);
 function handleExpand() {
   isExpanded.value = !isExpanded.value;
@@ -60,33 +60,33 @@ function handleExpand() {
 }
 #end
 
-/** 刷新表格 */
+/** Refresh table */
 function handleRefresh() {
-#if ($table.templateType == 12) ## 内嵌情况
+#if ($table.templateType == 12) ## Embedded situation
   gridApi.reload();
 #else
   gridApi.query();
 #end
 }
 
-/** 创建${table.classComment} */
+/** Create ${table.classComment} */
 function handleCreate() {
   formModalApi.setData(null).open();
 }
-#if (${table.templateType} == 2)## 树表特有：新增下级
+#if (${table.templateType} == 2)## Unique to tree tables: adding new subordinates
 
-/** 添加下级${table.classComment} */
+/** Add subordinate ${table.classComment} */
 function handleAppend(row: ${apiName}.${simpleClassName}) {
   formModalApi.setData({ ${treeParentColumn.javaField}: row.id }).open();
 }
 #end
 
-/** 编辑${table.classComment} */
+/** Edit${table.classComment} */
 function handleEdit(row: ${apiName}.${simpleClassName}) {
   formModalApi.setData(row).open();
 }
 
-/** 删除${table.classComment} */
+/** Delete ${table.classComment} */
 async function handleDelete(row: ${apiName}.${simpleClassName}) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.id]),
@@ -101,7 +101,7 @@ async function handleDelete(row: ${apiName}.${simpleClassName}) {
 }
 
 #if ($table.templateType != 2 && $deleteBatchEnable)
-/** 批量删除${table.classComment} */
+/** Batch delete ${table.classComment} */
 async function handleDeleteBatch() {
   await confirm($t('ui.actionMessage.deleteBatchConfirm'));
   const loadingInstance = ElLoading.service({
@@ -127,7 +127,7 @@ function handleRowCheckboxChange({
 }
 #end
 
-/** 导出表格 */
+/** Export table */
 async function handleExport() {
   const data = await export${simpleClassName}(await gridApi.formApi.getValues());
   downloadFileFromBlobPart({ fileName: '${table.classComment}.xls', source: data });
@@ -144,20 +144,20 @@ const [Grid, gridApi] = useVbenVxeGrid({
 #else
     height: 'auto',
 #end
-#if (${table.templateType} == 2)## 树表设置
+#if (${table.templateType} == 2)## Tree table settings
     pagerConfig: {
       enabled: false,
     },
-#else## 标准表设置
+#else## Standard table settings
     keepSource: true,
 #end
     proxyConfig: {
       ajax: {
-#if (${table.templateType} == 2)## 树表数据加载
+#if (${table.templateType} == 2)## Tree table data loading
         query: async (_, formValues) => {
           return await get${simpleClassName}List(formValues);
         },
-#else## 标准表数据加载
+#else## Standard table data loading
         query: async ({ page }, formValues) => {
           return await get${simpleClassName}Page({
             pageNo: page.currentPage,
@@ -179,7 +179,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-#if (${table.templateType} == 2)## 树表设置
+#if (${table.templateType} == 2)## Tree table settings
     treeConfig: {
       parentField: '${treeParentColumn.javaField}',
       rowField: 'id',
@@ -208,13 +208,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
 <template>
   <Page auto-content-height>
     <FormModal @success="handleRefresh" />
-#if ($table.templateType == 11) ## erp情况
+#if ($table.templateType == 11) ## erpsituation
   <div>
 #end
-    <Grid table-title="${table.classComment}列表">
-        #if ($table.templateType == 12) ## 内嵌情况
+    <Grid table-title="${table.classComment} list">
+        #if ($table.templateType == 12) ## Embedded situation
           <template #expand_content="{ row }">
-            <!-- 子表的表单 -->
+            <!-- Form of subtable -->
             <ElTabs v-model="subTabsName" class="mx-8">
                 #foreach ($subTable in $subTables)
                     #set ($index = $foreach.count - 1)
@@ -238,9 +238,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
               auth: ['${table.moduleName}:${simpleClassName_strikeCase}:create'],
               onClick: handleCreate,
             },
-            #if (${table.templateType} == 2)## 树表特有：展开/收缩按钮
+            #if (${table.templateType} == 2)## Unique to tree tables: expand/collapse buttons
             {
-              label: isExpanded ? '收缩' : '展开',
+              label: isExpanded ? 'shrink' : 'Expand',
               type: 'primary',
               onClick: handleExpand,
             },
@@ -268,9 +268,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <template #actions="{ row }">
         <TableAction
           :actions="[
-            #if (${table.templateType} == 2)## 树表特有：新增下级
+            #if (${table.templateType} == 2)## Unique to tree tables: adding new subordinates
             {
-              label: '新增下级',
+              label: 'Add subordinate',
               type: 'primary',
               link: true,
               icon: ACTION_ICON.ADD,
@@ -301,8 +301,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
         />
       </template>
     </Grid>
-#if ($table.templateType == 11) ## erp情况
-    <!-- 子表的表单 -->
+#if ($table.templateType == 11) ## erpsituation
+    <!-- Form of subtable -->
     <ElTabs v-model="subTabsName" class="mt-2">
         #foreach ($subTable in $subTables)
             #set ($index = $foreach.count - 1)

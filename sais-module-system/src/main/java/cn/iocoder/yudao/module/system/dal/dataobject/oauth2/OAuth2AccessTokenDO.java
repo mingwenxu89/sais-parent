@@ -15,60 +15,60 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * OAuth2 访问令牌 DO
+ * OAuth2 access token DO
  *
- * 如下字段，暂时未使用，暂时不支持：
- * user_name、authentication（用户信息）
+ * The following fields are currently unused and not supported:
+ * user_name, authentication (user information)
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @TableName(value = "system_oauth2_access_token", autoResultMap = true)
-@KeySequence("system_oauth2_access_token_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
+@KeySequence("system_oauth2_access_token_seq") // Primary key auto-increment for Oracle, PostgreSQL, Kingbase, DB2, H2 databases. If it is a database such as MySQL, you DO not need to write it.
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class OAuth2AccessTokenDO extends TenantBaseDO {
 
     /**
-     * 编号，数据库递增
+     * ID, database increments
      */
     @TableId
     private Long id;
     /**
-     * 访问令牌
+     * Access Token
      */
     private String accessToken;
     /**
-     * 刷新令牌
+     * Refresh Token
      */
     private String refreshToken;
     /**
-     * 用户编号
+     * User ID
      */
     private Long userId;
     /**
-     * 用户类型
+     * User type
      *
-     * 枚举 {@link UserTypeEnum}
+     * Enumeration {@link UserTypeEnum}
      */
     private Integer userType;
     /**
-     * 用户信息
+     * User information
      */
     @TableField(typeHandler = JacksonTypeHandler.class)
     private Map<String, String> userInfo;
     /**
-     * 客户端编号
+     * client ID
      *
-     * 关联 {@link OAuth2ClientDO#getId()}
+     * Association {@link OAuth2ClientDO#getId()}
      */
     private String clientId;
     /**
-     * 授权范围
+     * Authorization scope
      */
     @TableField(typeHandler = JacksonTypeHandler.class)
     private List<String> scopes;
     /**
-     * 过期时间
+     * Expiration time
      */
     private LocalDateTime expiresTime;
 

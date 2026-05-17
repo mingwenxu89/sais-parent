@@ -9,14 +9,14 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 /**
- * 手机验证码 DO
+ * Mobile phone captcha DO
  *
- * idx_mobile 索引：基于 {@link #mobile} 字段
+ * idx_mobile index: based on {@link #mobile} field
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @TableName("system_sms_code")
-@KeySequence("system_sms_code_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
+@KeySequence("system_sms_code_seq") // Primary key auto-increment for Oracle, PostgreSQL, Kingbase, DB2, H2 databases. If it is a database such as MySQL, you DO not need to write it.
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Builder
@@ -26,41 +26,41 @@ import java.time.LocalDateTime;
 public class SmsCodeDO extends BaseDO {
 
     /**
-     * 编号
+     * ID
      */
     private Long id;
     /**
-     * 手机号
+     * Mobile phone ID
      */
     private String mobile;
     /**
-     * 验证码
+     * Captcha
      */
     private String code;
     /**
-     * 发送场景
+     * Send scene
      *
-     * 枚举 {@link SmsCodeDO}
+     * Enumeration {@link SmsCodeDO}
      */
     private Integer scene;
     /**
-     * 创建 IP
+     * Create IP
      */
     private String createIp;
     /**
-     * 今日发送的第几条
+     * Which message was sent today?
      */
     private Integer todayIndex;
     /**
-     * 是否使用
+     * Whether to use
      */
     private Boolean used;
     /**
-     * 使用时间
+     * usage time
      */
     private LocalDateTime usedTime;
     /**
-     * 使用 IP
+     * Use IP
      */
     private String usedIp;
 

@@ -13,132 +13,132 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * 租户 Service 接口
+ * Tenant Service API
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface TenantService {
 
     /**
-     * 创建租户
+     * Create tenant
      *
-     * @param createReqVO 创建信息
-     * @return 编号
+     * @param createReqVO Create information
+     * @return ID
      */
     Long createTenant(@Valid TenantSaveReqVO createReqVO);
 
     /**
-     * 更新租户
+     * Update tenant
      *
-     * @param updateReqVO 更新信息
+     * @param updateReqVO Update information
      */
     void updateTenant(@Valid TenantSaveReqVO updateReqVO);
 
     /**
-     * 更新租户的角色菜单
+     * Update tenant's role menu
      *
-     * @param tenantId 租户编号
-     * @param menuIds  菜单编号数组
+     * @param tenantId Tenant ID
+     * @param menuIds  menu ID array
      */
     void updateTenantRoleMenu(Long tenantId, Set<Long> menuIds);
 
     /**
-     * 删除租户
+     * Delete tenant
      *
-     * @param id 编号
+     * @param id ID
      */
     void deleteTenant(Long id);
 
     /**
-     * 批量删除租户
+     * Delete tenants in batches
      *
-     * @param ids 编号数组
+     * @param ids IDed array
      */
     void deleteTenantList(List<Long> ids);
 
     /**
-     * 获得租户
+     * Get tenants
      *
-     * @param id 编号
-     * @return 租户
+     * @param id ID
+     * @return Tenant
      */
     TenantDO getTenant(Long id);
 
     /**
-     * 获得租户分页
+     * Get tenant pagination
      *
-     * @param pageReqVO 分页查询
-     * @return 租户分页
+     * @param pageReqVO Page query
+     * @return Tenant pagination
      */
     PageResult<TenantDO> getTenantPage(TenantPageReqVO pageReqVO);
 
     /**
-     * 获得名字对应的租户
+     * Get the tenant corresponding to the name
      *
-     * @param name 租户名
-     * @return 租户
+     * @param name Tenant name
+     * @return Tenant
      */
     TenantDO getTenantByName(String name);
 
     /**
-     * 获得域名对应的租户
+     * Get the tenant corresponding to the domain name
      *
-     * @param website 域名
-     * @return 租户
+     * @param website domain name
+     * @return Tenant
      */
     TenantDO getTenantByWebsite(String website);
 
     /**
-     * 获得使用指定套餐的租户数量
+     * Get the ID of tenants using a specified package
      *
-     * @param packageId 租户套餐编号
-     * @return 租户数量
+     * @param packageId Tenant Package ID
+     * @return ID of tenants
      */
     Long getTenantCountByPackageId(Long packageId);
 
     /**
-     * 获得使用指定套餐的租户数组
+     * Get the array of tenants using the specified package
      *
-     * @param packageId 租户套餐编号
-     * @return 租户数组
+     * @param packageId Tenant Package ID
+     * @return tenant array
      */
     List<TenantDO> getTenantListByPackageId(Long packageId);
 
     /**
-     * 获得指定状态的租户列表
+     * Get a list of tenants with a specified status
      *
-     * @param status 状态
-     * @return 租户列表
+     * @param status Status
+     * @return Tenant list
      */
     List<TenantDO> getTenantListByStatus(Integer status);
 
     /**
-     * 进行租户的信息处理逻辑
-     * 其中，租户编号从 {@link TenantContextHolder} 上下文中获取
+     * Perform tenant information processing logic
+     * Where, the tenant ID is obtained from the {@link TenantContextHolder} context
      *
-     * @param handler 处理器
+     * @param handler Processor
      */
     void handleTenantInfo(TenantInfoHandler handler);
 
     /**
-     * 进行租户的菜单处理逻辑
-     * 其中，租户编号从 {@link TenantContextHolder} 上下文中获取
+     * Perform tenant menu processing logic
+     * Where, the tenant ID is obtained from the {@link TenantContextHolder} context
      *
-     * @param handler 处理器
+     * @param handler Processor
      */
     void handleTenantMenu(TenantMenuHandler handler);
 
     /**
-     * 获得所有租户
+     * Get all tenants
      *
-     * @return 租户编号数组
+     * @return Tenant ID array
      */
     List<Long> getTenantIdList();
 
     /**
-     * 校验租户是否合法
+     * Verify whether the tenant is legal
      *
-     * @param id 租户编号
+     * @param id Tenant ID
      */
     void validTenant(Long id);
 

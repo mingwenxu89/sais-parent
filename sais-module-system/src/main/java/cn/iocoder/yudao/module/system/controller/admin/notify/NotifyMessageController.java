@@ -24,7 +24,7 @@ import java.util.List;
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 import static cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils.getLoginUserId;
 
-@Tag(name = "管理后台 - 我的站内信")
+@Tag(name = "Admin Backstage – My Site Message")
 @RestController
 @RequestMapping("/system/notify-message")
 @Validated
@@ -33,11 +33,11 @@ public class NotifyMessageController {
     @Resource
     private NotifyMessageService notifyMessageService;
 
-    // ========== 管理所有的站内信 ==========
+    // ========== Manage all site messages ==========
 
     @GetMapping("/get")
-    @Operation(summary = "获得站内信")
-    @Parameter(name = "id", description = "编号", required = true, example = "1024")
+    @Operation(summary = "Get site message")
+    @Parameter(name = "id", description = "ID", required = true, example = "1024")
     @PreAuthorize("@ss.hasPermission('system:notify-message:query')")
     public CommonResult<NotifyMessageRespVO> getNotifyMessage(@RequestParam("id") Long id) {
         NotifyMessageDO message = notifyMessageService.getNotifyMessage(id);
@@ -45,17 +45,17 @@ public class NotifyMessageController {
     }
 
     @GetMapping("/page")
-    @Operation(summary = "获得站内信分页")
+    @Operation(summary = "Get site message pagination")
     @PreAuthorize("@ss.hasPermission('system:notify-message:query')")
     public CommonResult<PageResult<NotifyMessageRespVO>> getNotifyMessagePage(@Valid NotifyMessagePageReqVO pageVO) {
         PageResult<NotifyMessageDO> pageResult = notifyMessageService.getNotifyMessagePage(pageVO);
         return success(BeanUtils.toBean(pageResult, NotifyMessageRespVO.class));
     }
 
-    // ========== 查看自己的站内信 ==========
+    // ========== View your own site message ==========
 
     @GetMapping("/my-page")
-    @Operation(summary = "获得我的站内信分页")
+    @Operation(summary = "Get my site message page")
     public CommonResult<PageResult<NotifyMessageRespVO>> getMyMyNotifyMessagePage(@Valid NotifyMessageMyPageReqVO pageVO) {
         PageResult<NotifyMessageDO> pageResult = notifyMessageService.getMyMyNotifyMessagePage(pageVO,
                 getLoginUserId(), UserTypeEnum.ADMIN.getValue());
@@ -63,22 +63,22 @@ public class NotifyMessageController {
     }
 
     @PutMapping("/update-read")
-    @Operation(summary = "标记站内信为已读")
-    @Parameter(name = "ids", description = "编号列表", required = true, example = "1024,2048")
+    @Operation(summary = "Mark site messages as read")
+    @Parameter(name = "ids", description = "ID list", required = true, example = "1024,2048")
     public CommonResult<Boolean> updateNotifyMessageRead(@RequestParam("ids") List<Long> ids) {
         notifyMessageService.updateNotifyMessageRead(ids, getLoginUserId(), UserTypeEnum.ADMIN.getValue());
         return success(Boolean.TRUE);
     }
 
     @PutMapping("/update-all-read")
-    @Operation(summary = "标记所有站内信为已读")
+    @Operation(summary = "Mark all site messages as read")
     public CommonResult<Boolean> updateAllNotifyMessageRead() {
         notifyMessageService.updateAllNotifyMessageRead(getLoginUserId(), UserTypeEnum.ADMIN.getValue());
         return success(Boolean.TRUE);
     }
 
     @GetMapping("/get-unread-list")
-    @Operation(summary = "获取当前用户的最新站内信列表，默认 10 条")
+    @Operation(summary = "Get the latest site message list of the current user, 10 messages by default")
     @Parameter(name = "size", description = "10")
     public CommonResult<List<NotifyMessageRespVO>> getUnreadNotifyMessageList(
             @RequestParam(name = "size", defaultValue = "10") Integer size) {
@@ -88,8 +88,8 @@ public class NotifyMessageController {
     }
 
     @GetMapping("/get-unread-count")
-    @Operation(summary = "获得当前用户的未读站内信数量")
-    @ApiAccessLog(enable = false) // 由于前端会不断轮询该接口，记录日志没有意义
+    @Operation(summary = "Get the ID of unread site messages of the current user")
+    @ApiAccessLog(enable = false) // Since the front end will constantly poll the API, logging is meaningless.
     public CommonResult<Long> getUnreadNotifyMessageCount() {
         return success(notifyMessageService.getUnreadNotifyMessageCount(
                 getLoginUserId(), UserTypeEnum.ADMIN.getValue()));

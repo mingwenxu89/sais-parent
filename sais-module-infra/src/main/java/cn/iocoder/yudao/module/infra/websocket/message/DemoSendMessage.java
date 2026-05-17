@@ -3,21 +3,21 @@ package cn.iocoder.yudao.module.infra.websocket.message;
 import lombok.Data;
 
 /**
- * 示例：client -> server 发送消息
+ * Example: client -> server sends message
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Data
 public class DemoSendMessage {
 
     /**
-     * 发送给谁
+     * To whom to send
      *
-     * 如果为空，说明发送给所有人
+     * If empty, instructions are sent to everyone
      */
     private Long toUserId;
     /**
-     * 内容
+     * content
      */
     private String text;
 

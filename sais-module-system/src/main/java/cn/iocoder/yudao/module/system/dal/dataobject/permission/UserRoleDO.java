@@ -8,27 +8,27 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * 用户和角色关联
+ * User and role association
  *
  * @author ruoyi
  */
 @TableName("system_user_role")
-@KeySequence("system_user_role_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
+@KeySequence("system_user_role_seq") // Primary key auto-increment for Oracle, PostgreSQL, Kingbase, DB2, H2 databases. If it is a database such as MySQL, you DO not need to write it.
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class UserRoleDO extends BaseDO {
 
     /**
-     * 自增主键
+     * auto-increment primary key
      */
     @TableId
     private Long id;
     /**
-     * 用户 ID
+     * User ID
      */
     private Long userId;
     /**
-     * 角色 ID
+     * Role ID
      */
     private Long roleId;
 

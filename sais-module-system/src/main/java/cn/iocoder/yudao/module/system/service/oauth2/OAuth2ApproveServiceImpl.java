@@ -18,18 +18,18 @@ import java.util.*;
 import static cn.iocoder.yudao.framework.common.util.collection.CollectionUtils.convertSet;
 
 /**
- * OAuth2 批准 Service 实现类
+ * OAuth2 approval Service implementation class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Service
 @Validated
 public class OAuth2ApproveServiceImpl implements OAuth2ApproveService {
 
     /**
-     * 批准的过期时间，默认 30 天
+     * Approval expiration time, default 30 days
      */
-    private static final Integer TIMEOUT = 30 * 24 * 60 * 60; // 单位：秒
+    private static final Integer TIMEOUT = 30 * 24 * 60 * 60; // Unit: seconds
 
     @Resource
     private OAuth2ClientService oauth2ClientService;
@@ -40,9 +40,9 @@ public class OAuth2ApproveServiceImpl implements OAuth2ApproveService {
     @Override
     @Transactional
     public boolean checkForPreApproval(Long userId, Integer userType, String clientId, Collection<String> requestedScopes) {
-        // 第一步，基于 Client 的自动授权计算，如果 scopes 都在自动授权中，则返回 true 通过
+        // The first step is to calculate the automatic authorization based on the Client. If the scopes are all in automatic authorization, return true and pass
         OAuth2ClientDO clientDO = oauth2ClientService.validOAuthClientFromCache(clientId);
-        Assert.notNull(clientDO, "客户端不能为空"); // 防御性编程
+        Assert.notNull(clientDO, "Client cannot be empty"); // defensive programming
         if (CollUtil.containsAll(clientDO.getAutoApproveScopes(), requestedScopes)) {
             // gh-877 - if all scopes are auto approved, approvals still need to be added to the approval store.
             LocalDateTime expireTime = LocalDateTime.now().plusSeconds(TIMEOUT);
@@ -52,23 +52,23 @@ public class OAuth2ApproveServiceImpl implements OAuth2ApproveService {
             return true;
         }
 
-        // 第二步，算上用户已经批准的授权。如果 scopes 都包含，则返回 true
+        // The second step is to count the authorizations that the user has approved. Returns true if scopes are included
         List<OAuth2ApproveDO> approveDOs = getApproveList(userId, userType, clientId);
         Set<String> scopes = convertSet(approveDOs, OAuth2ApproveDO::getScope,
-                OAuth2ApproveDO::getApproved); // 只保留未过期的 + 同意的
+                OAuth2ApproveDO::getApproved); // Only keep unexpired ones + Agree
         return CollUtil.containsAll(scopes, requestedScopes);
     }
 
     @Override
     @Transactional
     public boolean updateAfterApproval(Long userId, Integer userType, String clientId, Map<String, Boolean> requestedScopes) {
-        // 如果 requestedScopes 为空，说明没有要求，则返回 true 通过
+        // If requestedScopes is empty, indicating that there is no request, return true.
         if (CollUtil.isEmpty(requestedScopes)) {
             return true;
         }
 
-        // 更新批准的信息
-        boolean success = false; // 需要至少有一个同意
+        // Update approved information
+        boolean success = false; // Requires at least one consent
         LocalDateTime expireTime = LocalDateTime.now().plusSeconds(TIMEOUT);
         for (Map.Entry<String, Boolean> entry : requestedScopes.entrySet()) {
             if (entry.getValue()) {
@@ -90,13 +90,13 @@ public class OAuth2ApproveServiceImpl implements OAuth2ApproveService {
     @VisibleForTesting
     void saveApprove(Long userId, Integer userType, String clientId,
                      String scope, Boolean approved, LocalDateTime expireTime) {
-        // 先更新
+        // Update first
         OAuth2ApproveDO approveDO = new OAuth2ApproveDO().setUserId(userId).setUserType(userType)
                 .setClientId(clientId).setScope(scope).setApproved(approved).setExpiresTime(expireTime);
         if (oauth2ApproveMapper.update(approveDO) == 1) {
             return;
         }
-        // 失败，则说明不存在，进行更新
+        // If it fails, it means it does not exist and is updated.
         oauth2ApproveMapper.insert(approveDO);
     }
 

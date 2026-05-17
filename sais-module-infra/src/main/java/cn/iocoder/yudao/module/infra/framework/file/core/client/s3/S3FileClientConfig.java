@@ -10,9 +10,9 @@ import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
 
 /**
- * S3 文件客户端的配置类
+ * Configuration class for S3 file client
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Data
 public class S3FileClientConfig implements FileClientConfig {
@@ -20,85 +20,85 @@ public class S3FileClientConfig implements FileClientConfig {
     public static final String ENDPOINT_QINIU = "qiniucs.com";
     public static final String ENDPOINT_ALIYUN = "aliyuncs.com";
     public static final String ENDPOINT_TENCENT = "myqcloud.com";
-    public static final String ENDPOINT_VOLCES = "volces.com"; // 火山云（字节）
+    public static final String ENDPOINT_VOLCES = "volces.com"; // Volcano Cloud (bytes)
 
     /**
-     * 节点地址
-     * 1. MinIO：https://www.iocoder.cn/Spring-Boot/MinIO 。例如说，http://127.0.0.1:9000
-     * 2. 阿里云：https://help.aliyun.com/document_detail/31837.html
-     * 3. 腾讯云：https://cloud.tencent.com/document/product/436/6224
-     * 4. 七牛云：https://developer.qiniu.com/kodo/4088/s3-access-domainname
-     * 5. 华为云：https://console.huaweicloud.com/apiexplorer/#/endpoint/OBS
-     * 6. 火山云：https://www.volcengine.com/docs/6349/107356
+     * Node address
+     * 1. MinIO: https://www.iocoder.cn/Spring-Boot/MinIO. For example, http://127.0.0.1:9000
+     * 2. Alibaba Cloud: https://help.aliyun.com/document_detail/31837.html
+     * 3. Tencent Cloud: https://cloud.tencent.com/document/product/436/6224
+     * 4. Qiniu Cloud: https://developer.qiniu.com/kodo/4088/S3-access-domainname
+     * 5. Huawei Cloud: https://console.huaweicloud.com/apiexplorer/#/endpoint/OBS
+     * 6. Volcano cloud: https://www.volcengine.com/docs/6349/107356
      */
-    @NotNull(message = "endpoint 不能为空")
+    @NotNull(message = "endpoint cannot be empty")
     private String endpoint;
     /**
-     * 自定义域名
-     * 1. MinIO：通过 Nginx 配置
-     * 2. 阿里云：https://help.aliyun.com/document_detail/31836.html
-     * 3. 腾讯云：https://cloud.tencent.com/document/product/436/11142
-     * 4. 七牛云：https://developer.qiniu.com/kodo/8556/set-the-custom-source-domain-name
-     * 5. 华为云：https://support.huaweicloud.com/usermanual-obs/obs_03_0032.html
-     * 6. 火山云：https://www.volcengine.com/docs/6349/128983
+     * Custom domain name
+     * 1. MinIO: configured through Nginx
+     * 2. Alibaba Cloud: https://help.aliyun.com/document_detail/31836.html
+     * 3. Tencent Cloud: https://cloud.tencent.com/document/product/436/11142
+     * 4. Qiniu Cloud: https://developer.qiniu.com/kodo/8556/set-the-custom-source-domain-name
+     * 5. Huawei Cloud: https://support.huaweicloud.com/usermanual-obs/obs_03_0032.html
+     * 6. Volcano cloud: https://www.volcengine.com/docs/6349/128983
      */
-    @URL(message = "domain 必须是 URL 格式")
+    @URL(message = "domain must be in URL format")
     private String domain;
     /**
-     * 存储 Bucket
+     * Storage Bucket
      */
-    @NotNull(message = "bucket 不能为空")
+    @NotNull(message = "bucket cannot be empty")
     private String bucket;
 
     /**
-     * 访问 Key
+     * Access Key
      * 1. MinIO：https://www.iocoder.cn/Spring-Boot/MinIO
-     * 2. 阿里云：https://ram.console.aliyun.com/manage/ak
-     * 3. 腾讯云：https://console.cloud.tencent.com/cam/capi
-     * 4. 七牛云：https://portal.qiniu.com/user/key
-     * 5. 华为云：https://support.huaweicloud.com/qs-obs/obs_qs_0005.html
-     * 6. 火山云：https://console.volcengine.com/iam/keymanage/
+     * 2. Alibaba Cloud: https://ram.console.aliyun.com/manage/ak
+     * 3. Tencent Cloud: https://console.cloud.tencent.com/cam/capi
+     * 4. Qiniu Cloud: https://portal.qiniu.com/user/key
+     * 5. Huawei Cloud: https://support.huaweicloud.com/qs-obs/obs_qs_0005.html
+     * 6. Volcano Cloud: https://console.volcengine.com/iam/keymanage/
      */
-    @NotNull(message = "accessKey 不能为空")
+    @NotNull(message = "accessKey cannot be empty")
     private String accessKey;
     /**
-     * 访问 Secret
+     * Visit Secret
      */
-    @NotNull(message = "accessSecret 不能为空")
+    @NotNull(message = "accessSecret cannot be empty")
     private String accessSecret;
 
     /**
-     * 是否启用 PathStyle 访问
+     * Whether to enable PathStyle access
      */
-    @NotNull(message = "enablePathStyleAccess 不能为空")
+    @NotNull(message = "enablePathStyleAccess cannot be empty")
     private Boolean enablePathStyleAccess;
 
     /**
-     * 是否公开访问
+     * Is it publicly accessible?
      *
-     * true：公开访问，所有人都可以访问
-     * false：私有访问，只有配置的 accessKey 才可以访问
+     * true: public access, accessible to everyone
+     * false: private access, only the configured accessKey can access
      */
-    @NotNull(message = "是否公开访问不能为空")
+    @NotNull(message = "Whether public access cannot be empty")
     private Boolean enablePublicAccess;
 
     /**
-     * 区域
-     * 1. AWS S3：https://docs.aws.amazon.com/general/latest/gr/s3.html 例如说，us-east-1、us-west-2
-     * 2. MinIO：可以填任意值，通常使用 us-east-1
-     * 3. 阿里云：不需要填写，会自动识别
-     * 4. 腾讯云：不需要填写，会自动识别
-     * 5. 七牛云：不需要填写，会自动识别
-     * 6. 华为云：不需要填写，会自动识别
-     * 7. 火山云：不需要填写，会自动识别
+     * area
+     * 1. AWS S3: https://docs.aws.amazon.com/general/latest/gr/S3.html For example, us-east-1, us-west-2
+     * 2. MinIO: You can fill in any value, usually use us-east-1
+     * 3. Alibaba Cloud: No need to fill in, it will be automatically recognized
+     * 4. Tencent Cloud: No need to fill in, it will be automatically recognized
+     * 5. Qiniu Cloud: No need to fill in, it will be automatically recognized
+     * 6. Huawei Cloud: No need to fill in, it will be automatically recognized
+     * 7. Volcano Cloud: No need to fill in, it will be automatically recognized
      */
     private String region;
 
     @SuppressWarnings("RedundantIfStatement")
-    @AssertTrue(message = "domain 不能为空")
+    @AssertTrue(message = "domain cannot be empty")
     @JsonIgnore
     public boolean isDomainValid() {
-        // 如果是七牛，必须带有 domain
+        // If it is Qiniu, it must contain domain
         if (StrUtil.contains(endpoint, ENDPOINT_QINIU) && StrUtil.isEmpty(domain)) {
             return false;
         }

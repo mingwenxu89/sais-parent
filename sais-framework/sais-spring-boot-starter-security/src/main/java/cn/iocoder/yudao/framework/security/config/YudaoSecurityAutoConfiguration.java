@@ -22,73 +22,73 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
 /**
- * Spring Security 自动配置类，主要用于相关组件的配置
+ * Spring Security automatic configuration class, mainly used for configuration of related components
  *
- * 注意，不能和 {@link YudaoWebSecurityConfigurerAdapter} 用一个，原因是会导致初始化报错。
- * 参见 https://stackoverflow.com/questions/53847050/spring-boot-delegatebuilder-cannot-be-null-on-autowiring-authenticationmanager 文档。
+ * Note that you cannot use one with {@link YudaoWebSecurityConfigurerAdapter} because it will cause an initialization error.
+ * See the documentation at https://stackoverflow.com/questions/53847050/spring-boot-delegatebuilder-cannot-be-null-on-autowiring-authenticationmanager.
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @AutoConfiguration
-@AutoConfigureOrder(-1) // 目的：先于 Spring Security 自动配置，避免一键改包后，org.* 基础包无法生效
+@AutoConfigureOrder(-1) // Purpose: Automatically configure Spring Security first to avoID that the org.* basic package cannot take effect after one-click package change.
 @EnableConfigurationProperties(SecurityProperties.class)
 public class YudaoSecurityAutoConfiguration {
 
-    @Resource
-    private SecurityProperties securityProperties;
+ @Resource
+ private SecurityProperties securityProperties;
 
-    /**
-     * 认证失败处理类 Bean
-     */
-    @Bean
-    public AuthenticationEntryPoint authenticationEntryPoint() {
-        return new AuthenticationEntryPointImpl();
-    }
+ /**
+     * Authentication failure handling class Bean
+ */
+ @Bean
+ public AuthenticationEntryPoint authenticationEntryPoint() {
+ return new AuthenticationEntryPointImpl();
+ }
 
-    /**
-     * 权限不够处理器 Bean
-     */
-    @Bean
-    public AccessDeniedHandler accessDeniedHandler() {
-        return new AccessDeniedHandlerImpl();
-    }
+ /**
+     * Insufficient permissions for processor bean
+ */
+ @Bean
+ public AccessDeniedHandler accessDeniedHandler() {
+ return new AccessDeniedHandlerImpl();
+ }
 
-    /**
-     * Spring Security 加密器
-     * 考虑到安全性，这里采用 BCryptPasswordEncoder 加密器
-     *
-     * @see <a href="http://stackabuse.com/password-encoding-with-spring-security/">Password Encoding with Spring Security</a>
-     */
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(securityProperties.getPasswordEncoderLength());
-    }
+ /**
+     * Spring Security Encryptor
+     * Considering security, BCryptPasswordEncoder encryptor is used here
+ *
+ * @see <a href="http://stackabuse.com/password-encoding-with-spring-security/">Password Encoding with Spring Security</a>
+ */
+ @Bean
+ public PasswordEncoder passwordEncoder() {
+ return new BCryptPasswordEncoder(securityProperties.getPasswordEncoderLength());
+ }
 
-    /**
-     * Token 认证过滤器 Bean
-     */
-    @Bean
-    public TokenAuthenticationFilter authenticationTokenFilter(GlobalExceptionHandler globalExceptionHandler,
-                                                               OAuth2TokenCommonApi oauth2TokenApi) {
-        return new TokenAuthenticationFilter(securityProperties, globalExceptionHandler, oauth2TokenApi);
-    }
+ /**
+     * Token Authentication Filter Bean
+ */
+ @Bean
+ public TokenAuthenticationFilter authenticationTokenFilter(GlobalExceptionHandler globalExceptionHandler,
+ OAuth2TokenCommonApi oauth2TokenApi) {
+ return new TokenAuthenticationFilter(securityProperties, globalExceptionHandler, oauth2TokenApi);
+ }
 
-    @Bean("ss") // 使用 Spring Security 的缩写，方便使用
-    public SecurityFrameworkService securityFrameworkService(PermissionCommonApi permissionApi) {
-        return new SecurityFrameworkServiceImpl(permissionApi);
-    }
+    @Bean("ss") // Use Spring Security abbreviation for ease of use
+ public SecurityFrameworkService securityFrameworkService(PermissionCommonApi permissionApi) {
+ return new SecurityFrameworkServiceImpl(permissionApi);
+ }
 
-    /**
-     * 声明调用 {@link SecurityContextHolder#setStrategyName(String)} 方法，
-     * 设置使用 {@link TransmittableThreadLocalSecurityContextHolderStrategy} 作为 Security 的上下文策略
-     */
-    @Bean
-    public MethodInvokingFactoryBean securityContextHolderMethodInvokingFactoryBean() {
-        MethodInvokingFactoryBean methodInvokingFactoryBean = new MethodInvokingFactoryBean();
-        methodInvokingFactoryBean.setTargetClass(SecurityContextHolder.class);
-        methodInvokingFactoryBean.setTargetMethod("setStrategyName");
-        methodInvokingFactoryBean.setArguments(TransmittableThreadLocalSecurityContextHolderStrategy.class.getName());
-        return methodInvokingFactoryBean;
-    }
+ /**
+     * Declare to call the {@link SecurityContextHolder#setStrategyName(String)} method,
+     * Set the context strategy using {@link TransmittableThreadLocalSecurityContextHolderStrategy} as Security
+ */
+ @Bean
+ public MethodInvokingFactoryBean securityContextHolderMethodInvokingFactoryBean() {
+ MethodInvokingFactoryBean methodInvokingFactoryBean = new MethodInvokingFactoryBean();
+ methodInvokingFactoryBean.setTargetClass(SecurityContextHolder.class);
+ methodInvokingFactoryBean.setTargetMethod("setStrategyName");
+ methodInvokingFactoryBean.setArguments(TransmittableThreadLocalSecurityContextHolderStrategy.class.getName());
+ return methodInvokingFactoryBean;
+ }
 
 }

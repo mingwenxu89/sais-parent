@@ -8,59 +8,59 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * 字典数据表
+ * dict data table
  *
  * @author ruoyi
  */
 @TableName("system_dict_data")
-@KeySequence("system_dict_data_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
+@KeySequence("system_dict_data_seq") // Primary key auto-increment for Oracle, PostgreSQL, Kingbase, DB2, H2 databases. If it is a database such as MySQL, you DO not need to write it.
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TenantIgnore
 public class DictDataDO extends BaseDO {
 
     /**
-     * 字典数据编号
+     * Dict data ID
      */
     @TableId
     private Long id;
     /**
-     * 字典排序
+     * Dict sort
      */
     private Integer sort;
     /**
-     * 字典标签
+     * dict tag
      */
     private String label;
     /**
-     * 字典值
+     * Dict value
      */
     private String value;
     /**
-     * 字典类型
+     * Dict Type
      *
-     * 冗余 {@link DictDataDO#getDictType()}
+     * Redundant {@link DictDataDO#getDictType()}
      */
     private String dictType;
     /**
-     * 状态
+     * Status
      *
-     * 枚举 {@link CommonStatusEnum}
+     * Enum {@link CommonStatusEnum}
      */
     private Integer status;
     /**
-     * 颜色类型
+     * color type
      *
-     * 对应到 element-ui 为 default、primary、success、info、warning、danger
+     * Corresponding to element-ui are default, primary, success, info, warning, danger
      */
     private String colorType;
     /**
-     * css 样式
+     * css style
      */
     @TableField(updateStrategy = FieldStrategy.ALWAYS)
     private String cssClass;
     /**
-     * 备注
+     * Remark
      */
     private String remark;
 

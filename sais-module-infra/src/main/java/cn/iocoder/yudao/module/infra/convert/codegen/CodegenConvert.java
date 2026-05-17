@@ -25,7 +25,7 @@ public interface CodegenConvert {
 
     CodegenConvert INSTANCE = Mappers.getMapper(CodegenConvert.class);
 
-    // ========== TableInfo 相关 ==========
+    // ========== TableInfo related ==========
 
     @Mappings({
             @Mapping(source = "name", target = "tableName"),
@@ -51,7 +51,7 @@ public interface CodegenConvert {
         return jdbcType.name();
     }
 
-    // ========== 其它 ==========
+    // ========== Others ==========
 
     default CodegenDetailRespVO convert(CodegenTableDO table, List<CodegenColumnDO> columns) {
         CodegenDetailRespVO respVO = new CodegenDetailRespVO();

@@ -18,18 +18,18 @@ import java.util.List;
 
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 
-@Tag(name = "用户 App - 地区")
+@Tag(name = "User App - area")
 @RestController
 @RequestMapping("/system/area")
 @Validated
 public class AppAreaController {
 
     @GetMapping("/tree")
-    @Operation(summary = "获得地区树")
+    @Operation(summary = "get region tree")
     @PermitAll
     public CommonResult<List<AppAreaNodeRespVO>> getAreaTree() {
         Area area = AreaUtils.getArea(Area.ID_CHINA);
-        Assert.notNull(area, "获取不到中国");
+        Assert.notNull(area, "Can't get China");
         return success(BeanUtils.toBean(area.getChildren(), AppAreaNodeRespVO.class));
     }
 

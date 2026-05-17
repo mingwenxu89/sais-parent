@@ -8,77 +8,77 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 /**
- * 社交应用的 API 接口
+ * Social application API API
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface SocialClientApi {
 
     /**
-     * 获得社交平台的授权 URL
+     * Obtain the authorized URL of the social platform
      *
-     * @param socialType  社交平台的类型 {@link SocialTypeEnum}
-     * @param userType    用户类型
-     * @param redirectUri 重定向 URL
-     * @return 社交平台的授权 URL
+     * @param socialType  Type of social platform {@link SocialTypeEnum}
+     * @param userType    User type
+     * @param redirectUri Redirect URL
+     * @return Authorization URL for social platforms
      */
     String getAuthorizeUrl(Integer socialType, Integer userType, String redirectUri);
 
     /**
-     * 创建微信公众号 JS SDK 初始化所需的签名
+     * Signature required to create WeChat official account JS SDK initialization
      *
-     * @param userType 用户类型
-     * @param url      访问的 URL 地址
-     * @return 签名
+     * @param userType User type
+     * @param url      Visited URL address
+     * @return signature
      */
     SocialWxJsapiSignatureRespDTO createWxMpJsapiSignature(Integer userType, String url);
 
-    //======================= 微信小程序独有 =======================
+    //======================= Exclusive to WeChat miniapp =======================
 
     /**
-     * 获得微信小程序的手机信息
+     * Get mobile phone information from WeChat applet
      *
-     * @param userType  用户类型
-     * @param phoneCode 手机授权码
-     * @return 手机信息
+     * @param userType  User type
+     * @param phoneCode Mobile authorization code
+     * @return Mobile phone information
      */
     SocialWxPhoneNumberInfoRespDTO getWxMaPhoneNumberInfo(Integer userType, String phoneCode);
 
     /**
-     * 获得小程序二维码
+     * Obtain the QR code of the miniapp
      *
-     * @param reqVO 请求信息
-     * @return 小程序二维码
+     * @param reqVO request information
+     * @return Mini program QR code
      */
     byte[] getWxaQrcode(@Valid SocialWxQrcodeReqDTO reqVO);
 
     /**
-     * 获得微信小程订阅模板
+     * Get WeChat Xiaocheng subscription template
      *
-     * @return 小程序订阅消息模版
+     * @return Mini program subscription message template
      */
     List<SocialWxaSubscribeTemplateRespDTO> getWxaSubscribeTemplateList(Integer userType);
 
     /**
-     * 发送微信小程序订阅消息
+     * Send WeChat applet subscription messages
      *
-     * @param reqDTO 请求
+     * @param reqDTO Request
      */
     void sendWxaSubscribeMessage(SocialWxaSubscribeMessageSendReqDTO reqDTO);
 
     /**
-     * 上传订单发货到微信小程序
+     * Upload orders and ship them to WeChat miniapp
      *
-     * @param userType 用户类型
-     * @param reqDTO 请求
+     * @param userType User type
+     * @param reqDTO Request
      */
     void uploadWxaOrderShippingInfo(Integer userType, SocialWxaOrderUploadShippingInfoReqDTO reqDTO);
 
     /**
-     * 通知订单收货到微信小程序
+     * Notify order receipt to WeChat applet
      *
-     * @param userType 用户类型
-     * @param reqDTO 请求
+     * @param userType User type
+     * @param reqDTO Request
      */
     void notifyWxaOrderConfirmReceive(Integer userType, SocialWxaOrderNotifyConfirmReceiveReqDTO reqDTO);
 

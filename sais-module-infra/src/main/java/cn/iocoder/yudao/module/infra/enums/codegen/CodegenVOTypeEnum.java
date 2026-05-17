@@ -4,12 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 代码生成的 VO 类型枚举
+ * Code-generated VO type enumeration
  *
- * 目前的作用：Controller 新增、修改、响应时，使用 VO 还是 DO
- * 注意：不包括 Controller 的分页参数！
+ * Current role: When adding, modifying, and responding to a Controller, should VO or DO be used?
+ * Note: Controller’s paging parameters are not included!
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @AllArgsConstructor
 @Getter
@@ -19,11 +19,11 @@ public enum CodegenVOTypeEnum {
     DO(20, "DO");
 
     /**
-     * 场景
+     * scene
      */
     private final Integer type;
     /**
-     * 场景名
+     * scene name
      */
     private final String name;
 

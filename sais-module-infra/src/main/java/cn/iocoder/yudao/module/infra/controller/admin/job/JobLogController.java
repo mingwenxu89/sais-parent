@@ -29,7 +29,7 @@ import java.util.List;
 import static cn.iocoder.yudao.framework.apilog.core.enums.OperateTypeEnum.EXPORT;
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 
-@Tag(name = "管理后台 - 定时任务日志")
+@Tag(name = "Management background - scheduled task log")
 @RestController
 @RequestMapping("/infra/job-log")
 @Validated
@@ -39,8 +39,8 @@ public class JobLogController {
     private JobLogService jobLogService;
 
     @GetMapping("/get")
-    @Operation(summary = "获得定时任务日志")
-    @Parameter(name = "id", description = "编号", required = true, example = "1024")
+    @Operation(summary = "Get scheduled task log")
+    @Parameter(name = "id", description = "ID", required = true, example = "1024")
     @PreAuthorize("@ss.hasPermission('infra:job:query')")
     public CommonResult<JobLogRespVO> getJobLog(@RequestParam("id") Long id) {
         JobLogDO jobLog = jobLogService.getJobLog(id);
@@ -48,7 +48,7 @@ public class JobLogController {
     }
 
     @GetMapping("/page")
-    @Operation(summary = "获得定时任务日志分页")
+    @Operation(summary = "Get scheduled task log pagination")
     @PreAuthorize("@ss.hasPermission('infra:job:query')")
     public CommonResult<PageResult<JobLogRespVO>> getJobLogPage(@Valid JobLogPageReqVO pageVO) {
         PageResult<JobLogDO> pageResult = jobLogService.getJobLogPage(pageVO);
@@ -56,15 +56,15 @@ public class JobLogController {
     }
 
     @GetMapping("/export-excel")
-    @Operation(summary = "导出定时任务日志 Excel")
+    @Operation(summary = "Export scheduled task log to Excel")
     @PreAuthorize("@ss.hasPermission('infra:job:export')")
     @ApiAccessLog(operateType = EXPORT)
     public void exportJobLogExcel(@Valid JobLogPageReqVO exportReqVO,
                                   HttpServletResponse response) throws IOException {
         exportReqVO.setPageSize(PageParam.PAGE_SIZE_NONE);
         List<JobLogDO> list = jobLogService.getJobLogPage(exportReqVO).getList();
-        // 导出 Excel
-        ExcelUtils.write(response, "任务日志.xls", "数据", JobLogRespVO.class,
+        // Export to Excel
+        ExcelUtils.write(response, "Task log.xls", "Data", JobLogRespVO.class,
                 BeanUtils.toBean(list, JobLogRespVO.class));
     }
 

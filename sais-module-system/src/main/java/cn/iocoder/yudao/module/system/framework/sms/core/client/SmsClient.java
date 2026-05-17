@@ -8,7 +8,7 @@ import cn.iocoder.yudao.module.system.framework.sms.core.client.dto.SmsTemplateR
 import java.util.List;
 
 /**
- * 短信客户端，用于对接各短信平台的 SDK，实现短信发送等功能
+ * SMS client, used to connect to the SDK of various SMS platforms to implement functions such as sending SMS messages.
  *
  * @author zzf
  * @since 2021/1/25 14:14
@@ -16,40 +16,40 @@ import java.util.List;
 public interface SmsClient {
 
     /**
-     * 获得渠道编号
+     * Get channel ID
      *
-     * @return 渠道编号
+     * @return Channel ID
      */
     Long getId();
 
     /**
-     * 发送消息
+     * Send message
      *
-     * @param logId 日志编号
-     * @param mobile 手机号
-     * @param apiTemplateId 短信 API 的模板编号
-     * @param templateParams 短信模板参数。通过 List 数组，保证参数的顺序
-     * @return 短信发送结果
+     * @param logId Log ID
+     * @param mobile Mobile phone ID
+     * @param apiTemplateId SMS API template ID
+     * @param templateParams SMS template parameters. Ensure the order of parameters through List array
+     * @return SMS sending result
      */
     SmsSendRespDTO sendSms(Long logId, String mobile, String apiTemplateId,
                            List<KeyValue<String, Object>> templateParams) throws Throwable;
 
     /**
-     * 解析接收短信的接收结果
+     * Analyze the reception result of receiving SMS
      *
-     * @param text 结果
-     * @return 结果内容
-     * @throws Throwable 当解析 text 发生异常时，则会抛出异常
+     * @param text result
+     * @return Result content
+     * @throws Throwable When an exception occurs while parsing text, an exception will be thrown
      */
     List<SmsReceiveRespDTO> parseSmsReceiveStatus(String text) throws Throwable;
 
     /**
-     * 查询指定的短信模板
+     * Query the specified SMS template
      *
-     * 如果查询失败，则返回 null 空
+     * If the query fails, null is returned.
      *
-     * @param apiTemplateId 短信 API 的模板编号
-     * @return 短信模板
+     * @param apiTemplateId SMS API template ID
+     * @return SMS template
      */
     SmsTemplateRespDTO getSmsTemplate(String apiTemplateId) throws Throwable;
 

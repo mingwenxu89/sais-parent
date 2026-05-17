@@ -1,4 +1,4 @@
 /**
- * 使用 Easy-Trans 提升使用 VO 数据翻译的开发效率
+ * Use Easy-Trans to improve development efficiency using VO data translation
  */
 package cn.iocoder.yudao.framework.translate;

@@ -7,53 +7,53 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 /**
- * 数据源配置 Service 接口
+ * Data source configuration Service API
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface DataSourceConfigService {
 
     /**
-     * 创建数据源配置
+     * Create data source configuration
      *
-     * @param createReqVO 创建信息
-     * @return 编号
+     * @param createReqVO Create information
+     * @return ID
      */
     Long createDataSourceConfig(@Valid DataSourceConfigSaveReqVO createReqVO);
 
     /**
-     * 更新数据源配置
+     * Update data source configuration
      *
-     * @param updateReqVO 更新信息
+     * @param updateReqVO Update information
      */
     void updateDataSourceConfig(@Valid DataSourceConfigSaveReqVO updateReqVO);
 
     /**
-     * 删除数据源配置
+     * Delete data source configuration
      *
-     * @param id 编号
+     * @param id ID
      */
     void deleteDataSourceConfig(Long id);
 
     /**
-     * 批量删除数据源配置
+     * Delete data source configurations in batches
      *
-     * @param ids 编号列表
+     * @param ids IDed list
      */
     void deleteDataSourceConfigList(List<Long> ids);
 
     /**
-     * 获得数据源配置
+     * Get data source configuration
      *
-     * @param id 编号
-     * @return 数据源配置
+     * @param id ID
+     * @return Data source configuration
      */
     DataSourceConfigDO getDataSourceConfig(Long id);
 
     /**
-     * 获得数据源配置列表
+     * Get the data source configuration list
      *
-     * @return 数据源配置列表
+     * @return Data source configuration list
      */
     List<DataSourceConfigDO> getDataSourceConfigList();
 

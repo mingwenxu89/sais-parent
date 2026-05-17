@@ -5,18 +5,18 @@ import lombok.Data;
 
 import java.util.List;
 
-@Schema(description = "管理后台 - 地区节点 Response VO")
+@Schema(description = "Management backend - regional node Response VO")
 @Data
 public class AreaNodeRespVO {
 
-    @Schema(description = "编号", requiredMode = Schema.RequiredMode.REQUIRED, example = "110000")
+    @Schema(description = "ID", requiredMode = Schema.RequiredMode.REQUIRED, example = "110000")
     private Integer id;
 
-    @Schema(description = "名字", requiredMode = Schema.RequiredMode.REQUIRED, example = "北京")
+    @Schema(description = "name", requiredMode = Schema.RequiredMode.REQUIRED, example = "Beijing")
     private String name;
 
     /**
-     * 子节点
+     * child node
      */
     private List<AreaNodeRespVO> children;
 

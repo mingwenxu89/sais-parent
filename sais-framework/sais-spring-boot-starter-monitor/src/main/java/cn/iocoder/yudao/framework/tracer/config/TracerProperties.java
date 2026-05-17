@@ -4,9 +4,9 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * BizTracer配置类
+ * BizTracer configuration class
  *
- * @author 麻薯
+ * @author Mashu
  */
 @ConfigurationProperties("yudao.tracer")
 @Data

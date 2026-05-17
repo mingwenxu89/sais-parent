@@ -1,4 +1,4 @@
 /**
- * sar-module-member 模块的适配，解除 sar-module-system 对它们的依赖
+ * Adaptation of sar-module-member modules to remove sar-module-system's dependence on them
  */
 package cn.iocoder.yudao.module.system.service.member;

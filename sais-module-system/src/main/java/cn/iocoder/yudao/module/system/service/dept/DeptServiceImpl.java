@@ -25,9 +25,9 @@ import static cn.iocoder.yudao.framework.common.util.collection.CollectionUtils.
 import static cn.iocoder.yudao.module.system.enums.ErrorCodeConstants.*;
 
 /**
- * 部门 Service 实现类
+ * Department Service implementation class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Service
 @Validated
@@ -39,17 +39,17 @@ public class DeptServiceImpl implements DeptService {
 
     @Override
     @CacheEvict(cacheNames = RedisKeyConstants.DEPT_CHILDREN_ID_LIST,
-            allEntries = true) // allEntries 清空所有缓存，因为操作一个部门，涉及到多个缓存
+            allEntries = true) // allEntries Clear all caches, because operating a department involves multiple caches
     public Long createDept(DeptSaveReqVO createReqVO) {
         if (createReqVO.getParentId() == null) {
             createReqVO.setParentId(DeptDO.PARENT_ID_ROOT);
         }
-        // 校验父部门的有效性
+        // Verify the validity of the parent department
         validateParentDept(null, createReqVO.getParentId());
-        // 校验部门名的唯一性
+        // Verify the uniqueness of department names
         validateDeptNameUnique(null, createReqVO.getParentId(), createReqVO.getName());
 
-        // 插入部门
+        // insert department
         DeptDO dept = BeanUtils.toBean(createReqVO, DeptDO.class);
         deptMapper.insert(dept);
         return dept.getId();
@@ -57,49 +57,49 @@ public class DeptServiceImpl implements DeptService {
 
     @Override
     @CacheEvict(cacheNames = RedisKeyConstants.DEPT_CHILDREN_ID_LIST,
-            allEntries = true) // allEntries 清空所有缓存，因为操作一个部门，涉及到多个缓存
+            allEntries = true) // allEntries Clear all caches, because operating a department involves multiple caches
     public void updateDept(DeptSaveReqVO updateReqVO) {
         if (updateReqVO.getParentId() == null) {
             updateReqVO.setParentId(DeptDO.PARENT_ID_ROOT);
         }
-        // 校验自己存在
+        // Verify your own existence
         validateDeptExists(updateReqVO.getId());
-        // 校验父部门的有效性
+        // Verify the validity of the parent department
         validateParentDept(updateReqVO.getId(), updateReqVO.getParentId());
-        // 校验部门名的唯一性
+        // Verify the uniqueness of department names
         validateDeptNameUnique(updateReqVO.getId(), updateReqVO.getParentId(), updateReqVO.getName());
 
-        // 更新部门
+        // Update department
         DeptDO updateObj = BeanUtils.toBean(updateReqVO, DeptDO.class);
         deptMapper.updateById(updateObj);
     }
 
     @Override
     @CacheEvict(cacheNames = RedisKeyConstants.DEPT_CHILDREN_ID_LIST,
-            allEntries = true) // allEntries 清空所有缓存，因为操作一个部门，涉及到多个缓存
+            allEntries = true) // allEntries Clear all caches, because operating a department involves multiple caches
     public void deleteDept(Long id) {
-        // 校验是否存在
+        // Check if it exists
         validateDeptExists(id);
-        // 校验是否有子部门
+        // Check if there are sub-departments
         if (deptMapper.selectCountByParentId(id) > 0) {
             throw exception(DEPT_EXITS_CHILDREN);
         }
-        // 删除部门
+        // Delete department
         deptMapper.deleteById(id);
     }
 
     @Override
     @CacheEvict(cacheNames = RedisKeyConstants.DEPT_CHILDREN_ID_LIST,
-            allEntries = true) // allEntries 清空所有缓存，因为操作一个部门，涉及到多个缓存
+            allEntries = true) // allEntries Clear all caches, because operating a department involves multiple caches
     public void deleteDeptList(List<Long> ids) {
-        // 校验是否有子部门
+        // Check if there are sub-departments
         for (Long id : ids) {
             if (deptMapper.selectCountByParentId(id) > 0) {
                 throw exception(DEPT_EXITS_CHILDREN);
             }
         }
 
-        // 批量删除部门
+        // Delete departments in batches
         deptMapper.deleteByIds(ids);
     }
 
@@ -119,26 +119,26 @@ public class DeptServiceImpl implements DeptService {
         if (parentId == null || DeptDO.PARENT_ID_ROOT.equals(parentId)) {
             return;
         }
-        // 1. 不能设置自己为父部门
+        // 1. You cannot set yourself as the parent department
         if (Objects.equals(id, parentId)) {
             throw exception(DEPT_PARENT_ERROR);
         }
-        // 2. 父部门不存在
+        // 2. The parent department does not exist
         DeptDO parentDept = deptMapper.selectById(parentId);
         if (parentDept == null) {
             throw exception(DEPT_PARENT_NOT_EXITS);
         }
-        // 3. 递归校验父部门，如果父部门是自己的子部门，则报错，避免形成环路
-        if (id == null) { // id 为空，说明新增，不需要考虑环路
+        // 3. Recursively check the parent department. If the parent department is its own sub-department, an error will be reported to avoid forming a loop.
+        if (id == null) { // id If it is empty, it means that it is newly added and there is no need to consider loops.
             return;
         }
         for (int i = 0; i < Short.MAX_VALUE; i++) {
-            // 3.1 校验环路
+            // 3.1 Verification loop
             parentId = parentDept.getParentId();
             if (Objects.equals(id, parentId)) {
                 throw exception(DEPT_PARENT_IS_CHILD);
             }
-            // 3.2 继续递归下一级父部门
+            // 3.2 Continue recursively to the next-level parent department
             if (parentId == null || DeptDO.PARENT_ID_ROOT.equals(parentId)) {
                 break;
             }
@@ -155,7 +155,7 @@ public class DeptServiceImpl implements DeptService {
         if (dept == null) {
             return;
         }
-        // 如果 id 为空，说明不用比较是否为相同 id 的部门
+        // If the id is empty, it means there is no need to compare whether it is a department with the same id.
         if (id == null) {
             throw exception(DEPT_NAME_DUPLICATE);
         }
@@ -187,16 +187,16 @@ public class DeptServiceImpl implements DeptService {
     @Override
     public List<DeptDO> getChildDeptList(Collection<Long> ids) {
         List<DeptDO> children = new LinkedList<>();
-        // 遍历每一层
+        // Traverse each layer
         Collection<Long> parentIds = ids;
-        for (int i = 0; i < Short.MAX_VALUE; i++) { // 使用 Short.MAX_VALUE 避免 bug 场景下，存在死循环
-            // 查询当前层，所有的子部门
+        for (int i = 0; i < Short.MAX_VALUE; i++) { // Use Short.MAX_VALUE to avoid infinite loops in bug scenarios
+            // Query the current layer and all sub-departments
             List<DeptDO> depts = deptMapper.selectListByParentId(parentIds);
-            // 1. 如果没有子部门，则结束遍历
+            // 1. If there are no sub-departments, end the traversal
             if (CollUtil.isEmpty(depts)) {
                 break;
             }
-            // 2. 如果有子部门，继续遍历
+            // 2. If there are sub-departments, continue traversing
             children.addAll(depts);
             parentIds = convertSet(depts, DeptDO::getId);
         }
@@ -209,7 +209,7 @@ public class DeptServiceImpl implements DeptService {
     }
 
     @Override
-    @DataPermission(enable = false) // 禁用数据权限，避免建立不正确的缓存
+    @DataPermission(enable = false) // Disable data permissions to avoid incorrect cache creation
     @Cacheable(cacheNames = RedisKeyConstants.DEPT_CHILDREN_ID_LIST, key = "#id")
     public Set<Long> getChildDeptIdListFromCache(Long id) {
         List<DeptDO> children = getChildDeptList(id);
@@ -221,9 +221,9 @@ public class DeptServiceImpl implements DeptService {
         if (CollUtil.isEmpty(ids)) {
             return;
         }
-        // 获得科室信息
+        // Get department information
         Map<Long, DeptDO> deptMap = getDeptMap(ids);
-        // 校验
+        // Verify
         ids.forEach(id -> {
             DeptDO dept = deptMap.get(id);
             if (dept == null) {

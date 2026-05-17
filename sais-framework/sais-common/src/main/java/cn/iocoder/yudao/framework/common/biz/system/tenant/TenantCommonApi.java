@@ -3,24 +3,24 @@ package cn.iocoder.yudao.framework.common.biz.system.tenant;
 import java.util.List;
 
 /**
- * 多租户的 API 接口
+ * Multi-tenant API interface
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface TenantCommonApi {
 
-    /**
-     * 获得所有租户
-     *
-     * @return 租户编号数组
-     */
-    List<Long> getTenantIdList();
+ /**
+     * Get all tenants
+ *
+     * @return Tenant number array
+ */
+ List<Long> getTenantIdList();
 
-    /**
-     * 校验租户是否合法
-     *
-     * @param id 租户编号
-     */
-    void validateTenant(Long id);
+ /**
+     * Verify whether the tenant is legal
+ *
+     * @param id Tenant number
+ */
+ void validateTenant(Long id);
 
 }

@@ -29,7 +29,7 @@ import java.util.List;
 import static cn.iocoder.yudao.framework.apilog.core.enums.OperateTypeEnum.EXPORT;
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 
-@Tag(name = "管理后台 - 字典数据")
+@Tag(name = "Management background - dict data")
 @RestController
 @RequestMapping("/system/dict-data")
 @Validated
@@ -39,7 +39,7 @@ public class DictDataController {
     private DictDataService dictDataService;
 
     @PostMapping("/create")
-    @Operation(summary = "新增字典数据")
+    @Operation(summary = "Add dict data")
     @PreAuthorize("@ss.hasPermission('system:dict:create')")
     public CommonResult<Long> createDictData(@Valid @RequestBody DictDataSaveReqVO createReqVO) {
         Long dictDataId = dictDataService.createDictData(createReqVO);
@@ -47,7 +47,7 @@ public class DictDataController {
     }
 
     @PutMapping("/update")
-    @Operation(summary = "修改字典数据")
+    @Operation(summary = "Modify dict data")
     @PreAuthorize("@ss.hasPermission('system:dict:update')")
     public CommonResult<Boolean> updateDictData(@Valid @RequestBody DictDataSaveReqVO updateReqVO) {
         dictDataService.updateDictData(updateReqVO);
@@ -55,8 +55,8 @@ public class DictDataController {
     }
 
     @DeleteMapping("/delete")
-    @Operation(summary = "删除字典数据")
-    @Parameter(name = "id", description = "编号", required = true, example = "1024")
+    @Operation(summary = "Delete dict data")
+    @Parameter(name = "id", description = "ID", required = true, example = "1024")
     @PreAuthorize("@ss.hasPermission('system:dict:delete')")
     public CommonResult<Boolean> deleteDictData(@RequestParam("id") Long id) {
         dictDataService.deleteDictData(id);
@@ -64,8 +64,8 @@ public class DictDataController {
     }
 
     @DeleteMapping("/delete-list")
-    @Operation(summary = "批量删除字典数据")
-    @Parameter(name = "ids", description = "编号列表", required = true)
+    @Operation(summary = "Delete dict data in batches")
+    @Parameter(name = "ids", description = "ID list", required = true)
     @PreAuthorize("@ss.hasPermission('system:dict:delete')")
     public CommonResult<Boolean> deleteDictDataList(@RequestParam("ids") List<Long> ids) {
         dictDataService.deleteDictDataList(ids);
@@ -73,8 +73,8 @@ public class DictDataController {
     }
 
     @GetMapping(value = {"/list-all-simple", "simple-list"})
-    @Operation(summary = "获得全部字典数据列表", description = "一般用于管理后台缓存字典数据在本地")
-    // 无需添加权限认证，因为前端全局都需要
+    @Operation(summary = "Get a list of all dict data", description = "Generally used to manage background cache dict data locally")
+    // There is no need to add permission authentication, because the frontend requires it globally.
     public CommonResult<List<DictDataSimpleRespVO>> getSimpleDictDataList() {
         List<DictDataDO> list = dictDataService.getDictDataList(
                 CommonStatusEnum.ENABLE.getStatus(), null);
@@ -82,7 +82,7 @@ public class DictDataController {
     }
 
     @GetMapping("/page")
-    @Operation(summary = "获得字典类型的分页")
+    @Operation(summary = "Get pagination of dict type")
     @PreAuthorize("@ss.hasPermission('system:dict:query')")
     public CommonResult<PageResult<DictDataRespVO>> getDictTypePage(@Valid DictDataPageReqVO pageReqVO) {
         PageResult<DictDataDO> pageResult = dictDataService.getDictDataPage(pageReqVO);
@@ -90,8 +90,8 @@ public class DictDataController {
     }
 
     @GetMapping(value = "/get")
-    @Operation(summary = "/查询字典数据详细")
-    @Parameter(name = "id", description = "编号", required = true, example = "1024")
+    @Operation(summary = "/Query dict data details")
+    @Parameter(name = "id", description = "ID", required = true, example = "1024")
     @PreAuthorize("@ss.hasPermission('system:dict:query')")
     public CommonResult<DictDataRespVO> getDictData(@RequestParam("id") Long id) {
         DictDataDO dictData = dictDataService.getDictData(id);
@@ -99,14 +99,14 @@ public class DictDataController {
     }
 
     @GetMapping("/export-excel")
-    @Operation(summary = "导出字典数据")
+    @Operation(summary = "Export dict data")
     @PreAuthorize("@ss.hasPermission('system:dict:export')")
     @ApiAccessLog(operateType = EXPORT)
     public void export(HttpServletResponse response, @Valid DictDataPageReqVO exportReqVO) throws IOException {
         exportReqVO.setPageSize(PageParam.PAGE_SIZE_NONE);
         List<DictDataDO> list = dictDataService.getDictDataPage(exportReqVO).getList();
-        // 输出
-        ExcelUtils.write(response, "字典数据.xls", "数据", DictDataRespVO.class,
+        // output
+        ExcelUtils.write(response, "Dict data.xls", "Data", DictDataRespVO.class,
                 BeanUtils.toBean(list, DictDataRespVO.class));
     }
 

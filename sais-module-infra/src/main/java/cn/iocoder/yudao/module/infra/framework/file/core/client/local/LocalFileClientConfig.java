@@ -7,24 +7,24 @@ import org.hibernate.validator.constraints.URL;
 import jakarta.validation.constraints.NotEmpty;
 
 /**
- * 本地文件客户端的配置类
+ * Configuration class for local file client
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Data
 public class LocalFileClientConfig implements FileClientConfig {
 
     /**
-     * 基础路径
+     * base path
      */
-    @NotEmpty(message = "基础路径不能为空")
+    @NotEmpty(message = "The base path cannot be empty")
     private String basePath;
 
     /**
-     * 自定义域名
+     * Custom domain name
      */
-    @NotEmpty(message = "domain 不能为空")
-    @URL(message = "domain 必须是 URL 格式")
+    @NotEmpty(message = "domain cannot be empty")
+    @URL(message = "domain must be in URL format")
     private String domain;
 
 }

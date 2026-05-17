@@ -8,30 +8,30 @@ import cn.iocoder.yudao.module.system.dal.dataobject.logger.LoginLogDO;
 import jakarta.validation.Valid;
 
 /**
- * 登录日志 Service 接口
+ * Login log service API
  */
 public interface LoginLogService {
 
     /**
-     * 获得登录日志
+     * Get login log
      *
-     * @param id 编号
-     * @return 登录日志
+     * @param id ID
+     * @return Login log
      */
     LoginLogDO getLoginLog(Long id);
 
     /**
-     * 获得登录日志分页
+     * Get login log pagination
      *
-     * @param pageReqVO 分页条件
-     * @return 登录日志分页
+     * @param pageReqVO Paging conditions
+     * @return Login log paging
      */
     PageResult<LoginLogDO> getLoginLogPage(LoginLogPageReqVO pageReqVO);
 
     /**
-     * 创建登录日志
+     * Create login log
      *
-     * @param reqDTO 日志信息
+     * @param reqDTO Log information
      */
     void createLoginLog(@Valid LoginLogCreateReqDTO reqDTO);
 

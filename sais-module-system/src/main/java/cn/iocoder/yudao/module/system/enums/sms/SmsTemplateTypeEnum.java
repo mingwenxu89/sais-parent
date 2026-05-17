@@ -4,21 +4,21 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 短信的模板类型枚举
+ * SMS template type enumeration
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Getter
 @AllArgsConstructor
 public enum SmsTemplateTypeEnum {
 
-    VERIFICATION_CODE(1), // 验证码
-    NOTICE(2), // 通知
-    PROMOTION(3), // 营销
+    VERIFICATION_CODE(1), // Captcha
+    NOTICE(2), // Notification
+    PROMOTION(3), // Marketing
     ;
 
     /**
-     * 类型
+     * Type
      */
     private final int type;
 

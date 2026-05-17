@@ -1,11 +1,11 @@
 /**
- * IP 拓展，支持如下功能：
+ * IP expansion supports the following functions:
  *
- * 1. IP 功能：查询 IP 对应的城市信息
- *      基于 https://gitee.com/lionsoul/ip2region 实现
- * 2. 城市功能：查询城市编码对应的城市信息
- *      基于 https://github.com/modood/Administrative-divisions-of-China 实现
+ * 1. IP function: Query the city information corresponding to the IP
+ * Based on https://gitee.com/lionsoul/ip2region
+ * 2. City function: Query the city information corresponding to the city code
+ * Implemented based on https://github.com/modood/Administrative-divisions-of-China
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 package cn.iocoder.yudao.framework.ip;

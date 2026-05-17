@@ -8,9 +8,9 @@ import jakarta.annotation.Resource;
 import java.util.List;
 
 /**
- * 多租户的 API 实现类
+ * Multi-tenant API implementation class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Service
 public class TenantApiImpl implements TenantCommonApi {

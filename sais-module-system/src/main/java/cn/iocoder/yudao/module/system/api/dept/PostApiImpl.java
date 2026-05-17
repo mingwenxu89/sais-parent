@@ -11,9 +11,9 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * 岗位 API 实现类
+ * Position API implementation class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Service
 public class PostApiImpl implements PostApi {

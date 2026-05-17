@@ -9,7 +9,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 /**
- * 邮箱账号 Service 接口
+ * Email account Service API
  *
  * @author wangjingyi
  * @since 2022-03-21
@@ -17,62 +17,62 @@ import java.util.List;
 public interface MailAccountService {
 
     /**
-     * 创建邮箱账号
+     * Create an email account
      *
-     * @param createReqVO 邮箱账号信息
-     * @return 编号
+     * @param createReqVO Email account information
+     * @return ID
      */
     Long createMailAccount(@Valid MailAccountSaveReqVO createReqVO);
 
     /**
-     * 修改邮箱账号
+     * Modify email account
      *
-     * @param updateReqVO 邮箱账号信息
+     * @param updateReqVO Email account information
      */
     void updateMailAccount(@Valid MailAccountSaveReqVO updateReqVO);
 
     /**
-     * 删除邮箱账号
+     * Delete email account
      *
-     * @param id 编号
+     * @param id ID
      */
     void deleteMailAccount(Long id);
 
     /**
-     * 批量删除邮箱账号
+     * Delete email accounts in batches
      *
-     * @param ids 编号列表
+     * @param ids ID list
      */
     void deleteMailAccountList(List<Long> ids);
 
     /**
-     * 获取邮箱账号信息
+     * Get email account information
      *
-     * @param id 编号
-     * @return 邮箱账号信息
+     * @param id ID
+     * @return Email account information
      */
     MailAccountDO getMailAccount(Long id);
 
     /**
-     * 从缓存中获取邮箱账号
+     * Get email account from cache
      *
-     * @param id 编号
-     * @return 邮箱账号
+     * @param id ID
+     * @return Email account
      */
     MailAccountDO getMailAccountFromCache(Long id);
 
     /**
-     * 获取邮箱账号分页信息
+     * Get email account pagination information
      *
-     * @param pageReqVO 邮箱账号分页参数
-     * @return 邮箱账号分页信息
+     * @param pageReqVO Email account paging parameters
+     * @return Email account paging information
      */
     PageResult<MailAccountDO> getMailAccountPage(MailAccountPageReqVO pageReqVO);
 
     /**
-     * 获取邮箱数组信息
+     * Get mailbox array information
      *
-     * @return 邮箱账号信息数组
+     * @return Email account information array
      */
     List<MailAccountDO> getMailAccountList();
 

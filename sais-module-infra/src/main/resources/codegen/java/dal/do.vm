@@ -12,12 +12,12 @@ import java.time.LocalDateTime;
 #end
 import com.baomidou.mybatisplus.annotation.*;
 import ${BaseDOClassName};
-## 处理 Excel 导出 + Schema 注解（仅 DO 模式）
+## Handle Excel export + Schema annotations (DO mode only)
 #if ($voType == 20)
 import io.swagger.v3.oas.annotations.media.Schema;
 import cn.idev.excel.annotation.*;
 #foreach ($column in $columns)
-    #if ("$!column.dictType" != "")## 有设置数据字典
+    #if ("$!column.dictType" != "")## Have set up data dict
 		import ${DictFormatClassName};
 		import ${DictConvertClassName};
         #break
@@ -31,62 +31,62 @@ import cn.idev.excel.annotation.*;
  * @author ${table.author}
  */
 @TableName("${table.tableName.toLowerCase()}")
-@KeySequence("${table.tableName.toLowerCase()}_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
+@KeySequence("${table.tableName.toLowerCase()}_seq") // Primary key auto-increment for Oracle, PostgreSQL, Kingbase, DB2, H2 databases. If it is a database such as MySQL, you DO not need to write it.
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-## 处理 Excel 导出 + Schema 注解（仅 DO 模式）
+## Handle Excel export + Schema annotations (DO mode only)
 #if ($voType == 20)
 @Schema(description = "${sceneEnum.name} - ${table.classComment} Response VO")
 @ExcelIgnoreUnannotated
 #end
 public class ${table.className}DO extends BaseDO {
 
-## 特殊：树表专属逻辑
+## Special: tree table exclusive logic
 #if ( $table.templateType == 2 )
     public static final Long ${treeParentColumn_javaField_underlineCase.toUpperCase()}_ROOT = 0L;
 
 #end
 #foreach ($column in $columns)
-#if (!${baseDOFields.contains(${column.javaField})})##排除 BaseDO 的字段
+#if (!${baseDOFields.contains(${column.javaField})})##Exclude fields from BaseDO
     /**
      * ${column.columnComment}
-    #if ("$!column.dictType" != "")##处理枚举值
+    #if ("$!column.dictType" != "")##Handle enumeration values
      *
-     * 枚举 {@link TODO ${column.dictType} 对应的类}
+     * Enumeration {@link TODO ${column.dictType} corresponding class}
     #end
      */
-    #if (${column.primaryKey})##处理主键
+    #if (${column.primaryKey})##Handle primary keys
     @TableId#if (${column.javaType} == 'String')(type = IdType.INPUT)#end
     #end
 #if ($voType == 20)
-## 1. 处理 Swagger 注解
+## 1. Process Swagger annotations
     @Schema(description = "${column.columnComment}"#if (!${column.nullable}), requiredMode = Schema.RequiredMode.REQUIRED#end#if ("$!column.example" != ""), example = "${column.example}"#end)
-## 2. 处理 Excel 导出
-#if ("$!column.dictType" != "")##处理枚举值
+## 2. Processing Excel exports
+#if ("$!column.dictType" != "")##Handle enumeration values
     @ExcelProperty(value = "${column.columnComment}", converter = DictConvert.class)
-    @DictFormat("${column.dictType}") // TODO 代码优化：建议设置到对应的 DictTypeConstants 枚举类中
+    @DictFormat("${column.dictType}") // TODO Code optimization: It is recommended to set it to the corresponding DictTypeConstants enumeration class
 #else
     @ExcelProperty("${column.columnComment}")
 #end
 #end
-## 3. 处理字段定义
+## 3. Process field definitions
     private ${column.javaType} ${column.javaField};
 #end
 #end
 
-## 特殊：主子表专属逻辑（非 ERP 模式）
+## Special: Exclusive logic for master and child tables (non-ERP mode)
 #if ( $voType == 20 && $subTables && $subTables.size() > 0 && $table.templateType != 11 )
     #foreach ($subTable in $subTables)
         #set ($index = $foreach.count - 1)
         #if ( $subTable.subJoinMany)
     /**
-    * ${subTable.classComment}列表
+    * ${subTable.classComment} list
     */
-    @Schema(description = "${subTable.classComment}列表")
+    @Schema(description = "${subTable.classComment} list")
     @TableField(exist = false)
     private List<${subTable.className}DO> ${subClassNameVars.get($index)}s;
         #else

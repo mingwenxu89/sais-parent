@@ -17,43 +17,43 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 多租户 JobHandler AOP
- * 任务执行时，会按照租户逐个执行 Job 的逻辑
+ * Multi-tenant JobHandler AOP
+ * When the task is executed, the logic of the Job will be executed one by one according to the tenant.
  *
- * 注意，需要保证 JobHandler 的幂等性。因为 Job 因为某个租户执行失败重试时，之前执行成功的租户也会再次执行。
+ * Note that the idempotence of JobHandler needs to be ensured. Because when a job fails to execute due to a tenant and is retried, the tenant that was successfully executed before will also be executed again.
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Aspect
 @RequiredArgsConstructor
 @Slf4j
 public class TenantJobAspect {
 
-    private final TenantFrameworkService tenantFrameworkService;
+ private final TenantFrameworkService tenantFrameworkService;
 
-    @Around("@annotation(tenantJob)")
-    public String around(ProceedingJoinPoint joinPoint, TenantJob tenantJob) {
-        // 获得租户列表
-        List<Long> tenantIds = tenantFrameworkService.getTenantIds();
-        if (CollUtil.isEmpty(tenantIds)) {
-            return null;
-        }
+ @Around("@annotation(tenantJob)")
+ public String around(ProceedingJoinPoint joinPoint, TenantJob tenantJob) {
+        // Get tenant list
+ List<Long> tenantIds = tenantFrameworkService.getTenantIds();
+ if (CollUtil.isEmpty(tenantIds)) {
+ return null;
+ }
 
-        // 逐个租户，执行 Job
-        Map<Long, String> results = new ConcurrentHashMap<>();
-        tenantIds.parallelStream().forEach(tenantId -> {
-            // TODO 芋艿：先通过 parallel 实现并行；1）多个租户，是一条执行日志；2）异常的情况
-            TenantUtils.execute(tenantId, () -> {
-                try {
-                    Object result = joinPoint.proceed();
-                    results.put(tenantId, StrUtil.toStringOrEmpty(result));
-                } catch (Throwable e) {
-                    log.error("[execute][租户({}) 执行 Job 发生异常", tenantId, e);
-                    results.put(tenantId, ExceptionUtil.getRootCauseMessage(e));
-                }
-            });
-        });
-        return JsonUtils.toJsonString(results);
-    }
+        // Execute Job one by one tenant
+ Map<Long, String> results = new ConcurrentHashMap<>();
+ tenantIds.parallelStream().forEach(tenantId -> {
+            // TODO Taro: First implement parallelism through parallel; 1) Multiple tenants, one execution log; 2) Abnormal situations
+ TenantUtils.execute(tenantId, () -> {
+ try {
+ Object result = joinPoint.proceed();
+ results.put(tenantId, StrUtil.toStringOrEmpty(result));
+ } catch (Throwable e) {
+                    log.error("[execute][Tenant({}) An exception occurred while executing Job", tenantId, e);
+ results.put(tenantId, ExceptionUtil.getRootCauseMessage(e));
+ }
+ });
+ });
+ return JsonUtils.toJsonString(results);
+ }
 
 }

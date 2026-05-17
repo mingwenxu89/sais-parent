@@ -27,14 +27,14 @@ import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 import static cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils.getLoginUserId;
 
 /**
- * 提供给外部应用调用为主
+ * Mainly provided for external application calls
  *
- * 1. 在 getUserInfo 方法上，添加 @PreAuthorize("@ss.hasScope('user.read')") 注解，声明需要满足 scope = user.read
- * 2. 在 updateUserInfo 方法上，添加 @PreAuthorize("@ss.hasScope('user.write')") 注解，声明需要满足 scope = user.write
+ * 1. On the getUserInfo method, add the @PreAuthorize("@ss.hasScope('user.read')") annotation and declare that scope = user.read needs to be satisfied
+ * 2. On the updateUserInfo method, add the @PreAuthorize("@ss.hasScope('user.write')") annotation, stating that scope = user.write needs to be satisfied
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
-@Tag(name = "管理后台 - OAuth2.0 用户")
+@Tag(name = "Management backend - OAuth2.0 users")
 @RestController
 @RequestMapping("/system/oauth2/user")
 @Validated
@@ -49,18 +49,18 @@ public class OAuth2UserController {
     private PostService postService;
 
     @GetMapping("/get")
-    @Operation(summary = "获得用户基本信息")
+    @Operation(summary = "Obtain basic user information")
     @PreAuthorize("@ss.hasScope('user.read')") //
     public CommonResult<OAuth2UserInfoRespVO> getUserInfo() {
-        // 获得用户基本信息
+        // Obtain basic user information
         AdminUserDO user = userService.getUser(getLoginUserId());
         OAuth2UserInfoRespVO resp = BeanUtils.toBean(user, OAuth2UserInfoRespVO.class);
-        // 获得部门信息
+        // Get department information
         if (user.getDeptId() != null) {
             DeptDO dept = deptService.getDept(user.getDeptId());
             resp.setDept(BeanUtils.toBean(dept, OAuth2UserInfoRespVO.Dept.class));
         }
-        // 获得岗位信息
+        // Get job information
         if (CollUtil.isNotEmpty(user.getPostIds())) {
             List<PostDO> posts = postService.getPostList(user.getPostIds());
             resp.setPosts(BeanUtils.toBean(posts, OAuth2UserInfoRespVO.Post.class));
@@ -69,11 +69,11 @@ public class OAuth2UserController {
     }
 
     @PutMapping("/update")
-    @Operation(summary = "更新用户基本信息")
+    @Operation(summary = "Update basic user information")
     @PreAuthorize("@ss.hasScope('user.write')")
     public CommonResult<Boolean> updateUserInfo(@Valid @RequestBody OAuth2UserUpdateReqVO reqVO) {
-        // 这里将 UserProfileUpdateReqVO =》UserProfileUpdateReqVO 对象，实现接口的复用。
-        // 主要是，AdminUserService 没有自己的 BO 对象，所以复用只能这么做
+        // Here, the UserProfileUpdateReqVO =》UserProfileUpdateReqVO object is used to realize the reuse of the API.
+        // Mainly, AdminUserService does not have its own BO object, so the only way to reuse it is this
         userService.updateUserProfile(getLoginUserId(), BeanUtils.toBean(reqVO, UserProfileUpdateReqVO.class));
         return success(true);
     }

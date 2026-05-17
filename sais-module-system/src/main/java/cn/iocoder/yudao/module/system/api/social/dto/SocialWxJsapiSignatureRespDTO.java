@@ -3,23 +3,23 @@ package cn.iocoder.yudao.module.system.api.social.dto;
 import lombok.Data;
 
 /**
- * 微信公众号 JSAPI 签名 Response DTO
+ * WeChat official account JSAPI signature Response DTO
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Data
 public class SocialWxJsapiSignatureRespDTO {
 
     /**
-     * 微信公众号的 appId
+     * appId of WeChat official account
      */
     private String appId;
     /**
-     * 匿名串
+     * anonymous string
      */
     private String nonceStr;
     /**
-     * 时间戳
+     * Timestamp
      */
     private Long timestamp;
     /**
@@ -27,7 +27,7 @@ public class SocialWxJsapiSignatureRespDTO {
      */
     private String url;
     /**
-     * 签名
+     * signature
      */
     private String signature;
 

@@ -1,4 +1,4 @@
 /**
- * 每个模块的 util 包，放专属当前模块的 Utils 工具类
+ * The util package of each module contains the Utils tool class exclusive to the current module.
  */
 package cn.iocoder.yudao.module.system.util;

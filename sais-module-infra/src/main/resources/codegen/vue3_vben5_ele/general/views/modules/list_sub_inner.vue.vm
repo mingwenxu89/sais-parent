@@ -1,4 +1,4 @@
-## 子表的 erp 和 inner 使用相似的 list 列表，差异主要两点：
-## 1）inner 使用 list 不分页，erp 使用 page 分页
-## 2）erp 支持单个子表的新增、修改、删除，inner 不支持
+## The erp and inner of the subtable use similar list lists, with two main differences:
+## 1) inner uses list without paging, and erp uses page for paging.
+## 2) erp supports the addition, modification, and deletion of a single subtable, but inner does not support it.
 #parse("codegen/vue3_vben5_ele/general/views/modules/list_sub_erp.vue.vm")

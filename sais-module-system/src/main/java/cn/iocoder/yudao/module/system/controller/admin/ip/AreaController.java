@@ -20,30 +20,30 @@ import java.util.List;
 
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 
-@Tag(name = "管理后台 - 地区")
+@Tag(name = "Admin Backend - Region")
 @RestController
 @RequestMapping("/system/area")
 @Validated
 public class AreaController {
 
     @GetMapping("/tree")
-    @Operation(summary = "获得地区树")
+    @Operation(summary = "get region tree")
     public CommonResult<List<AreaNodeRespVO>> getAreaTree() {
         Area area = AreaUtils.getArea(Area.ID_CHINA);
-        Assert.notNull(area, "获取不到中国");
+        Assert.notNull(area, "Can't get China");
         return success(BeanUtils.toBean(area.getChildren(), AreaNodeRespVO.class));
     }
 
     @GetMapping("/get-by-ip")
-    @Operation(summary = "获得 IP 对应的地区名")
+    @Operation(summary = "Get the region name corresponding to the IP")
     @Parameter(name = "ip", description = "IP", required = true)
     public CommonResult<String> getAreaByIp(@RequestParam("ip") String ip) {
-        // 获得城市
+        // get city
         Area area = IPUtils.getArea(ip);
         if (area == null) {
-            return success("未知");
+            return success("Unknown");
         }
-        // 格式化返回
+        // Formatted return
         return success(AreaUtils.format(area.getId()));
     }
 

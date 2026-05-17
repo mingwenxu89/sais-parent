@@ -4,25 +4,25 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 代码生成器的字段 HTML 展示枚举
+ * Code Generator Fields HTML Display Enum
  */
 @AllArgsConstructor
 @Getter
 public enum CodegenColumnHtmlTypeEnum {
 
-    INPUT("input"), // 文本框
-    TEXTAREA("textarea"), // 文本域
-    SELECT("select"), // 下拉框
-    RADIO("radio"), // 单选框
-    CHECKBOX("checkbox"), // 复选框
-    DATETIME("datetime"), // 日期控件
-    IMAGE_UPLOAD("imageUpload"), // 上传图片
-    FILE_UPLOAD("fileUpload"), // 上传文件
-    EDITOR("editor"), // 富文本控件
+    INPUT("input"), // Text input
+    TEXTAREA("textarea"), // Textarea
+    SELECT("select"), // Select box
+    RADIO("radio"), // Radio button
+    CHECKBOX("checkbox"), // Checkbox
+    DATETIME("datetime"), // Date control
+    IMAGE_UPLOAD("imageUpload"), // Upload image
+    FILE_UPLOAD("fileUpload"), // Upload file
+    EDITOR("editor"), // Rich text control
     ;
 
     /**
-     * 条件
+     * Conditions
      */
     private final String type;
 

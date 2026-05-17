@@ -1,4 +1,4 @@
 /**
- * infra API 包，定义并实现提供给其它模块的 API
+ * infra API package, defines and implements APIs provided to other modules
  */
 package cn.iocoder.yudao.module.infra.api;

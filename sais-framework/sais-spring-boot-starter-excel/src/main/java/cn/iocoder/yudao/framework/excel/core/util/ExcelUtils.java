@@ -13,44 +13,44 @@ import java.io.InputStream;
 import java.util.List;
 
 /**
- * Excel 工具类
+ * Excel tools
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public class ExcelUtils {
 
-    /**
-     * 将列表以 Excel 响应给前端
-     *
-     * @param response  响应
-     * @param filename  文件名
-     * @param sheetName Excel sheet 名
-     * @param head      Excel head 头
-     * @param data      数据列表哦
-     * @param <T>       泛型，保证 head 和 data 类型的一致性
-     * @throws IOException 写入失败的情况
-     */
-    public static <T> void write(HttpServletResponse response, String filename, String sheetName,
-                                 Class<T> head, List<T> data) throws IOException {
-        // 输出 Excel
-        FastExcelFactory.write(response.getOutputStream(), head)
-                .autoCloseStream(false) // 不要自动关闭，交给 Servlet 自己处理
-                .registerWriteHandler(new ColumnWidthMatchStyleStrategy()) // 基于 column 长度，自动适配。最大 255 宽度
-                .registerWriteHandler(new SelectSheetWriteHandler(head)) // 基于固定 sheet 实现下拉框
-                .registerConverter(new LongStringConverter()) // 避免 Long 类型丢失精度
-                .sheet(sheetName).doWrite(data);
-        // 设置 header 和 contentType。写在最后的原因是，避免报错时，响应 contentType 已经被修改了
-        response.addHeader("Content-Disposition", "attachment;filename=" + HttpUtils.encodeUtf8(filename));
-        response.setContentType("application/vnd.ms-excel;charset=UTF-8");
-    }
+ /**
+     * Respond the list to the front end in Excel
+ *
+     * @param response response
+     * @param filename file name
+     * @param sheetName Excel sheet name
+     * @param head Excel head
+     * @param data Data list
+     * @param <T> Generic, ensuring the consistency of head and data types
+     * @throws IOException when writing fails
+ */
+ public static <T> void write(HttpServletResponse response, String filename, String sheetName,
+ Class<T> head, List<T> data) throws IOException {
+        // Output Excel
+ FastExcelFactory.write(response.getOutputStream(), head)
+                .autoCloseStream(false) // Don't close it automatically, leave it to the Servlet to handle it yourself
+                .registerWriteHandler(new ColumnWidthMatchStyleStrategy()) // Automatic adaptation based on column length. Maximum 255 width
+                .registerWriteHandler(new SelectSheetWriteHandler(head)) // Implement drop-down box based on fixed sheet
+                .registerConverter(new LongStringConverter()) // AvoID loss of precision for Long types
+.sheet(sheetName).doWrite(data);
+        // Set header and contentType. The reason for writing it at the end is to avoID reporting an error when the response contentType has been modified.
+ response.addHeader("Content-Disposition", "attachment;filename=" + HttpUtils.encodeUtf8(filename));
+ response.setContentType("application/vnd.ms-excel;charset=UTF-8");
+ }
 
-    public static <T> List<T> read(MultipartFile file, Class<T> head) throws IOException {
-        // 参考 https://t.zsxq.com/zM77F 帖子，增加 try 处理，兼容 windows 场景
-        try (InputStream inputStream = file.getInputStream()) {
-            return FastExcelFactory.read(inputStream, head, null)
-                    .autoCloseStream(false) // 不要自动关闭，交给 Servlet 自己处理
-                    .doReadAllSync();
-        }
-    }
+ public static <T> List<T> read(MultipartFile file, Class<T> head) throws IOException {
+        // Refer to the post https://t.zsxq.com/zM77F, add try processing, and be compatible with windows scenarios
+ try (InputStream inputStream = file.getInputStream()) {
+ return FastExcelFactory.read(inputStream, head, null)
+                    .autoCloseStream(false) // Don't close it automatically, leave it to the Servlet to handle it yourself
+.doReadAllSync();
+ }
+ }
 
 }

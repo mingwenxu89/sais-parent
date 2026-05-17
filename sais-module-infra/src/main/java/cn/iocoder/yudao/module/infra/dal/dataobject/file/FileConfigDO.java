@@ -21,12 +21,12 @@ import lombok.*;
 import java.lang.reflect.Field;
 
 /**
- * 文件配置表
+ * File configuration table
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @TableName(value = "infra_file_config", autoResultMap = true)
-@KeySequence("infra_file_config_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
+@KeySequence("infra_file_config_seq") // Primary key auto-increment for Oracle, PostgreSQL, Kingbase, DB2, H2 databases. If it is a database such as MySQL, you DO not need to write it.
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
@@ -37,32 +37,32 @@ import java.lang.reflect.Field;
 public class FileConfigDO extends BaseDO {
 
     /**
-     * 配置编号，数据库自增
+     * Configuration ID, database auto-increment
      */
     private Long id;
     /**
-     * 配置名
+     * Configuration name
      */
     private String name;
     /**
-     * 存储器
+     * memory
      *
-     * 枚举 {@link FileStorageEnum}
+     * Enum {@link FileStorageEnum}
      */
     private Integer storage;
     /**
-     * 备注
+     * Remark
      */
     private String remark;
     /**
-     * 是否为主配置
+     * Is it the main configuration?
      *
-     * 由于我们可以配置多个文件配置，默认情况下，使用主配置进行文件的上传
+     * Since we can configure multiple file configurations, by default, the main configuration is used for file uploading.
      */
     private Boolean master;
 
     /**
-     * 支付渠道配置
+     * Payment channel configuration
      */
     @TableField(typeHandler = FileClientConfigTypeHandler.class)
     private FileClientConfig config;
@@ -85,7 +85,7 @@ public class FileConfigDO extends BaseDO {
                 return config;
             }
 
-            // 兼容老版本的包路径
+            // Package paths compatible with older versions
             String className = JsonUtils.parseObject(json, "@class", String.class);
             className = StrUtil.subAfter(className, ".", true);
             switch (className) {
@@ -100,7 +100,7 @@ public class FileConfigDO extends BaseDO {
                 case "S3FileClientConfig":
                     return JsonUtils.parseObject2(json, S3FileClientConfig.class);
                 default:
-                    throw new IllegalArgumentException("未知的 FileClientConfig 类型：" + json);
+                    throw new IllegalArgumentException("Unknown FileClientConfig type:" + json);
             }
         }
 

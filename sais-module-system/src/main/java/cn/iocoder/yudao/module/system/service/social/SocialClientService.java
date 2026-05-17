@@ -18,142 +18,142 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 /**
- * 社交应用 Service 接口
+ * Social application service API
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface SocialClientService {
 
     /**
-     * 获得社交平台的授权 URL
+     * Obtain the authorized URL of the social platform
      *
-     * @param socialType  社交平台的类型 {@link SocialTypeEnum}
-     * @param userType    用户类型
-     * @param redirectUri 重定向 URL
-     * @return 社交平台的授权 URL
+     * @param socialType  Type of social platform {@link SocialTypeEnum}
+     * @param userType    User type
+     * @param redirectUri Redirect URL
+     * @return Authorization URL for social platforms
      */
     String getAuthorizeUrl(Integer socialType, Integer userType, String redirectUri);
 
     /**
-     * 请求社交平台，获得授权的用户
+     * Request social platform, authorized user
      *
-     * @param socialType 社交平台的类型
-     * @param userType   用户类型
-     * @param code       授权码
-     * @param state      授权 state
-     * @return 授权的用户
+     * @param socialType Types of social platforms
+     * @param userType   User type
+     * @param code       Authorization code
+     * @param state      authorization state
+     * @return authorized user
      */
     AuthUser getAuthUser(Integer socialType, Integer userType, String code, String state);
 
-    // =================== 微信公众号独有 ===================
+    // =================== Exclusive to WeChat official account ===================
 
     /**
-     * 创建微信公众号的 JS SDK 初始化所需的签名
+     * Signature required for JS SDK initialization to create WeChat official account
      *
-     * @param userType 用户类型
-     * @param url      访问的 URL 地址
-     * @return 签名
+     * @param userType User type
+     * @param url      Visited URL address
+     * @return signature
      */
     WxJsapiSignature createWxMpJsapiSignature(Integer userType, String url);
 
-    // =================== 微信小程序独有 ===================
+    // =================== Exclusive to WeChat Mini Program ===================
 
     /**
-     * 获得微信小程序的手机信息
+     * Get mobile phone information from WeChat applet
      *
-     * @param userType  用户类型
-     * @param phoneCode 手机授权码
-     * @return 手机信息
+     * @param userType  User type
+     * @param phoneCode Mobile authorization code
+     * @return Mobile phone information
      */
     WxMaPhoneNumberInfo getWxMaPhoneNumberInfo(Integer userType, String phoneCode);
 
     /**
-     * 获得小程序二维码
+     * Obtain the QR code of the miniapp
      *
-     * @param reqVO 请求信息
-     * @return 小程序二维码
+     * @param reqVO request information
+     * @return Mini program QR code
      */
     byte[] getWxaQrcode(SocialWxQrcodeReqDTO reqVO);
 
     /**
-     * 获得微信小程订阅模板
+     * Get WeChat Xiaocheng subscription template
      *
-     * 缓存的目的：考虑到微信小程序订阅消息选择好模版后几乎不会变动，缓存增加查询效率
+     * Purpose of caching: Considering that the WeChat applet subscription message rarely changes after selecting a template, caching increases query efficiency.
      *
-     * @param userType 用户类型
-     * @return 微信小程订阅模板
+     * @param userType User type
+     * @return WeChat Xiaocheng Subscription Template
      */
     List<TemplateInfo> getSubscribeTemplateList(Integer userType);
 
     /**
-     * 发送微信小程序订阅消息
+     * Send WeChat applet subscription messages
      *
-     * @param reqDTO     请求
-     * @param templateId 模版编号
-     * @param openId     会员 openId
+     * @param reqDTO     Request
+     * @param templateId Template ID
+     * @param openId     Member openId
      */
     void sendSubscribeMessage(SocialWxaSubscribeMessageSendReqDTO reqDTO, String templateId, String openId);
 
     /**
-     * 上传订单发货到微信小程序
+     * Upload orders and ship them to WeChat miniapp
      *
-     * @param userType 用户类型
-     * @param reqDTO 请求
+     * @param userType User type
+     * @param reqDTO Request
      */
     void uploadWxaOrderShippingInfo(Integer userType, SocialWxaOrderUploadShippingInfoReqDTO reqDTO);
 
     /**
-     * 通知订单收货到微信小程序
+     * Notify order receipt to WeChat applet
      *
-     * @param userType 用户类型
-     * @param reqDTO 请求
+     * @param userType User type
+     * @param reqDTO Request
      */
     void notifyWxaOrderConfirmReceive(Integer userType, SocialWxaOrderNotifyConfirmReceiveReqDTO reqDTO);
 
-    // =================== 客户端管理 ===================
+    // =================== Client Management ===================
 
     /**
-     * 创建社交客户端
+     * Create a social client
      *
-     * @param createReqVO 创建信息
-     * @return 编号
+     * @param createReqVO Create information
+     * @return ID
      */
     Long createSocialClient(@Valid SocialClientSaveReqVO createReqVO);
 
     /**
-     * 更新社交客户端
+     * Update social client
      *
-     * @param updateReqVO 更新信息
+     * @param updateReqVO Update information
      */
     void updateSocialClient(@Valid SocialClientSaveReqVO updateReqVO);
 
     /**
-     * 删除社交客户端
+     * Delete social client
      *
-     * @param id 编号
+     * @param id ID
      */
     void deleteSocialClient(Long id);
 
     /**
-     * 批量删除社交客户端
+     * Delete social clients in batches
      *
-     * @param ids 编号数组
+     * @param ids IDed array
      */
     void deleteSocialClientList(List<Long> ids);
 
     /**
-     * 获得社交客户端
+     * Get social client
      *
-     * @param id 编号
-     * @return 社交客户端
+     * @param id ID
+     * @return social client
      */
     SocialClientDO getSocialClient(Long id);
 
     /**
-     * 获得社交客户端分页
+     * Get social client pagination
      *
-     * @param pageReqVO 分页查询
-     * @return 社交客户端分页
+     * @param pageReqVO Page query
+     * @return Social client pagination
      */
     PageResult<SocialClientDO> getSocialClientPage(SocialClientPageReqVO pageReqVO);
 

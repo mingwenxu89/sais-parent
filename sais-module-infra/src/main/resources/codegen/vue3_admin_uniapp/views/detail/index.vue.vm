@@ -1,13 +1,13 @@
 <template>
   <view class="yd-page-container">
-    <!-- 顶部导航栏 -->
+    <!-- Top navigation bar -->
     <wd-navbar
-      title="${table.classComment}详情"
+      title="${table.classComment}Details"
       left-arrow placeholder safe-area-inset-top fixed
       @click-left="handleBack"
     />
 
-    <!-- 详情内容 -->
+    <!-- Details -->
     <view>
       <wd-cell-group border>
 #foreach($column in $columns)
@@ -28,20 +28,20 @@
       </wd-cell-group>
     </view>
 
-    <!-- 底部操作按钮 -->
+    <!-- Bottom operation button -->
     <view class="yd-detail-footer">
       <view class="yd-detail-footer-actions">
         <wd-button
           v-if="hasAccessByCodes(['${permissionPrefix}:update'])"
           class="flex-1" type="warning" @click="handleEdit"
         >
-          编辑
+          Edit
         </wd-button>
         <wd-button
           v-if="hasAccessByCodes(['${permissionPrefix}:delete'])"
           class="flex-1" type="error" :loading="deleting" @click="handleDelete"
         >
-          删除
+          Delete
         </wd-button>
       </view>
     </view>
@@ -90,39 +90,39 @@ const toast = useToast()
 const formData = ref<${simpleClassName}>()
 const deleting = ref(false)
 
-/** 返回上一页 */
+/** Return to previous page */
 function handleBack() {
   navigateBackPlus('/pages-${table.moduleName}/${table.businessName}/index')
 }
 
-/** 加载${table.classComment}详情 */
+/** Load ${table.classComment} details */
 async function getDetail() {
   if (!props.id) {
     return
   }
   try {
-    toast.loading('加载中...')
+    toast.loading('Loading...')
     formData.value = await get${simpleClassName}(props.id)
   } finally {
     toast.close()
   }
 }
 
-/** 编辑${table.classComment} */
+/** Edit${table.classComment} */
 function handleEdit() {
   uni.navigateTo({
     url: `/pages-${table.moduleName}/${table.businessName}/form/index?id=#[[${]]#props.id#[[}]]#`,
   })
 }
 
-/** 删除${table.classComment} */
+/** Delete ${table.classComment} */
 function handleDelete() {
   if (!props.id) {
     return
   }
   uni.showModal({
-    title: '提示',
-    content: '确定要删除该${table.classComment}吗？',
+    title: 'Tips',
+    content: 'Are you sure you want to delete this ${table.classComment}?',
     success: async (res) => {
       if (!res.confirm) {
         return
@@ -130,7 +130,7 @@ function handleDelete() {
       deleting.value = true
       try {
         await delete${simpleClassName}(props.id)
-        toast.success('删除成功')
+        toast.success('Delete successfully')
         setTimeout(() => {
           handleBack()
         }, 500)
@@ -141,7 +141,7 @@ function handleDelete() {
   })
 }
 
-/** 初始化 */
+/** initialization */
 onMounted(() => {
   getDetail()
 })

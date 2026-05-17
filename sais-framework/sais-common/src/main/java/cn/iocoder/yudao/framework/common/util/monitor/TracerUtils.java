@@ -3,28 +3,28 @@ package cn.iocoder.yudao.framework.common.util.monitor;
 import org.apache.skywalking.apm.toolkit.trace.TraceContext;
 
 /**
- * 链路追踪工具类
+ * Link tracking tools
  *
- * 考虑到每个 starter 都需要用到该工具类，所以放到 common 模块下的 util 包下
+ * Considering that every starter needs to use this tool class, it is placed under the util package under the common module.
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public class TracerUtils {
 
-    /**
-     * 私有化构造方法
-     */
-    private TracerUtils() {
-    }
+ /**
+     * Private constructor
+ */
+ private TracerUtils() {
+ }
 
-    /**
-     * 获得链路追踪编号，直接返回 SkyWalking 的 TraceId。
-     * 如果不存在的话为空字符串！！！
-     *
-     * @return 链路追踪编号
-     */
-    public static String getTraceId() {
-        return TraceContext.traceId();
-    }
+ /**
+     * Obtain the link tracking number and directly return SkyWalking's TraceId.
+     * If it does not exist, it will be an empty string! ! !
+ *
+     * @return link tracking number
+ */
+ public static String getTraceId() {
+ return TraceContext.traceId();
+ }
 
 }

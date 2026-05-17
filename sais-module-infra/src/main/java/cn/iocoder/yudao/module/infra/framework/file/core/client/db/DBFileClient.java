@@ -10,9 +10,9 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * 基于 DB 存储的文件客户端的配置类
+ * Configuration class for file client based on DB storage
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public class DBFileClient extends AbstractFileClient<DBFileClientConfig> {
 
@@ -32,7 +32,7 @@ public class DBFileClient extends AbstractFileClient<DBFileClientConfig> {
         FileContentDO contentDO = new FileContentDO().setConfigId(getId())
                 .setPath(path).setContent(content);
         fileContentMapper.insert(contentDO);
-        // 拼接返回路径
+        // splice return path
         return super.formatFileUrl(config.getDomain(), path);
     }
 
@@ -47,7 +47,7 @@ public class DBFileClient extends AbstractFileClient<DBFileClientConfig> {
         if (CollUtil.isEmpty(list)) {
             return null;
         }
-        // 排序后，拿 id 最大的，即最后上传的
+        // After sorting, take the one with the largest ID, which is the last one uploaded.
         list.sort(Comparator.comparing(FileContentDO::getId));
         return CollUtil.getLast(list).getContent();
     }

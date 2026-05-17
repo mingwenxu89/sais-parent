@@ -8,9 +8,9 @@ import cn.iocoder.yudao.module.infra.dal.dataobject.job.JobDO;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
- * 定时任务 Mapper
+ * Scheduled task Mapper
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Mapper
 public interface JobMapper extends BaseMapperX<JobDO> {

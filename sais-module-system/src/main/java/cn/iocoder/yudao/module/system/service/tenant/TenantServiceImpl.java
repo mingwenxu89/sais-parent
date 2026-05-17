@@ -46,9 +46,9 @@ import static cn.iocoder.yudao.module.system.enums.ErrorCodeConstants.*;
 import static java.util.Collections.singleton;
 
 /**
- * 租户 Service 实现类
+ * Tenant Service implementation class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Service
 @Validated
@@ -56,7 +56,7 @@ import static java.util.Collections.singleton;
 public class TenantServiceImpl implements TenantService {
 
     @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
-    @Autowired(required = false) // 由于 yudao.tenant.enable 配置项，可以关闭多租户的功能，所以这里只能不强制注入
+    @Autowired(required = false) // Since the yudao.tenant.enable configuration item can turn off the multi-tenant function, there is no forced injection here.
     private TenantProperties tenantProperties;
 
     @Resource
@@ -65,7 +65,7 @@ public class TenantServiceImpl implements TenantService {
     @Resource
     private TenantPackageService tenantPackageService;
     @Resource
-    @Lazy // 延迟，避免循环依赖报错
+    @Lazy // Delay to avoid circular dependency errors
     private AdminUserService userService;
     @Resource
     private RoleService roleService;
@@ -95,48 +95,48 @@ public class TenantServiceImpl implements TenantService {
     }
 
     @Override
-    @DSTransactional // 多数据源，使用 @DSTransactional 保证本地事务，以及数据源的切换
-    @DataPermission(enable = false) // 参见 https://gitee.com/zhijiantianya/ruoyi-vue-pro/pulls/1154 说明
+    @DSTransactional // Multiple data sources, using @DSTransactional Ensure local transactions and data source switching
+    @DataPermission(enable = false) // See https://gitee.com/zhijiantianya/ruoyi-vue-pro/pulls/1154 instructions
     public Long createTenant(TenantSaveReqVO createReqVO) {
-        // 校验租户名称是否重复
+        // Verify whether the tenant name is duplicated
         validTenantNameDuplicate(createReqVO.getName(), null);
-        // 校验租户域名是否重复
+        // Verify whether the tenant domain name is duplicated
         validTenantWebsiteDuplicate(createReqVO.getWebsites(), null);
-        // 校验套餐被禁用（套餐可选，为空时赋予全量菜单）
+        // Verify that the package is disabled (the package is optional, and the full menu is given when it is empty)
         TenantPackageDO tenantPackage = createReqVO.getPackageId() != null
                 ? tenantPackageService.validTenantPackage(createReqVO.getPackageId()) : null;
 
-        // 创建租户
+        // Create tenant
         TenantDO tenant = BeanUtils.toBean(createReqVO, TenantDO.class);
-        tenant.setAccountCount(0); // accountCount 字段已从界面移除，固定写 0 满足 NOT NULL 约束
+        tenant.setAccountCount(0); // accountCount The field has been removed from the API and is fixed to write 0 to satisfy the NOT NULL constraint.
         tenantMapper.insert(tenant);
-        // 创建租户的管理员
+        // Create an administrator for a tenant
         TenantUtils.execute(tenant.getId(), () -> {
-            // 创建角色
+            // Create a role
             Long roleId = createRole(tenantPackage);
-            // 创建用户，并分配角色
+            // Create users and assign roles
             Long userId = createUser(roleId, createReqVO);
-            // 修改租户的管理员
+            // Modify tenant administrator
             tenantMapper.updateById(new TenantDO().setId(tenant.getId()).setContactUserId(userId));
         });
         return tenant.getId();
     }
 
     private Long createUser(Long roleId, TenantSaveReqVO createReqVO) {
-        // 创建用户
+        // Create user
         Long userId = userService.createUser(TenantConvert.INSTANCE.convert02(createReqVO));
-        // 分配角色
+        // Assign roles
         permissionService.assignUserRole(userId, singleton(roleId));
         return userId;
     }
 
     private Long createRole(TenantPackageDO tenantPackage) {
-        // 创建角色
+        // Create a role
         RoleSaveReqVO reqVO = new RoleSaveReqVO();
         reqVO.setName(RoleCodeEnum.TENANT_ADMIN.getName()).setCode(RoleCodeEnum.TENANT_ADMIN.getCode())
-                .setSort(0).setRemark("系统自动生成");
+                .setSort(0).setRemark("Generated automatically by the system");
         Long roleId = roleService.createRole(reqVO, RoleTypeEnum.SYSTEM.getType());
-        // 分配权限：有套餐则用套餐菜单，否则赋予全量菜单
+        // Assign permissions: If there is a set menu, use the set menu, otherwise give the full menu
         Set<Long> menuIds = tenantPackage != null
                 ? tenantPackage.getMenuIds()
                 : CollectionUtils.convertSet(menuService.getMenuList(), MenuDO::getId);
@@ -145,18 +145,18 @@ public class TenantServiceImpl implements TenantService {
     }
 
     @Override
-    @DSTransactional // 多数据源，使用 @DSTransactional 保证本地事务，以及数据源的切换
+    @DSTransactional // Multiple data sources, using @DSTransactional Ensure local transactions and data source switching
     public void updateTenant(TenantSaveReqVO updateReqVO) {
-        // 校验存在
+        // Check existence
         TenantDO tenant = validateUpdateTenant(updateReqVO.getId());
-        // 校验租户名称是否重复
+        // Verify whether the tenant name is duplicated
         validTenantNameDuplicate(updateReqVO.getName(), updateReqVO.getId());
-        // 校验租户域名是否重复
+        // Verify whether the tenant domain name is duplicated
         validTenantWebsiteDuplicate(updateReqVO.getWebsites(), updateReqVO.getId());
-        // 更新租户
+        // Update tenant
         TenantDO updateObj = BeanUtils.toBean(updateReqVO, TenantDO.class);
         tenantMapper.updateById(updateObj);
-        // 套餐可选：有套餐且发生变化时，才同步角色菜单权限
+        // Package optional: Role menu permissions will be synchronized only when there is a package and it changes.
         if (updateReqVO.getPackageId() != null
                 && ObjectUtil.notEqual(tenant.getPackageId(), updateReqVO.getPackageId())) {
             TenantPackageDO tenantPackage = tenantPackageService.validTenantPackage(updateReqVO.getPackageId());
@@ -169,7 +169,7 @@ public class TenantServiceImpl implements TenantService {
         if (tenant == null) {
             return;
         }
-        // 如果 id 为空，说明不用比较是否为相同名字的租户
+        // If the id is empty, it means there is no need to compare whether they are tenants with the same name.
         if (id == null) {
             throw exception(TENANT_NAME_DUPLICATE, name);
         }
@@ -197,41 +197,41 @@ public class TenantServiceImpl implements TenantService {
     @DSTransactional
     public void updateTenantRoleMenu(Long tenantId, Set<Long> menuIds) {
         TenantUtils.execute(tenantId, () -> {
-            // 获得所有角色
+            // Get all characters
             List<RoleDO> roles = roleService.getRoleList();
-            roles.forEach(role -> Assert.isTrue(tenantId.equals(role.getTenantId()), "角色({}/{}) 租户不匹配",
-                    role.getId(), role.getTenantId(), tenantId)); // 兜底校验
-            // 重新分配每个角色的权限
+            roles.forEach(role -> Assert.isTrue(tenantId.equals(role.getTenantId()), "Role({}/{}) tenant mismatch",
+                    role.getId(), role.getTenantId(), tenantId)); // Check everything
+            // Reassign permissions for each role
             roles.forEach(role -> {
-                // 如果是租户管理员，重新分配其权限为租户套餐的权限
+                // If you are a tenant administrator, reassign its permissions to those of the tenant package.
                 if (Objects.equals(role.getCode(), RoleCodeEnum.TENANT_ADMIN.getCode())) {
                     permissionService.assignRoleMenu(role.getId(), menuIds);
-                    log.info("[updateTenantRoleMenu][租户管理员({}/{}) 的权限修改为({})]", role.getId(), role.getTenantId(), menuIds);
+                    log.info("[updateTenantRoleMenu][The permissions of the tenant administrator ({}/{}) are modified to ({})]", role.getId(), role.getTenantId(), menuIds);
                     return;
                 }
-                // 如果是其他角色，则去掉超过套餐的权限
+                // If it is another role, remove the permissions that exceed the package
                 Set<Long> roleMenuIds = permissionService.getRoleMenuListByRoleId(role.getId());
                 roleMenuIds = CollUtil.intersectionDistinct(roleMenuIds, menuIds);
                 permissionService.assignRoleMenu(role.getId(), roleMenuIds);
-                log.info("[updateTenantRoleMenu][角色({}/{}) 的权限修改为({})]", role.getId(), role.getTenantId(), roleMenuIds);
+                log.info("[updateTenantRoleMenu][The permissions of role ({}/{}) are modified to ({})]", role.getId(), role.getTenantId(), roleMenuIds);
             });
         });
     }
 
     @Override
     public void deleteTenant(Long id) {
-        // 校验存在
+        // Check existence
         validateUpdateTenant(id);
-        // 删除
+        // Delete
         tenantMapper.deleteById(id);
     }
 
     @Override
     public void deleteTenantList(List<Long> ids) {
-        // 1. 校验存在
+        // 1. Verify existence
         ids.forEach(this::validateUpdateTenant);
 
-        // 2. 批量删除
+        // 2. Batch deletion
         tenantMapper.deleteByIds(ids);
     }
 
@@ -240,7 +240,7 @@ public class TenantServiceImpl implements TenantService {
         if (tenant == null) {
             throw exception(TENANT_NOT_EXISTS);
         }
-        // 内置租户，不允许删除
+        // Built-in tenant, deletion is not allowed
         if (isSystemTenant(tenant)) {
             throw exception(TENANT_CAN_NOT_UPDATE_SYSTEM);
         }
@@ -285,31 +285,31 @@ public class TenantServiceImpl implements TenantService {
 
     @Override
     public void handleTenantInfo(TenantInfoHandler handler) {
-        // 如果禁用，则不执行逻辑
+        // If disabled, no logic is executed
         if (isTenantDisable()) {
             return;
         }
-        // 获得租户
+        // Get tenants
         TenantDO tenant = getTenant(TenantContextHolder.getRequiredTenantId());
-        // 执行处理器
+        // execution processor
         handler.handle(tenant);
     }
 
     @Override
     public void handleTenantMenu(TenantMenuHandler handler) {
-        // 如果禁用，则不执行逻辑
+        // If disabled, no logic is executed
         if (isTenantDisable()) {
             return;
         }
-        // 获得租户，然后获得菜单
+        // Get the tenant, then get the menu
         TenantDO tenant = getTenant(TenantContextHolder.getRequiredTenantId());
         Set<Long> menuIds;
-        if (isSystemTenant(tenant) || tenant.getPackageId() == null) { // 系统租户或无套餐，菜单是全量的
+        if (isSystemTenant(tenant) || tenant.getPackageId() == null) { // System tenant or no package, the menu is full
             menuIds = CollectionUtils.convertSet(menuService.getMenuList(), MenuDO::getId);
         } else {
             menuIds = tenantPackageService.getTenantPackage(tenant.getPackageId()).getMenuIds();
         }
-        // 执行处理器
+        // execution processor
         handler.handle(menuIds);
     }
 

@@ -1,17 +1,17 @@
 /**
- * 多租户，支持如下层面：
- * 1. DB：基于 MyBatis Plus 多租户的功能实现。
- * 2. Redis：通过在 Redis Key 上拼接租户编号的方式，进行隔离。
- * 3. Web：请求 HTTP API 时，解析 Header 的 tenant-id 租户编号，添加到租户上下文。
- * 4. Security：校验当前登陆的用户，是否越权访问其它租户的数据。
- * 5. Job：在 JobHandler 执行任务时，会按照每个租户，都独立并行执行一次。
- * 6. MQ：在 Producer 发送消息时，Header 带上 tenant-id 租户编号；在 Consumer 消费消息时，将 Header 的 tenant-id 租户编号，添加到租户上下文。
- * 7. Async：异步需要保证 ThreadLocal 的传递性，通过使用阿里开源的 TransmittableThreadLocal 实现。相关的改造点，可见：
- *      1）Spring Async：
- *          {@link cn.iocoder.yudao.framework.quartz.config.YudaoAsyncAutoConfiguration#threadPoolTaskExecutorBeanPostProcessor()}
- *      2）Spring Security：
- *          TransmittableThreadLocalSecurityContextHolderStrategy
- *          和 YudaoSecurityAutoConfiguration#securityContextHolderMethodInvokingFactoryBean() 方法
+ * Multi-tenancy supports the following levels:
+ * 1. DB: Based on MyBatis Plus multi-tenant function implementation.
+ * 2. Redis: Isolate by splicing tenant IDs on the Redis Key.
+ * 3. Web: When requesting the HTTP API, parse the tenant-ID tenant ID of the header and add it to the tenant context.
+ * 4. Security: Verify whether the currently logged-in user has unauthorized access to other tenants' data.
+ * 5. Job: When the JobHandler executes a task, it will be executed independently and in parallel for each tenant.
+ * 6. MQ: When the Producer sends a message, the Header carries the tenant-ID tenant ID; when the Consumer consumes the message, the Header's tenant-ID tenant ID is added to the tenant context.
+ * 7. Async: Asynchronous needs to ensure the transitivity of ThreadLocal, which is achieved by using Alibaba’s open source TransmittableThreadLocal. Relevant modification points can be seen:
+ * 1)Spring Async: 
+ * {@link cn.iocoder.yudao.framework.quartz.config.YudaoAsyncAutoConfiguration#threadPoolTaskExecutorBeanPostProcessor()}
+ * 2)Spring Security: 
+ * TransmittableThreadLocalSecurityContextHolderStrategy
+ * and YudaoSecurityAutoConfiguration#securityContextHolderMethodInvokingFactoryBean() method
  *
  */
 package cn.iocoder.yudao.framework.tenant;

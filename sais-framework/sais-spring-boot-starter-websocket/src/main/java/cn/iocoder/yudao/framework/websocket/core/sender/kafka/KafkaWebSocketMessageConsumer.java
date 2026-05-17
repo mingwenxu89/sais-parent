@@ -5,24 +5,24 @@ import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 
 /**
- * {@link KafkaWebSocketMessage} 广播消息的消费者，真正把消息发送出去
+ * {@link KafkaWebSocketMessage} is the consumer of the broadcast message and actually sends the message out
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @RequiredArgsConstructor
 public class KafkaWebSocketMessageConsumer {
 
-    private final KafkaWebSocketMessageSender kafkaWebSocketMessageSender;
+ private final KafkaWebSocketMessageSender kafkaWebSocketMessageSender;
 
-    @RabbitHandler
-    @KafkaListener(
-            topics = "${yudao.websocket.sender-kafka.topic}",
-            // 在 Group 上，使用 UUID 生成其后缀。这样，启动的 Consumer 的 Group 不同，以达到广播消费的目的
-            groupId = "${yudao.websocket.sender-kafka.consumer-group}" + "-" + "#{T(java.util.UUID).randomUUID()}")
-    public void onMessage(KafkaWebSocketMessage message) {
-        kafkaWebSocketMessageSender.send(message.getSessionId(),
-                message.getUserType(), message.getUserId(),
-                message.getMessageType(), message.getMessageContent());
-    }
+ @RabbitHandler
+ @KafkaListener(
+ topics = "${yudao.websocket.sender-kafka.topic}",
+            // On a Group, use the UUID to generate its suffix. In this way, the Group of the started Consumer is different to achieve the purpose of broadcast consumption.
+ groupId = "${yudao.websocket.sender-kafka.consumer-group}" + "-" + "#{T(java.util.UUID).randomUUID()}")
+ public void onMessage(KafkaWebSocketMessage message) {
+ kafkaWebSocketMessageSender.send(message.getSessionId(),
+ message.getUserType(), message.getUserId(),
+ message.getMessageType(), message.getMessageContent());
+ }
 
 }

@@ -3,107 +3,107 @@ package cn.iocoder.yudao.module.system.dal.redis;
 import cn.iocoder.yudao.module.system.dal.dataobject.oauth2.OAuth2AccessTokenDO;
 
 /**
- * System Redis Key 枚举类
+ * System Redis Key enumeration class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public interface RedisKeyConstants {
 
     /**
-     * 指定部门的所有子部门编号数组的缓存
+     * Cache of all sub-department ID arrays of the specified department
      * <p>
-     * KEY 格式：dept_children_ids:{id}
-     * VALUE 数据类型：String 子部门编号集合
+     * KEY format: dept_children_ids:{id}
+     * VALUE data type: String sub-department ID collection
      */
     String DEPT_CHILDREN_ID_LIST = "dept_children_ids";
 
     /**
-     * 角色的缓存
+     * role cache
      * <p>
-     * KEY 格式：role:{id}
-     * VALUE 数据类型：String 角色信息
+     * KEY format: role:{id}
+     * VALUE data type: String role information
      */
     String ROLE = "role";
 
     /**
-     * 用户拥有的角色编号的缓存
+     * Cache of role IDs owned by the user
      * <p>
-     * KEY 格式：user_role_ids:{userId}
-     * VALUE 数据类型：String 角色编号集合
+     * KEY format: user_role_ids:{userId}
+     * VALUE data type: String role ID collection
      */
     String USER_ROLE_ID_LIST = "user_role_ids";
 
     /**
-     * 拥有指定菜单的角色编号的缓存
+     * Cache that holds the character ID for the specified menu
      * <p>
-     * KEY 格式：menu_role_ids:{menuId}
-     * VALUE 数据类型：String 角色编号集合
+     * KEY format: menu_role_ids:{menuId}
+     * VALUE data type: String role ID collection
      */
     String MENU_ROLE_ID_LIST = "menu_role_ids";
 
     /**
-     * 拥有权限对应的菜单编号数组的缓存
+     * Has a cache of menu ID arrays corresponding to permissions
      * <p>
-     * KEY 格式：permission_menu_ids:{permission}
-     * VALUE 数据类型：String 菜单编号数组
+     * KEY format: permission_menu_ids:{permission}
+     * VALUE data type: String menu ID array
      */
     String PERMISSION_MENU_ID_LIST = "permission_menu_ids";
 
     /**
-     * OAuth2 客户端的缓存
+     * OAuth2 client cache
      * <p>
-     * KEY 格式：oauth_client:{id}
-     * VALUE 数据类型：String 客户端信息
+     * KEY format: oauth_client:{id}
+     * VALUE data type: String client information
      */
     String OAUTH_CLIENT = "oauth_client";
 
     /**
-     * 访问令牌的缓存
+     * Caching of access tokens
      * <p>
-     * KEY 格式：oauth2_access_token:{token}
-     * VALUE 数据类型：String 访问令牌信息 {@link OAuth2AccessTokenDO}
+     * KEY format: oauth2_access_token:{token}
+     * VALUE data type: String access token information {@link OAuth2AccessTokenDO}
      * <p>
-     * 由于动态过期时间，使用 RedisTemplate 操作
+     * Due to dynamic expiration time, use RedisTemplate operation
      */
     String OAUTH2_ACCESS_TOKEN = "oauth2_access_token:%s";
 
     /**
-     * 站内信模版的缓存
+     * Caching of on-site letter templates
      * <p>
-     * KEY 格式：notify_template:{code}
-     * VALUE 数据格式：String 模版信息
+     * KEY format: notify_template:{code}
+     * VALUE data format: String template information
      */
     String NOTIFY_TEMPLATE = "notify_template";
 
     /**
-     * 邮件账号的缓存
+     * Email account cache
      * <p>
-     * KEY 格式：mail_account:{id}
-     * VALUE 数据格式：String 账号信息
+     * KEY format: mail_account:{id}
+     * VALUE data format: String account information
      */
     String MAIL_ACCOUNT = "mail_account";
 
     /**
-     * 邮件模版的缓存
+     * Caching of email templates
      * <p>
-     * KEY 格式：mail_template:{code}
-     * VALUE 数据格式：String 模版信息
+     * KEY Format:mail_template:{code}
+     * VALUE data format: String template information
      */
     String MAIL_TEMPLATE = "mail_template";
 
     /**
-     * 短信模版的缓存
+     * Caching of SMS templates
      * <p>
-     * KEY 格式：sms_template:{id}
-     * VALUE 数据格式：String 模版信息
+     * KEY format: sms_template:{id}
+     * VALUE data format: String template information
      */
     String SMS_TEMPLATE = "sms_template";
 
     /**
-     * 小程序订阅模版的缓存
+     * Mini program subscription template cache
      *
-     * KEY 格式：wxa_subscribe_template:{userType}
-     * VALUE 数据格式 String, 模版信息
+     * KEY format: wxa_subscribe_template:{userType}
+     * VALUE data format String, template information
      */
     String WXA_SUBSCRIBE_TEMPLATE = "wxa_subscribe_template";
 

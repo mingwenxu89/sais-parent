@@ -9,7 +9,7 @@ export const columns: BasicColumn[] = [
   #set ($javaField = $column.javaField)
   #set ($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
   #set ($comment=$column.columnComment)
-#if ($column.javaType == "LocalDateTime")## 时间类型
+#if ($column.javaType == "LocalDateTime")## time type
   {
     title: '${comment}',
     dataIndex: '${javaField}',
@@ -18,7 +18,7 @@ export const columns: BasicColumn[] = [
       return useRender.renderDate(text)
     },
   },
-#elseif("" != $column.dictType)## 数据字典
+#elseif("" != $column.dictType)## data dict
   {
     title: '${comment}',
     dataIndex: '${javaField}',
@@ -61,18 +61,18 @@ export const searchFormSchema: FormSchema[] = [
   #elseif ($column.htmlType == "select")
     component: 'Select',
     componentProps: {
-      #if ("" != $dictType)## 设置了 dictType 数据字典的情况
+      #if ("" != $dictType)## When the dictType data dict is set
         options: getDictOptions(DICT_TYPE.$dictType.toUpperCase(), '$dictMethod'),
-      #else## 未设置 dictType 数据字典的情况
+      #else## When the dictType data dict is not set
         options: [],
       #end
     },
   #elseif ($column.htmlType == "radio")
     component: 'RadioButtonGroup',
     componentProps: {
-      #if ("" != $dictType)## 设置了 dictType 数据字典的情况
+      #if ("" != $dictType)## When the dictType data dict is set
         options: getDictOptions(DICT_TYPE.$dictType.toUpperCase(), '$dictMethod'),
-      #else## 未设置 dictType 数据字典的情况
+      #else## When the dictType data dict is not set
         options: [],
       #end
     },
@@ -87,7 +87,7 @@ export const searchFormSchema: FormSchema[] = [
 
 export const createFormSchema: FormSchema[] = [
   {
-    label: '编号',
+    label: 'ID',
     field: 'id',
     show: false,
     component: 'Input',
@@ -106,64 +106,64 @@ export const createFormSchema: FormSchema[] = [
   #elseif ($javaType == "Boolean")
     #set ($dictMethod = "boolean")
   #end
-#if (!$column.primaryKey)## 忽略主键，不用在表单里
+#if (!$column.primaryKey)## Ignore the primary key, DO not use it in the form
   {
     label: '${comment}',
     field: '${javaField}',
-  #if (($column.createOperation || $column.updateOperation) && !$column.nullable && !${column.primaryKey})## 创建或者更新操作 && 要求非空 && 非主键
+  #if (($column.createOperation || $column.updateOperation) && !$column.nullable && !${column.primaryKey})## Create or update operations && Requires non-empty && non-primary key
     required: true,
     #end
   #if ($column.htmlType == "input")
     component: 'Input',
-  #elseif($column.htmlType == "imageUpload")## 图片上传
+  #elseif($column.htmlType == "imageUpload")## Image upload
     component: 'FileUpload',
     componentProps: {
       fileType: 'image',
       maxCount: 1,
     },
-  #elseif($column.htmlType == "fileUpload")## 文件上传
+  #elseif($column.htmlType == "fileUpload")## File upload
     component: 'FileUpload',
     componentProps: {
       fileType: 'file',
       maxCount: 1,
     },
-  #elseif($column.htmlType == "editor")## 文本编辑器
+  #elseif($column.htmlType == "editor")## text editor
     component: 'Editor',
-  #elseif($column.htmlType == "select")## 下拉框
+  #elseif($column.htmlType == "select")## Select box
     component: 'Select',
     componentProps: {
-      #if ("" != $dictType)## 有数据字典
+      #if ("" != $dictType)## There is a data dict
         options: getDictOptions(DICT_TYPE.$dictType.toUpperCase(), '$dictMethod'),
-      #else##没数据字典
+      #else##No data dict
         options:[],
       #end
     },
-  #elseif($column.htmlType == "checkbox")## 多选框
+  #elseif($column.htmlType == "checkbox")## checkbox
     component: 'Checkbox',
     componentProps: {
-      #if ("" != $dictType)## 有数据字典
+      #if ("" != $dictType)## There is a data dict
         options: getDictOptions(DICT_TYPE.$dictType.toUpperCase(), '$dictMethod'),
-      #else##没数据字典
+      #else##No data dict
         options:[],
       #end
     },
-  #elseif($column.htmlType == "radio")## 单选框
+  #elseif($column.htmlType == "radio")## Radio button
     component: 'RadioButtonGroup',
     componentProps: {
-      #if ("" != $dictType)## 有数据字典
+      #if ("" != $dictType)## There is a data dict
         options: getDictOptions(DICT_TYPE.$dictType.toUpperCase(), '$dictMethod'),
-      #else##没数据字典
+      #else##No data dict
         options:[],
       #end
     },
-  #elseif($column.htmlType == "datetime")## 时间框
+  #elseif($column.htmlType == "datetime")## time box
     component: 'DatePicker',
     componentProps: {
       showTime: true,
       format: 'YYYY-MM-DD HH:mm:ss',
       valueFormat: 'x',
     },
-  #elseif($column.htmlType == "textarea")## 文本域
+  #elseif($column.htmlType == "textarea")## Textarea
     component: 'InputTextArea',
   #end
   },
@@ -174,7 +174,7 @@ export const createFormSchema: FormSchema[] = [
 
 export const updateFormSchema: FormSchema[] = [
   {
-    label: '编号',
+    label: 'ID',
     field: 'id',
     show: false,
     component: 'Input',
@@ -193,64 +193,64 @@ export const updateFormSchema: FormSchema[] = [
 #elseif ($javaType == "Boolean")
   #set ($dictMethod = "boolean")
 #end
-  #if (!$column.primaryKey)## 忽略主键，不用在表单里
+  #if (!$column.primaryKey)## Ignore the primary key, DO not use it in the form
   {
     label: '${comment}',
     field: '${javaField}',
-    #if (($column.createOperation || $column.updateOperation) && !$column.nullable && !${column.primaryKey})## 创建或者更新操作 && 要求非空 && 非主键
+    #if (($column.createOperation || $column.updateOperation) && !$column.nullable && !${column.primaryKey})## Create or update operations && Requires non-empty && non-primary key
     required: true,
     #end
     #if ($column.htmlType == "input")
     component: 'Input',
-    #elseif($column.htmlType == "imageUpload")## 图片上传
+    #elseif($column.htmlType == "imageUpload")## Image upload
     component: 'FileUpload',
     componentProps: {
       fileType: 'image',
       maxCount: 1,
     },
-    #elseif($column.htmlType == "fileUpload")## 文件上传
+    #elseif($column.htmlType == "fileUpload")## File upload
     component: 'FileUpload',
     componentProps: {
       fileType: 'file',
       maxCount: 1,
     },
-    #elseif($column.htmlType == "editor")## 文本编辑器
+    #elseif($column.htmlType == "editor")## text editor
     component: 'Editor',
-    #elseif($column.htmlType == "select")## 下拉框
+    #elseif($column.htmlType == "select")## Select box
     component: 'Select',
     componentProps: {
-      #if ("" != $dictType)## 有数据字典
+      #if ("" != $dictType)## There is a data dict
       options: getDictOptions(DICT_TYPE.$dictType.toUpperCase(), '$dictMethod'),
-      #else##没数据字典
+      #else##No data dict
       options:[],
       #end
     },
-    #elseif($column.htmlType == "checkbox")## 多选框
+    #elseif($column.htmlType == "checkbox")## checkbox
     component: 'Checkbox',
     componentProps: {
-      #if ("" != $dictType)## 有数据字典
+      #if ("" != $dictType)## There is a data dict
       options: getDictOptions(DICT_TYPE.$dictType.toUpperCase(), '$dictMethod'),
-      #else##没数据字典
+      #else##No data dict
       options:[],
       #end
     },
-    #elseif($column.htmlType == "radio")## 单选框
+    #elseif($column.htmlType == "radio")## Radio button
     component: 'RadioButtonGroup',
     componentProps: {
-      #if ("" != $dictType)## 有数据字典
+      #if ("" != $dictType)## There is a data dict
       options: getDictOptions(DICT_TYPE.$dictType.toUpperCase(), '$dictMethod'),
-      #else##没数据字典
+      #else##No data dict
       options:[],
       #end
     },
-    #elseif($column.htmlType == "datetime")## 时间框
+    #elseif($column.htmlType == "datetime")## time box
     component: 'DatePicker',
     componentProps: {
       showTime: true,
       format: 'YYYY-MM-DD HH:mm:ss',
       valueFormat: 'x',
     },
-    #elseif($column.htmlType == "textarea")## 文本域
+    #elseif($column.htmlType == "textarea")## Textarea
     component: 'InputTextArea',
     #end
   },

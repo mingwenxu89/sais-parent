@@ -15,62 +15,62 @@ import lombok.EqualsAndHashCode;
 import java.util.Set;
 
 /**
- * 角色 DO
+ * Role DO
  *
  * @author ruoyi
  */
 @TableName(value = "system_role", autoResultMap = true)
-@KeySequence("system_role_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
+@KeySequence("system_role_seq") // Primary key auto-increment for Oracle, PostgreSQL, Kingbase, DB2, H2 databases. If it is a database such as MySQL, you DO not need to write it.
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class RoleDO extends TenantBaseDO {
 
     /**
-     * 角色ID
+     * Role ID
      */
     @TableId
     private Long id;
     /**
-     * 角色名称
+     * Character name
      */
     private String name;
     /**
-     * 角色标识
+     * Role ID
      *
-     * 枚举
+     * enumeration
      */
     private String code;
     /**
-     * 角色排序
+     * Role sorting
      */
     private Integer sort;
     /**
-     * 角色状态
+     * character status
      *
-     * 枚举 {@link CommonStatusEnum}
+     * Enum {@link CommonStatusEnum}
      */
     private Integer status;
     /**
-     * 角色类型
+     * role type
      *
-     * 枚举 {@link RoleTypeEnum}
+     * Enum {@link RoleTypeEnum}
      */
     private Integer type;
     /**
-     * 备注
+     * Remark
      */
     private String remark;
 
     /**
-     * 数据范围
+     * data range
      *
-     * 枚举 {@link DataScopeEnum}
+     * Enum {@link DataScopeEnum}
      */
     private Integer dataScope;
     /**
-     * 数据范围(指定部门数组)
+     * Data range (specified department array)
      *
-     * 适用于 {@link #dataScope} 的值为 {@link DataScopeEnum#DEPT_CUSTOM} 时
+     * Applies when the value of {@link #dataScope} is {@link DataScopeEnum#DEPT_CUSTOM}
      */
     @TableField(typeHandler = JacksonTypeHandler.class)
     private Set<Long> dataScopeDeptIds;

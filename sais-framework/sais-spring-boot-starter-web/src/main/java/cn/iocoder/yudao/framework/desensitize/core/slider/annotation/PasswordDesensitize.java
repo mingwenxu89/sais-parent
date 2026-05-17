@@ -11,7 +11,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 密码
+ * password
  *
  * @author gaibu
  */
@@ -22,28 +22,28 @@ import java.lang.annotation.Target;
 @DesensitizeBy(handler = PasswordDesensitization.class)
 public @interface PasswordDesensitize {
 
-    /**
-     * 前缀保留长度
-     */
-    int prefixKeep() default 0;
+ /**
+     * Prefix reserved length
+ */
+ int prefixKeep() default 0;
 
-    /**
-     * 后缀保留长度
-     */
-    int suffixKeep() default 0;
+ /**
+     * Suffix reserved length
+ */
+ int suffixKeep() default 0;
 
-    /**
-     * 替换规则，密码;
-     *
-     * 比如：123456 脱敏之后为 ******
-     */
-    String replacer() default "*";
+ /**
+     * Replacement rules, passwords;
+ *
+     * For example: 123456 is ****** after desensitization
+ */
+ String replacer() default "*";
 
-    /**
-     * 是否禁用脱敏
-     *
-     * 支持 Spring EL 表达式，如果返回 true 则跳过脱敏
-     */
-    String disable() default "";
+ /**
+     * Whether to disable desensitization
+ *
+     * Support Spring EL expressions, skip desensitization if true is returned
+ */
+ String disable() default "";
 
 }

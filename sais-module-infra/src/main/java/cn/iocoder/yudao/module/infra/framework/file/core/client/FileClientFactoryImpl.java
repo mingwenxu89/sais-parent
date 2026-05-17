@@ -9,16 +9,16 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * 文件客户端的工厂实现类
+ * Factory implementation class of file client
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Slf4j
 public class FileClientFactoryImpl implements FileClientFactory {
 
     /**
-     * 文件客户端 Map
-     * key：配置编号
+     * File client map
+     * key: configuration ID
      */
     private final ConcurrentMap<Long, AbstractFileClient<?>> clients = new ConcurrentHashMap<>();
 
@@ -26,7 +26,7 @@ public class FileClientFactoryImpl implements FileClientFactory {
     public FileClient getFileClient(Long configId) {
         AbstractFileClient<?> client = clients.get(configId);
         if (client == null) {
-            log.error("[getFileClient][配置编号({}) 找不到客户端]", configId);
+            log.error("[getFileClient][Configuration ID ({}) cannot find client]", configId);
         }
         return client;
     }
@@ -48,8 +48,8 @@ public class FileClientFactoryImpl implements FileClientFactory {
     private <Config extends FileClientConfig> AbstractFileClient<Config> createFileClient(
             Long configId, Integer storage, Config config) {
         FileStorageEnum storageEnum = FileStorageEnum.getByStorage(storage);
-        Assert.notNull(storageEnum, String.format("文件配置(%s) 为空", storageEnum));
-        // 创建客户端
+        Assert.notNull(storageEnum, String.format("File configuration (%s) is empty", storageEnum));
+        // Create client
         return (AbstractFileClient<Config>) ReflectUtil.newInstance(storageEnum.getClientClass(), configId, config);
     }
 

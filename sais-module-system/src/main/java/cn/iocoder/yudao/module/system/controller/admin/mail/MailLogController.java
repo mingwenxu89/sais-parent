@@ -21,7 +21,7 @@ import jakarta.validation.Valid;
 
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 
-@Tag(name = "管理后台 - 邮件日志")
+@Tag(name = "Management background - email log")
 @RestController
 @RequestMapping("/system/mail-log")
 public class MailLogController {
@@ -30,7 +30,7 @@ public class MailLogController {
     private MailLogService mailLogService;
 
     @GetMapping("/page")
-    @Operation(summary = "获得邮箱日志分页")
+    @Operation(summary = "Get mailbox log pagination")
     @PreAuthorize("@ss.hasPermission('system:mail-log:query')")
     public CommonResult<PageResult<MailLogRespVO>> getMailLogPage(@Valid MailLogPageReqVO pageVO) {
         PageResult<MailLogDO> pageResult = mailLogService.getMailLogPage(pageVO);
@@ -38,8 +38,8 @@ public class MailLogController {
     }
 
     @GetMapping("/get")
-    @Operation(summary = "获得邮箱日志")
-    @Parameter(name = "id", description = "编号", required = true, example = "1024")
+    @Operation(summary = "Get mailbox logs")
+    @Parameter(name = "id", description = "ID", required = true, example = "1024")
     @PreAuthorize("@ss.hasPermission('system:mail-log:query')")
     public CommonResult<MailLogRespVO> getMailTemplate(@RequestParam("id") Long id) {
         MailLogDO log = mailLogService.getMailLog(id);

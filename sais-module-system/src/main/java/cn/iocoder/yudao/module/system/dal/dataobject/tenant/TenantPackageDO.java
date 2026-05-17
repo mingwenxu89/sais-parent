@@ -12,12 +12,12 @@ import lombok.*;
 import java.util.Set;
 
 /**
- * 租户套餐 DO
+ * Tenant Package DO
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @TableName(value = "system_tenant_package", autoResultMap = true)
-@KeySequence("system_tenant_package_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
+@KeySequence("system_tenant_package_seq") // Primary key auto-increment for Oracle, PostgreSQL, Kingbase, DB2, H2 databases. If it is a database such as MySQL, you DO not need to write it.
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
@@ -28,25 +28,25 @@ import java.util.Set;
 public class TenantPackageDO extends BaseDO {
 
     /**
-     * 套餐编号，自增
+     * Package ID, auto-increment
      */
     private Long id;
     /**
-     * 套餐名，唯一
+     * Package name, unique
      */
     private String name;
     /**
-     * 租户套餐状态
+     * Tenant package status
      *
-     * 枚举 {@link CommonStatusEnum}
+     * Enum {@link CommonStatusEnum}
      */
     private Integer status;
     /**
-     * 备注
+     * Remark
      */
     private String remark;
     /**
-     * 关联的菜单编号
+     * associated menu ID
      */
     @TableField(typeHandler = JacksonTypeHandler.class)
     private Set<Long> menuIds;

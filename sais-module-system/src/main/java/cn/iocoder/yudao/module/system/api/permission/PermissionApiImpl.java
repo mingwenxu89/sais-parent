@@ -9,9 +9,9 @@ import java.util.Collection;
 import java.util.Set;
 
 /**
- * 权限 API 实现类
+ * Permission API implementation class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Service
 public class PermissionApiImpl implements PermissionApi {

@@ -12,61 +12,61 @@ import org.springframework.scheduling.annotation.Scheduled;
 import java.util.List;
 
 /**
- * Redis Stream 消息清理任务
- * 用于定期清理已消费的消息，防止内存占用过大
+ * Redis Stream message cleaning task
+ * Used to regularly clean up consumed messages to prevent excessive memory usage
  *
- * @see <a href="https://www.cnblogs.com/nanxiang/p/16179519.html">记一次 redis stream 数据类型内存不释放问题</a>
+ * @see <a href="https://www.cnblogs.com/nanxiang/p/16179519.html">Remember the problem of Redis stream data type memory not being released</a>
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 @Slf4j
 @AllArgsConstructor
 public class RedisStreamMessageCleanupJob {
 
-    private static final String LOCK_KEY = "redis:stream:message-cleanup:lock";
+ private static final String LOCK_KEY = "redis:stream:message-cleanup:lock";
 
-    /**
-     * 保留的消息数量，默认保留最近 10000 条消息
-     */
-    private static final long MAX_COUNT = 10000;
+ /**
+     * The number of messages to retain, the most recent 10,000 messages are retained by default
+ */
+ private static final long MAX_COUNT = 10000;
 
-    private final List<AbstractRedisStreamMessageListener<?>> listeners;
-    private final RedisMQTemplate redisTemplate;
-    private final RedissonClient redissonClient;
+ private final List<AbstractRedisStreamMessageListener<?>> listeners;
+ private final RedisMQTemplate redisTemplate;
+ private final RedissonClient redissonClient;
 
-    /**
-     * 每小时执行一次清理任务
-     */
-    @Scheduled(cron = "0 0 * * * ?")
-    public void cleanup() {
-        RLock lock = redissonClient.getLock(LOCK_KEY);
-        // 尝试加锁
-        if (lock.tryLock()) {
-            try {
-                execute();
-            } catch (Exception ex) {
-                log.error("[cleanup][执行异常]", ex);
-            } finally {
-                lock.unlock();
-            }
-        }
-    }
+ /**
+     * Perform cleaning tasks every hour
+ */
+ @Scheduled(cron = "0 0 * * * ?")
+ public void cleanup() {
+ RLock lock = redissonClient.getLock(LOCK_KEY);
+        // Try to lock
+ if (lock.tryLock()) {
+ try {
+ execute();
+ } catch (Exception ex) {
+                log.error("[cleanup][execution exception]", ex);
+ } finally {
+ lock.unlock();
+ }
+ }
+ }
 
-    /**
-     * 执行清理逻辑
-     */
-    private void execute() {
-        StreamOperations<String, Object, Object> ops = redisTemplate.getRedisTemplate().opsForStream();
-        listeners.forEach(listener -> {
-            try {
-                // 使用 XTRIM 命令清理消息，只保留最近的 MAX_LEN 条消息
-                Long trimCount = ops.trim(listener.getStreamKey(), MAX_COUNT, true);
-                if (trimCount != null && trimCount > 0) {
-                    log.info("[execute][Stream({}) 清理消息数量({})]", listener.getStreamKey(), trimCount);
-                }
-            } catch (Exception ex) {
-                log.error("[execute][Stream({}) 清理异常]", listener.getStreamKey(), ex);
-            }
-        });
-    }
+ /**
+     * Execute cleanup logic
+ */
+ private void execute() {
+ StreamOperations<String, Object, Object> ops = redisTemplate.getRedisTemplate().opsForStream();
+ listeners.forEach(listener -> {
+ try {
+                // Use the XTRIM command to clean up messages and keep only the most recent MAX_LEN messages
+ Long trimCount = ops.trim(listener.getStreamKey(), MAX_COUNT, true);
+ if (trimCount != null && trimCount > 0) {
+                    log.info("[execute][Stream({}) Clean the number of messages ({})]", listener.getStreamKey(), trimCount);
+ }
+ } catch (Exception ex) {
+                log.error("[execute][Stream({}) cleanup exception]", listener.getStreamKey(), ex);
+ }
+ });
+ }
 }

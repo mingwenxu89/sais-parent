@@ -4,52 +4,52 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 站内信发送 Service 接口
+ * Service API for sending intra-site messages
  *
  * @author xrcoder
  */
 public interface NotifySendService {
 
     /**
-     * 发送单条站内信给管理后台的用户
+     * Send a single site message to users in the management backend
      *
-     * 在 mobile 为空时，使用 userId 加载对应管理员的手机号
+     * When mobile is empty, use userId to load the mobile phone ID of the corresponding administrator.
      *
-     * @param userId 用户编号
-     * @param templateCode 短信模板编号
-     * @param templateParams 短信模板参数
-     * @return 发送日志编号
+     * @param userId User ID
+     * @param templateCode SMS template ID
+     * @param templateParams SMS template parameters
+     * @return Send log ID
      */
     Long sendSingleNotifyToAdmin(Long userId,
                                  String templateCode, Map<String, Object> templateParams);
     /**
-     * 发送单条站内信给用户 APP 的用户
+     * Send a single site message to users of the user APP
      *
-     * 在 mobile 为空时，使用 userId 加载对应会员的手机号
+     * When mobile is empty, use userId to load the mobile phone ID of the corresponding member.
      *
-     * @param userId 用户编号
-     * @param templateCode 站内信模板编号
-     * @param templateParams 站内信模板参数
-     * @return 发送日志编号
+     * @param userId User ID
+     * @param templateCode Site letter template ID
+     * @param templateParams Site letter template parameters
+     * @return Send log ID
      */
     Long sendSingleNotifyToMember(Long userId,
                                   String templateCode, Map<String, Object> templateParams);
 
     /**
-     * 发送单条站内信给用户
+     * Send a single site message to the user
      *
-     * @param userId 用户编号
-     * @param userType 用户类型
-     * @param templateCode 站内信模板编号
-     * @param templateParams 站内信模板参数
-     * @return 发送日志编号
+     * @param userId User ID
+     * @param userType User type
+     * @param templateCode Site letter template ID
+     * @param templateParams Site letter template parameters
+     * @return Send log ID
      */
     Long sendSingleNotify( Long userId, Integer userType,
                            String templateCode, Map<String, Object> templateParams);
 
     default void sendBatchNotify(List<String> mobiles, List<Long> userIds, Integer userType,
                                  String templateCode, Map<String, Object> templateParams) {
-        throw new UnsupportedOperationException("暂时不支持该操作，感兴趣可以实现该功能哟！");
+        throw new UnsupportedOperationException("This operation is not supported for the time being. If you are interested, you can implement this function!");
     }
 
 }

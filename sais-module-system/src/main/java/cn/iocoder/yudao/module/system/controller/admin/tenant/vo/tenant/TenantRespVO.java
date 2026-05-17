@@ -11,43 +11,43 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Schema(description = "管理后台 - 租户 Response VO")
+@Schema(description = "Management backend - Tenant Response VO")
 @Data
 @ExcelIgnoreUnannotated
 public class TenantRespVO {
 
-    @Schema(description = "租户编号", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
-    @ExcelProperty("租户编号")
+    @Schema(description = "Tenant ID", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
+    @ExcelProperty("Tenant ID")
     private Long id;
 
-    @Schema(description = "租户名", requiredMode = Schema.RequiredMode.REQUIRED, example = "芋道")
-    @ExcelProperty("租户名")
+    @Schema(description = "Tenant name", requiredMode = Schema.RequiredMode.REQUIRED, example = "taro road")
+    @ExcelProperty("Tenant name")
     private String name;
 
-    @Schema(description = "联系人", requiredMode = Schema.RequiredMode.REQUIRED, example = "芋艿")
-    @ExcelProperty("联系人")
+    @Schema(description = "Contact person", requiredMode = Schema.RequiredMode.REQUIRED, example = "Yunai")
+    @ExcelProperty("Contact person")
     private String contactName;
 
-    @Schema(description = "联系手机", example = "15601691300")
-    @ExcelProperty("联系手机")
+    @Schema(description = "Contact mobile phone", example = "15601691300")
+    @ExcelProperty("Contact mobile phone")
     private String contactMobile;
 
-    @Schema(description = "租户状态", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
-    @ExcelProperty(value = "状态", converter = DictConvert.class)
+    @Schema(description = "Tenant status", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
+    @ExcelProperty(value = "Status", converter = DictConvert.class)
     @DictFormat(DictTypeConstants.COMMON_STATUS)
     private Integer status;
 
-    @Schema(description = "绑定域名数组", example = "https://www.iocoder.cn")
+    @Schema(description = "Bind domain name array", example = "https://www.iocoder.cn")
     private List<String> websites;
 
-    @Schema(description = "租户套餐编号", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
+    @Schema(description = "Tenant Package ID", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
     private Long packageId;
 
-    @Schema(description = "过期时间", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "Expiration time", requiredMode = Schema.RequiredMode.REQUIRED)
     private LocalDateTime expireTime;
 
-    @Schema(description = "创建时间", requiredMode = Schema.RequiredMode.REQUIRED)
-    @ExcelProperty("创建时间")
+    @Schema(description = "Create Time", requiredMode = Schema.RequiredMode.REQUIRED)
+    @ExcelProperty("Create Time")
     private LocalDateTime createTime;
 
 }

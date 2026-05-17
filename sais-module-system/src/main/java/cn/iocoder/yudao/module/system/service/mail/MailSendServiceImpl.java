@@ -29,7 +29,7 @@ import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionU
 import static cn.iocoder.yudao.module.system.enums.ErrorCodeConstants.*;
 
 /**
- * 邮箱发送 Service 实现类
+ * Email sending Service implementation class
  *
  * @author wangjingyi
  * @since 2022-03-21
@@ -59,14 +59,14 @@ public class MailSendServiceImpl implements MailSendService {
                                Long userId, Integer userType,
                                String templateCode, Map<String, Object> templateParams,
                                File... attachments) {
-        // 1.1 校验邮箱模版是否合法
+        // 1.1 Verify whether the email template is legal
         MailTemplateDO template = validateMailTemplate(templateCode);
-        // 1.2 校验邮箱账号是否合法
+        // 1.2 Verify whether the email account is legal
         MailAccountDO account = validateMailAccount(template.getAccountId());
-        // 1.3 校验邮件参数是否缺失
+        // 1.3 Verify whether email parameters are missing
         validateTemplateParams(template, templateParams);
 
-        // 2. 组装邮箱
+        // 2. Assemble the mailbox
         String userMail = getUserMail(userId, userType);
         Collection<String> toMailSet = new LinkedHashSet<>();
         Collection<String> ccMailSet = new LinkedHashSet<>();
@@ -87,13 +87,13 @@ public class MailSendServiceImpl implements MailSendService {
             throw exception(MAIL_SEND_MAIL_NOT_EXISTS);
         }
 
-        // 创建发送日志。如果模板被禁用，则不发送短信，只记录日志
+        // Create a delivery log. If the template is disabled, no SMS will be sent, only logs will be recorded
         Boolean isSend = CommonStatusEnum.ENABLE.getStatus().equals(template.getStatus());
         String title = mailTemplateService.formatMailTemplateContent(template.getTitle(), templateParams);
         String content = mailTemplateService.formatMailTemplateContent(template.getContent(), templateParams);
         Long sendLogId = mailLogService.createMailLog(userId, userType, toMailSet, ccMailSet, bccMailSet,
                 account, template, content, templateParams, isSend);
-        // 发送 MQ 消息，异步执行发送短信
+        // Send MQ messages and send SMS messages asynchronously
         if (isSend) {
             mailProducer.sendMailSendMessage(sendLogId, toMailSet, ccMailSet, bccMailSet,
                     account.getId(), template.getNickname(), title, content, attachments);
@@ -119,17 +119,17 @@ public class MailSendServiceImpl implements MailSendService {
 
     @Override
     public void doSendMail(MailSendMessage message) {
-        // 1. 创建发送账号
+        // 1. Create a sending account
         MailAccountDO account = validateMailAccount(message.getAccountId());
         MailAccount mailAccount  = buildMailAccount(account, message.getNickname());
-        // 2. 发送邮件
+        // 2. Send email
         try {
             String messageId = MailUtil.send(mailAccount, message.getToMails(), message.getCcMails(), message.getBccMails(),
                     message.getTitle(), message.getContent(), true, message.getAttachments());
-            // 3. 更新结果（成功）
+            // 3. Update result (success)
             mailLogService.updateMailSendResult(message.getLogId(), messageId, null);
         } catch (Exception e) {
-            // 3. 更新结果（异常）
+            // 3. Update results (exception)
             mailLogService.updateMailSendResult(message.getLogId(), null, e);
         }
     }
@@ -144,9 +144,9 @@ public class MailSendServiceImpl implements MailSendService {
 
     @VisibleForTesting
     MailTemplateDO validateMailTemplate(String templateCode) {
-        // 获得邮件模板。考虑到效率，从缓存中获取
+        // Get email templates. Taking into account efficiency, obtain from cache
         MailTemplateDO template = mailTemplateService.getMailTemplateByCodeFromCache(templateCode);
-        // 邮件模板不存在
+        // Email template does not exist
         if (template == null) {
             throw exception(MAIL_TEMPLATE_NOT_EXISTS);
         }
@@ -155,9 +155,9 @@ public class MailSendServiceImpl implements MailSendService {
 
     @VisibleForTesting
     MailAccountDO validateMailAccount(Long accountId) {
-        // 获得邮箱账号。考虑到效率，从缓存中获取
+        // Get an email account. Taking into account efficiency, obtain from cache
         MailAccountDO account = mailAccountService.getMailAccountFromCache(accountId);
-        // 邮箱账号不存在
+        // Email account does not exist
         if (account == null) {
             throw exception(MAIL_ACCOUNT_NOT_EXISTS);
         }
@@ -165,10 +165,10 @@ public class MailSendServiceImpl implements MailSendService {
     }
 
     /**
-     * 校验邮件参数是否缺失
+     * Verify whether email parameters are missing
      *
-     * @param template 邮箱模板
-     * @param templateParams 参数列表
+     * @param template Email template
+     * @param templateParams Parameter list
      */
     @VisibleForTesting
     void validateTemplateParams(MailTemplateDO template, Map<String, Object> templateParams) {

@@ -16,71 +16,71 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 /**
- * 解密请求 {@link HttpServletRequestWrapper} 实现类
+ * Decryption request {@link HttpServletRequestWrapper} implementation class
  *
- * @author 芋道源码
+ * @author Yudao Source Code
  */
 public class ApiDecryptRequestWrapper extends HttpServletRequestWrapper {
 
-    private final byte[] body;
+ private final byte[] body;
 
-    public ApiDecryptRequestWrapper(HttpServletRequest request,
-                                    SymmetricDecryptor symmetricDecryptor,
-                                    AsymmetricDecryptor asymmetricDecryptor) throws IOException {
-        super(request);
-        // 读取 body，允许 HEX、BASE64 传输
-        String requestBody = StrUtil.utf8Str(
-                IoUtil.readBytes(request.getInputStream(), false));
+ public ApiDecryptRequestWrapper(HttpServletRequest request,
+ SymmetricDecryptor symmetricDecryptor,
+ AsymmetricDecryptor asymmetricDecryptor) throws IOException {
+ super(request);
+        // Read body, allowing HEX, BASE64 transmission
+ String requestBody = StrUtil.utf8Str(
+ IoUtil.readBytes(request.getInputStream(), false));
 
-        // 解密 body
-        body = symmetricDecryptor != null ? symmetricDecryptor.decrypt(requestBody)
-                : asymmetricDecryptor.decrypt(requestBody, KeyType.PrivateKey);
-    }
+        // Decrypt body
+ body = symmetricDecryptor != null ? symmetricDecryptor.decrypt(requestBody)
+: asymmetricDecryptor.decrypt(requestBody, KeyType.PrivateKey);
+ }
 
-    @Override
-    public BufferedReader getReader() {
-        return new BufferedReader(new InputStreamReader(this.getInputStream()));
-    }
+ @Override
+ public BufferedReader getReader() {
+ return new BufferedReader(new InputStreamReader(this.getInputStream()));
+ }
 
-    @Override
-    public int getContentLength() {
-        return body.length;
-    }
+ @Override
+ public int getContentLength() {
+ return body.length;
+ }
 
-    @Override
-    public long getContentLengthLong() {
-        return body.length;
-    }
+ @Override
+ public long getContentLengthLong() {
+ return body.length;
+ }
 
-    @Override
-    public ServletInputStream getInputStream() {
-        ByteArrayInputStream stream = new ByteArrayInputStream(body);
-        return new ServletInputStream() {
+ @Override
+ public ServletInputStream getInputStream() {
+ ByteArrayInputStream stream = new ByteArrayInputStream(body);
+ return new ServletInputStream() {
 
-            @Override
-            public int read() {
-                return stream.read();
-            }
+ @Override
+ public int read() {
+ return stream.read();
+ }
 
-            @Override
-            public int available() {
-                return body.length;
-            }
+ @Override
+ public int available() {
+ return body.length;
+ }
 
-            @Override
-            public boolean isFinished() {
-                return false;
-            }
+ @Override
+ public boolean isFinished() {
+ return false;
+ }
 
-            @Override
-            public boolean isReady() {
-                return false;
-            }
+ @Override
+ public boolean isReady() {
+ return false;
+ }
 
-            @Override
-            public void setReadListener(ReadListener readListener) {
-            }
+ @Override
+ public void setReadListener(ReadListener readListener) {
+ }
 
-        };
-    }
+ };
+ }
 }
