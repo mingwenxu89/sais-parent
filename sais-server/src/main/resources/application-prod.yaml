@@ -48,12 +48,12 @@ spring:
       primary: master
       datasource:
         master:
-          url: jdbc:postgresql://127.0.0.1:5432/postgres # PostgreSQL connection
+          url: jdbc:postgresql://database-1.ctcaecagarbv.ap-southeast-2.rds.amazonaws.com:5432/postgres # PostgreSQL connection
           username: postgres
           password: Xmw2026Xqz
         slave: # Simulated slave, modify as needed
           lazy: true # Lazy load to improve startup speed
-          url: jdbc:postgresql://127.0.0.1:5432/postgres
+          url: jdbc:postgresql://database-1.ctcaecagarbv.ap-southeast-2.rds.amazonaws.com:5432/postgres
           username: postgres
           password: Xmw2026Xqz
 #        tdengine: # IoT database (enable only when using IoT module)

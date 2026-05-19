@@ -54,9 +54,9 @@ class DecisionEvaluationControllerTest {
 
     @Test
     void compareDecision_serviceThrows_propagatesException() {
-        when(decisionComparisonService.compareAll()).thenThrow(new RuntimeException("bedrock down"));
+        when(decisionComparisonService.compareAll()).thenThrow(new RuntimeException("deepseek down"));
 
         RuntimeException ex = assertThrows(RuntimeException.class, () -> controller.compareDecision());
-        assertEquals("bedrock down", ex.getMessage());
+        assertEquals("deepseek down", ex.getMessage());
     }
 }

@@ -7,7 +7,7 @@ import java.util.List;
 public interface IrrigationDecisionService {
 
     /**
-     * Evaluate all ONGOING fields in the current tenant and make irrigation decisions.
+     * Evaluate fields with a current crop plan in the current tenant and make irrigation decisions.
      * Creates irrigation records with decisionSource=AI for fields that need watering.
      */
     List<AiDecisionResultVO> runDecisionForAllFields();

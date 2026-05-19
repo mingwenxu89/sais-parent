@@ -16,7 +16,8 @@ import cn.iocoder.yudao.module.agri.dal.mysql.field.FieldMapper;
 import cn.iocoder.yudao.module.agri.dal.mysql.irrigation.IrrigationDeviceMapper;
 import cn.iocoder.yudao.module.agri.dal.mysql.sensordata.SensorDataMapper;
 import cn.iocoder.yudao.module.agri.dal.mysql.weather.WeatherDataMapper;
-import cn.iocoder.yudao.module.agri.framework.bedrock.AwsBedrockProperties;
+import cn.iocoder.yudao.module.agri.dal.mysql.evaluation.DecisionEvaluationRecordMapper;
+import cn.iocoder.yudao.module.agri.framework.deepseek.DeepSeekClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -26,13 +27,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
-import software.amazon.awssdk.services.bedrockruntime.BedrockRuntimeClient;
-import software.amazon.awssdk.services.bedrockruntime.model.ContentBlock;
-import software.amazon.awssdk.services.bedrockruntime.model.ConversationRole;
-import software.amazon.awssdk.services.bedrockruntime.model.ConverseOutput;
-import software.amazon.awssdk.services.bedrockruntime.model.ConverseRequest;
-import software.amazon.awssdk.services.bedrockruntime.model.ConverseResponse;
-import software.amazon.awssdk.services.bedrockruntime.model.Message;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -50,7 +44,7 @@ import static org.mockito.Mockito.when;
 /**
  * Data-driven tests: drives sensor moisture readings + tomorrow's rainfall through the prediction
  * pipeline and asserts the resulting decision. Two parameterized methods share the same scenario
- * matrix — one exercises the rule path, the other the AI (Bedrock) path.
+ * matrix - one exercises the rule path, the other the AI (DeepSeek) path.
  */
 @ExtendWith(MockitoExtension.class)
 class IrrigationPredictionTest {
@@ -65,10 +59,10 @@ class IrrigationPredictionTest {
     @Mock private FieldMapper fieldMapper;
     @Mock private IrrigationDeviceMapper irrigationDeviceMapper;
 
-    // ── AI path only ────────────────────────────────────────────────────────
+    // AI path only
 
-    @Mock private BedrockRuntimeClient bedrockRuntimeClient;
-    @Mock private AwsBedrockProperties bedrockProperties;
+    @Mock private DeepSeekClient deepSeekClient;
+    @Mock private DecisionEvaluationRecordMapper decisionEvaluationRecordMapper;
 
     private IrrigationEvaluationHelper helper;
     private DecisionComparisonService service;
@@ -88,10 +82,11 @@ class IrrigationPredictionTest {
 
         service = new DecisionComparisonService();
         ReflectionTestUtils.setField(service, "fieldMapper", fieldMapper);
+        ReflectionTestUtils.setField(service, "cropPlanMapper", cropPlanMapper);
         ReflectionTestUtils.setField(service, "irrigationDeviceMapper", irrigationDeviceMapper);
         ReflectionTestUtils.setField(service, "helper", helper);
-        ReflectionTestUtils.setField(service, "bedrockRuntimeClient", bedrockRuntimeClient);
-        ReflectionTestUtils.setField(service, "bedrockProperties", bedrockProperties);
+        ReflectionTestUtils.setField(service, "deepSeekClient", deepSeekClient);
+        ReflectionTestUtils.setField(service, "decisionEvaluationRecordMapper", decisionEvaluationRecordMapper);
 
         field = new FieldDO();
         field.setId(1L);
@@ -104,8 +99,8 @@ class IrrigationPredictionTest {
         device.setFieldId(1L);
         device.setSensorId(200L);
 
-        // lenient: not all tests reach Bedrock; avoids UnnecessaryStubbingException for rule tests.
-        lenient().when(bedrockProperties.getModelId()).thenReturn("anthropic.claude-test");
+        // lenient: not all tests reach DeepSeek; avoids UnnecessaryStubbingException for rule tests.
+        lenient().when(deepSeekClient.isConfigured()).thenReturn(true);
     }
 
     // ── Scenario matrix: one source for both rule and AI tests ─────────────
@@ -143,21 +138,21 @@ class IrrigationPredictionTest {
 
     @ParameterizedTest(name = "[ai] {0}")
     @MethodSource("predictionCases")
-    void aiPrediction_forSensorAndWeather(String name, String moisture, String rainfall, String expected) {
+    void aiPrediction_forSensorAndWeather(String name, String moisture, String rainfall, String expected) throws Exception {
         stubMappers(new BigDecimal(moisture), new BigDecimal(rainfall));
-        when(fieldMapper.selectList(any())).thenReturn(List.of(field));
+        when(cropPlanMapper.selectCurrentFieldIds()).thenReturn(List.of(1L));
+        when(fieldMapper.selectBatchIds(any())).thenReturn(List.of(field));
         when(irrigationDeviceMapper.selectListByFieldId(1L)).thenReturn(List.of(device));
-        when(bedrockRuntimeClient.converse(any(ConverseRequest.class)))
-                .thenReturn(converseResponse(jsonForExpected(expected)));
+        when(deepSeekClient.complete(any())).thenReturn(jsonForExpected(expected));
 
         DecisionComparisonVO row = service.compareAll().get(0);
 
         assertEquals(expected, row.getAiDecision(),
                 "AI decision mismatch for [" + name + "]");
 
-        ArgumentCaptor<ConverseRequest> captor = ArgumentCaptor.forClass(ConverseRequest.class);
-        verify(bedrockRuntimeClient).converse(captor.capture());
-        String prompt = captor.getValue().messages().get(0).content().get(0).text();
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        verify(deepSeekClient).complete(captor.capture());
+        String prompt = captor.getValue();
         // Verify the prompt actually carries the sensor reading and weather forecast we mocked.
         assertTrue(prompt.contains(String.format("%.1f%%", new BigDecimal(moisture))),
                 "prompt should contain moisture " + moisture + ", got: " + prompt);
@@ -218,14 +213,4 @@ class IrrigationPredictionTest {
         return "{\"decision\":\"NO_ACTION\",\"reason\":\"AI says moisture adequate.\"}";
     }
 
-    private static ConverseResponse converseResponse(String text) {
-        return ConverseResponse.builder()
-                .output(ConverseOutput.builder()
-                        .message(Message.builder()
-                                .role(ConversationRole.ASSISTANT)
-                                .content(ContentBlock.fromText(text))
-                                .build())
-                        .build())
-                .build();
-    }
 }

@@ -4,10 +4,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Schema(description = "Side-by-side comparison of rule-based vs AI irrigation decision (dry-run, no plan created)")
 @Data
 public class DecisionComparisonVO {
+
+    @Schema(description = "Record ID")
+    private Long id;
 
     @Schema(description = "Field ID")
     private Long fieldId;
@@ -43,7 +47,10 @@ public class DecisionComparisonVO {
     @Schema(description = "Rule-based decision explanation")
     private String ruleReason;
 
-    // ── AI (Bedrock) decision ─────────────────────────────────────────────────
+    @Schema(description = "Rule-based recommended irrigation duration in minutes (only for IRRIGATE)")
+    private Integer ruleDurationMinutes;
+
+    // AI decision
 
     @Schema(description = "AI decision: IRRIGATE / SKIP / NO_ACTION / NO_DATA / UNAVAILABLE")
     private String aiDecision;
@@ -61,4 +68,10 @@ public class DecisionComparisonVO {
 
     @Schema(description = "Whether AI was available for this comparison")
     private Boolean aiAvailable;
+
+    @Schema(description = "When this comparison was evaluated")
+    private LocalDateTime evaluatedAt;
+
+    @Schema(description = "Record creation time")
+    private LocalDateTime createTime;
 }

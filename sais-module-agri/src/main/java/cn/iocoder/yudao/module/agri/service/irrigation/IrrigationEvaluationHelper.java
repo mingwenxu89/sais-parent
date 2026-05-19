@@ -24,7 +24,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 /**
- * Shared helper used by both the rule-based and Bedrock irrigation decision implementations.
+ * Shared helper used by rule-based and AI irrigation decision implementations.
  * Handles data-gathering, rule application, and device activation so neither impl duplicates logic.
  */
 @Component

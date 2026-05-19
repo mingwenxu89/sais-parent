@@ -3,9 +3,11 @@ package cn.iocoder.yudao.module.agri.service.irrigation;
 import cn.iocoder.yudao.module.agri.controller.admin.irrigation.vo.AiDecisionResultVO;
 import cn.iocoder.yudao.module.agri.dal.dataobject.field.FieldDO;
 import cn.iocoder.yudao.module.agri.dal.dataobject.irrigation.IrrigationDeviceDO;
+import cn.iocoder.yudao.module.agri.dal.mysql.crop.CropPlanMapper;
 import cn.iocoder.yudao.module.agri.dal.mysql.field.FieldMapper;
 import cn.iocoder.yudao.module.agri.dal.mysql.irrigation.IrrigationDeviceMapper;
-import cn.iocoder.yudao.module.agri.framework.bedrock.AwsBedrockProperties;
+import cn.iocoder.yudao.module.agri.framework.deepseek.DeepSeekClient;
+import cn.iocoder.yudao.module.agri.framework.deepseek.DeepSeekProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -15,14 +17,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import software.amazon.awssdk.services.bedrockruntime.BedrockRuntimeClient;
-import software.amazon.awssdk.services.bedrockruntime.model.ContentBlock;
-import software.amazon.awssdk.services.bedrockruntime.model.ConversationRole;
-import software.amazon.awssdk.services.bedrockruntime.model.ConverseOutput;
-import software.amazon.awssdk.services.bedrockruntime.model.ConverseRequest;
-import software.amazon.awssdk.services.bedrockruntime.model.ConverseResponse;
-import software.amazon.awssdk.services.bedrockruntime.model.Message;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Stream;
@@ -33,13 +29,13 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 /**
- * Verifies that the AI (Bedrock) decision engine aligns with the rule-based baseline
+ * Verifies that the AI (DeepSeek) decision engine aligns with the rule-based baseline
  * across all decision branches and boundary conditions.
  *
  * Strategy:
  *   1. Build input context for each scenario.
  *   2. Determine expected decision using rule-based logic (applyRules) — this is the ground truth.
- *   3. Mock Bedrock to return the JSON the model is expected to produce for the same inputs.
+ *   3. Mock DeepSeek to return the JSON the model is expected to produce for the same inputs.
  *   4. Assert AI decision == rule decision (alignment).
  *
  * This separates two concerns:
@@ -56,14 +52,15 @@ import static org.mockito.Mockito.when;
 @DisplayName("AI vs Rule-Based Decision Alignment")
 class AiDecisionAlignmentTest {
 
-    @Mock private BedrockRuntimeClient bedrockRuntimeClient;
-    @Mock private AwsBedrockProperties bedrockProperties;
+    @Mock private DeepSeekClient deepSeekClient;
+    @Mock private DeepSeekProperties deepSeekProperties;
     @Mock private FieldMapper fieldMapper;
+    @Mock private CropPlanMapper cropPlanMapper;
     @Mock private IrrigationDeviceMapper irrigationDeviceMapper;
     @Mock private IrrigationEvaluationHelper helper;
 
     @InjectMocks
-    private BedrockIrrigationDecisionServiceImpl service;
+    private DeepSeekIrrigationDecisionServiceImpl service;
 
     private final IrrigationEvaluationHelper realHelper = new IrrigationEvaluationHelper();
 
@@ -82,8 +79,9 @@ class AiDecisionAlignmentTest {
         device.setDeviceCode("DEV-ALIGN");
         device.setFieldId(1L);
 
-        when(bedrockProperties.getModelId()).thenReturn("anthropic.claude-test");
-        when(fieldMapper.selectList(any())).thenReturn(List.of(field));
+        when(deepSeekProperties.getModel()).thenReturn("deepseek-test");
+        when(cropPlanMapper.selectCurrentFieldIds()).thenReturn(List.of(1L));
+        when(fieldMapper.selectBatchIds(any())).thenReturn(List.of(field));
         when(irrigationDeviceMapper.selectListByFieldId(1L)).thenReturn(List.of(device));
     }
 
@@ -160,7 +158,7 @@ class AiDecisionAlignmentTest {
             String description,
             String moisture, String min, String optimal, String rainfall,
             String expectedDecision,
-            String mockAiJson) {
+            String mockAiJson) throws IOException {
 
         // Ground truth from rule engine
         AiDecisionResultVO ctx = buildCtx(moisture, min, optimal, rainfall);
@@ -168,10 +166,9 @@ class AiDecisionAlignmentTest {
         assertEquals(expectedDecision, ruleResult.getDecision(),
                 "Rule engine should produce " + expectedDecision + " for: " + description);
 
-        // Mock Bedrock to return the expected aligned response
+        // Mock DeepSeek to return the expected aligned response
         when(helper.gatherFieldDataForDevice(eq(field), eq(device))).thenReturn(ctx);
-        when(bedrockRuntimeClient.converse(any(ConverseRequest.class)))
-                .thenReturn(converseResponse(mockAiJson));
+        when(deepSeekClient.complete(any())).thenReturn(mockAiJson);
 
         // Run AI path
         List<AiDecisionResultVO> results = service.runDecisionForAllFields();
@@ -213,14 +210,4 @@ class AiDecisionAlignmentTest {
         return c;
     }
 
-    private ConverseResponse converseResponse(String text) {
-        return ConverseResponse.builder()
-                .output(ConverseOutput.builder()
-                        .message(Message.builder()
-                                .role(ConversationRole.ASSISTANT)
-                                .content(ContentBlock.fromText(text))
-                                .build())
-                        .build())
-                .build();
-    }
 }

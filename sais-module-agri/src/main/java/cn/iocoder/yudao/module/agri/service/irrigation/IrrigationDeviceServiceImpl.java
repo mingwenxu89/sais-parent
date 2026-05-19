@@ -82,6 +82,8 @@ public class IrrigationDeviceServiceImpl implements IrrigationDeviceService {
         updateObj.setFarmId(field != null ? field.getFarmId() : null);
         updateObj.setDeviceCode(existing.getDeviceCode());
         updateObj.setIsWatering(existing.getIsWatering());
+        updateObj.setSensorId(null);
+        updateObj.setSimulateFault(null);
         // updateById skips null fields; use update() to force-write sensorId/simulateFault even when cleared
         irrigationDeviceMapper.update(updateObj,
                 new LambdaUpdateWrapper<IrrigationDeviceDO>()

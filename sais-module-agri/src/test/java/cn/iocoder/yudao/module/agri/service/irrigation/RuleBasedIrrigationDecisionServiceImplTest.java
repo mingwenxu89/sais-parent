@@ -3,6 +3,7 @@ package cn.iocoder.yudao.module.agri.service.irrigation;
 import cn.iocoder.yudao.module.agri.controller.admin.irrigation.vo.AiDecisionResultVO;
 import cn.iocoder.yudao.module.agri.dal.dataobject.field.FieldDO;
 import cn.iocoder.yudao.module.agri.dal.dataobject.irrigation.IrrigationDeviceDO;
+import cn.iocoder.yudao.module.agri.dal.mysql.crop.CropPlanMapper;
 import cn.iocoder.yudao.module.agri.dal.mysql.field.FieldMapper;
 import cn.iocoder.yudao.module.agri.dal.mysql.irrigation.IrrigationDeviceMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,6 +31,9 @@ class RuleBasedIrrigationDecisionServiceImplTest {
 
     @Mock
     private FieldMapper fieldMapper;
+
+    @Mock
+    private CropPlanMapper cropPlanMapper;
 
     @Mock
     private IrrigationDeviceMapper irrigationDeviceMapper;
@@ -60,7 +64,7 @@ class RuleBasedIrrigationDecisionServiceImplTest {
 
     @Test
     void noOngoingFields_returnsEmptyList() {
-        when(fieldMapper.selectList(any())).thenReturn(List.of());
+        when(cropPlanMapper.selectCurrentFieldIds()).thenReturn(List.of());
 
         List<AiDecisionResultVO> results = service.runDecisionForAllFields();
 
@@ -71,7 +75,7 @@ class RuleBasedIrrigationDecisionServiceImplTest {
 
     @Test
     void field_withNoData_returnsNoDataResult() {
-        when(fieldMapper.selectList(any())).thenReturn(List.of(field));
+        mockCurrentField();
         when(irrigationDeviceMapper.selectListByFieldId(1L)).thenReturn(List.of(device));
         AiDecisionResultVO noData = new AiDecisionResultVO();
         noData.setDecision("NO_DATA");
@@ -90,7 +94,7 @@ class RuleBasedIrrigationDecisionServiceImplTest {
 
     @Test
     void field_withAdequateMoisture_returnsNoAction() {
-        when(fieldMapper.selectList(any())).thenReturn(List.of(field));
+        mockCurrentField();
         when(irrigationDeviceMapper.selectListByFieldId(1L)).thenReturn(List.of(device));
         when(helper.gatherFieldDataForDevice(eq(field), eq(device))).thenReturn(populatedCtx());
         AiDecisionResultVO noAction = populatedCtx();
@@ -108,7 +112,7 @@ class RuleBasedIrrigationDecisionServiceImplTest {
 
     @Test
     void field_withLowMoistureAndRain_returnsSkip() {
-        when(fieldMapper.selectList(any())).thenReturn(List.of(field));
+        mockCurrentField();
         when(irrigationDeviceMapper.selectListByFieldId(1L)).thenReturn(List.of(device));
         when(helper.gatherFieldDataForDevice(eq(field), eq(device))).thenReturn(populatedCtx());
         AiDecisionResultVO skip = populatedCtx();
@@ -126,7 +130,7 @@ class RuleBasedIrrigationDecisionServiceImplTest {
 
     @Test
     void field_withLowMoistureNoRain_returnsIrrigateAndActivatesDevice() {
-        when(fieldMapper.selectList(any())).thenReturn(List.of(field));
+        mockCurrentField();
         when(irrigationDeviceMapper.selectListByFieldId(1L)).thenReturn(List.of(device));
         when(helper.gatherFieldDataForDevice(eq(field), eq(device))).thenReturn(populatedCtx());
         AiDecisionResultVO irrigate = populatedCtx();
@@ -144,7 +148,7 @@ class RuleBasedIrrigationDecisionServiceImplTest {
 
     @Test
     void field_whenHelperThrows_returnsErrorResult() {
-        when(fieldMapper.selectList(any())).thenReturn(List.of(field));
+        mockCurrentField();
         when(irrigationDeviceMapper.selectListByFieldId(1L)).thenReturn(List.of(device));
         doThrow(new RuntimeException("db error")).when(helper).gatherFieldDataForDevice(any(), any());
 
@@ -157,6 +161,11 @@ class RuleBasedIrrigationDecisionServiceImplTest {
     }
 
     // ── Helpers ──────────────────────────────────────────────────────────────
+
+    private void mockCurrentField() {
+        when(cropPlanMapper.selectCurrentFieldIds()).thenReturn(List.of(1L));
+        when(fieldMapper.selectBatchIds(any())).thenReturn(List.of(field));
+    }
 
     /** Builds a fully populated context VO (simulates successful gatherFieldDataForDevice). */
     private AiDecisionResultVO populatedCtx() {

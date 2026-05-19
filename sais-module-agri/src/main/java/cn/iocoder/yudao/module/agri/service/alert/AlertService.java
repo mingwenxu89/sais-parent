@@ -38,13 +38,4 @@ public interface AlertService {
      */
     boolean hasActiveAlert(String alertType, Long farmId, Long fieldId);
 
-    /**
-     * Inserts a [TEST] alert of the given type for demo purposes.
-     * Bypasses dedup so every call produces a new record.
-     *
-     * @param type    SENSOR_ABNORMAL | EXTREME_WEATHER | IRRIGATION_ABNORMAL
-     * @param farmId  target farm (optional; null is accepted)
-     */
-    void triggerTestAlert(String type, Long farmId);
-
 }

@@ -1,6 +1,8 @@
 package cn.iocoder.yudao.module.agri.controller.admin.evaluation;
 
 import cn.iocoder.yudao.framework.common.pojo.CommonResult;
+import cn.iocoder.yudao.framework.common.pojo.PageResult;
+import cn.iocoder.yudao.module.agri.controller.admin.evaluation.vo.DecisionEvaluationPageReqVO;
 import cn.iocoder.yudao.module.agri.controller.admin.irrigation.vo.DecisionComparisonVO;
 import cn.iocoder.yudao.module.agri.service.irrigation.DecisionComparisonService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,13 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
 import java.util.List;
 
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 
 /**
  * Decision evaluation endpoints — shadow-mode comparisons of rule-based vs AI irrigation
- * decisions on real ONGOING fields. Read-only; never creates irrigation plans.
+ * decisions on fields with current crop plans. Persists comparison records; never creates irrigation plans.
  */
 @Tag(name = "Admin - Decision Evaluation")
 @RestController
@@ -38,5 +41,12 @@ public class DecisionEvaluationController {
         log.info("[Evaluation] Running AI vs rule-based decision comparison (dry-run)");
         List<DecisionComparisonVO> result = decisionComparisonService.compareAll();
         return success(result);
+    }
+
+    @GetMapping("/record-page")
+    @Operation(summary = "Get persisted decision evaluation records")
+    @PreAuthorize("@ss.hasPermission('agri:irrigation-plan:query')")
+    public CommonResult<PageResult<DecisionComparisonVO>> getRecordPage(@Valid DecisionEvaluationPageReqVO pageReqVO) {
+        return success(decisionComparisonService.getRecordPage(pageReqVO));
     }
 }

@@ -1,13 +1,12 @@
 package cn.iocoder.yudao.module.agri.service.irrigation;
 
-import cn.iocoder.yudao.framework.mybatis.core.query.LambdaQueryWrapperX;
 import cn.iocoder.yudao.module.agri.controller.admin.irrigation.vo.AiDecisionResultVO;
 import cn.iocoder.yudao.module.agri.dal.dataobject.field.FieldDO;
 import cn.iocoder.yudao.module.agri.dal.dataobject.irrigation.IrrigationDeviceDO;
+import cn.iocoder.yudao.module.agri.dal.mysql.crop.CropPlanMapper;
 import cn.iocoder.yudao.module.agri.dal.mysql.field.FieldMapper;
 import cn.iocoder.yudao.module.agri.dal.mysql.irrigation.IrrigationDeviceMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -16,11 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Rule-based fallback implementation — active when no AWS Bedrock credentials are configured.
+ * Rule-based implementation. Used directly when AI is disabled, and as fallback logic by AI flows.
  * All decision logic lives in IrrigationEvaluationHelper.
  */
 @Service("ruleBasedIrrigationDecisionService")
-@ConditionalOnMissingBean(IrrigationDecisionService.class)
 @Validated
 @Slf4j
 public class RuleBasedIrrigationDecisionServiceImpl implements IrrigationDecisionService {
@@ -28,18 +26,22 @@ public class RuleBasedIrrigationDecisionServiceImpl implements IrrigationDecisio
     @Resource
     private FieldMapper fieldMapper;
     @Resource
+    private CropPlanMapper cropPlanMapper;
+    @Resource
     private IrrigationDeviceMapper irrigationDeviceMapper;
     @Resource
     private IrrigationEvaluationHelper helper;
 
     @Override
     public List<AiDecisionResultVO> runDecisionForAllFields() {
-        List<FieldDO> ongoingFields = fieldMapper.selectList(
-                new LambdaQueryWrapperX<FieldDO>().eq(FieldDO::getGrowStatus, "ONGOING"));
-        log.info("[RuleBasedDecision] Evaluating {} ONGOING fields", ongoingFields.size());
+        List<Long> currentFieldIds = cropPlanMapper.selectCurrentFieldIds();
+        List<FieldDO> currentFields = currentFieldIds.isEmpty()
+                ? new ArrayList<>()
+                : fieldMapper.selectBatchIds(currentFieldIds);
+        log.info("[RuleBasedDecision] Evaluating {} fields with current crop plans", currentFields.size());
 
         List<AiDecisionResultVO> results = new ArrayList<>();
-        for (FieldDO field : ongoingFields) {
+        for (FieldDO field : currentFields) {
             try {
                 AiDecisionResultVO result = evaluateField(field);
                 results.add(result);

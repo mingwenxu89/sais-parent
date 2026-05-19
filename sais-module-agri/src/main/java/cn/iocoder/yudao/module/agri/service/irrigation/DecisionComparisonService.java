@@ -1,34 +1,33 @@
 package cn.iocoder.yudao.module.agri.service.irrigation;
 
-import cn.iocoder.yudao.framework.mybatis.core.query.LambdaQueryWrapperX;
+import cn.iocoder.yudao.framework.common.pojo.PageResult;
+import cn.iocoder.yudao.module.agri.controller.admin.evaluation.vo.DecisionEvaluationPageReqVO;
 import cn.iocoder.yudao.module.agri.controller.admin.irrigation.vo.AiDecisionResultVO;
 import cn.iocoder.yudao.module.agri.controller.admin.irrigation.vo.DecisionComparisonVO;
+import cn.iocoder.yudao.module.agri.dal.dataobject.evaluation.DecisionEvaluationRecordDO;
 import cn.iocoder.yudao.module.agri.dal.dataobject.field.FieldDO;
 import cn.iocoder.yudao.module.agri.dal.dataobject.irrigation.IrrigationDeviceDO;
+import cn.iocoder.yudao.module.agri.dal.mysql.crop.CropPlanMapper;
+import cn.iocoder.yudao.module.agri.dal.mysql.evaluation.DecisionEvaluationRecordMapper;
 import cn.iocoder.yudao.module.agri.dal.mysql.field.FieldMapper;
 import cn.iocoder.yudao.module.agri.dal.mysql.irrigation.IrrigationDeviceMapper;
-import cn.iocoder.yudao.module.agri.framework.bedrock.AwsBedrockProperties;
+import cn.iocoder.yudao.module.agri.framework.deepseek.DeepSeekClient;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import software.amazon.awssdk.services.bedrockruntime.BedrockRuntimeClient;
-import software.amazon.awssdk.services.bedrockruntime.model.ContentBlock;
-import software.amazon.awssdk.services.bedrockruntime.model.ConversationRole;
-import software.amazon.awssdk.services.bedrockruntime.model.ConverseRequest;
-import software.amazon.awssdk.services.bedrockruntime.model.ConverseResponse;
-import software.amazon.awssdk.services.bedrockruntime.model.InferenceConfiguration;
-import software.amazon.awssdk.services.bedrockruntime.model.Message;
 
 import jakarta.annotation.Resource;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Dry-run comparison: runs rule-based and AI decision logic on the same inputs
- * without creating any irrigation plans. Used to measure AI alignment with rules.
+ * without creating irrigation plans, then stores the comparison rows for review.
  */
 @Service
 @Slf4j
@@ -39,29 +38,32 @@ public class DecisionComparisonService {
     @Resource
     private FieldMapper fieldMapper;
     @Resource
+    private CropPlanMapper cropPlanMapper;
+    @Resource
     private IrrigationDeviceMapper irrigationDeviceMapper;
     @Resource
     private IrrigationEvaluationHelper helper;
+    @Resource
+    private DecisionEvaluationRecordMapper decisionEvaluationRecordMapper;
 
-    /** Injected only when AWS Bedrock credentials are configured */
+    /** Injected only when DeepSeek is enabled. */
     @Autowired(required = false)
-    private BedrockRuntimeClient bedrockRuntimeClient;
-
-    @Autowired(required = false)
-    private AwsBedrockProperties bedrockProperties;
+    private DeepSeekClient deepSeekClient;
 
     /**
-     * Compares rule-based vs AI decisions for all ONGOING fields.
-     * Never creates irrigation plans — purely for accuracy evaluation.
+     * Compares rule-based vs AI decisions for fields with a current crop plan.
+     * Never creates irrigation plans. The comparison rows are persisted as evaluation records.
      */
     public List<DecisionComparisonVO> compareAll() {
-        List<FieldDO> ongoingFields = fieldMapper.selectList(
-                new LambdaQueryWrapperX<FieldDO>().eq(FieldDO::getGrowStatus, "ONGOING"));
-        log.info("[DecisionComparison] Comparing {} ONGOING fields (aiAvailable={})",
-                ongoingFields.size(), bedrockRuntimeClient != null);
+        List<Long> currentFieldIds = cropPlanMapper.selectCurrentFieldIds();
+        List<FieldDO> currentFields = currentFieldIds.isEmpty()
+                ? new ArrayList<>()
+                : fieldMapper.selectBatchIds(currentFieldIds);
+        log.info("[DecisionComparison] Comparing {} fields with current crop plans (aiAvailable={})",
+                currentFields.size(), isAiAvailable());
 
         List<DecisionComparisonVO> results = new ArrayList<>();
-        for (FieldDO field : ongoingFields) {
+        for (FieldDO field : currentFields) {
             List<IrrigationDeviceDO> devices = irrigationDeviceMapper.selectListByFieldId(field.getId());
             if (devices.isEmpty()) {
                 results.add(noDeviceRow(field));
@@ -71,7 +73,16 @@ public class DecisionComparisonService {
                 results.add(compareForDevice(field, device));
             }
         }
+        persistResults(results);
         return results;
+    }
+
+    public PageResult<DecisionComparisonVO> getRecordPage(DecisionEvaluationPageReqVO pageReqVO) {
+        PageResult<DecisionEvaluationRecordDO> pageResult = decisionEvaluationRecordMapper.selectPage(pageReqVO);
+        List<DecisionComparisonVO> list = pageResult.getList().stream()
+                .map(this::toVO)
+                .collect(Collectors.toList());
+        return new PageResult<>(list, pageResult.getTotal());
     }
 
     private DecisionComparisonVO compareForDevice(FieldDO field, IrrigationDeviceDO device) {
@@ -80,7 +91,7 @@ public class DecisionComparisonService {
         DecisionComparisonVO row = new DecisionComparisonVO();
         row.setFieldId(field.getId());
         row.setFieldName(field.getFieldName());
-        row.setAiAvailable(bedrockRuntimeClient != null);
+        row.setAiAvailable(isAiAvailable());
 
         if ("NO_DATA".equals(ctx.getDecision())) {
             row.setCropName(ctx.getCropName());
@@ -104,23 +115,26 @@ public class DecisionComparisonService {
         AiDecisionResultVO ruleResult = helper.applyRules(copyCtx(ctx));
         row.setRuleDecision(ruleResult.getDecision());
         row.setRuleReason(ruleResult.getReason());
+        if ("IRRIGATE".equals(ruleResult.getDecision())) {
+            row.setRuleDurationMinutes(helper.estimateDuration(ctx.getCurrentMoisture(), ctx.getMoistureOptimal()));
+        }
 
-        // AI decision — call Bedrock if available, otherwise mark unavailable
-        if (bedrockRuntimeClient == null) {
+        // AI decision - call DeepSeek if available, otherwise mark unavailable
+        if (!isAiAvailable()) {
             row.setAiDecision("UNAVAILABLE");
-            row.setAiReason("AWS Bedrock not configured.");
+            row.setAiReason("DeepSeek not configured.");
             row.setAligned(null);
             return row;
         }
 
         try {
             String prompt = buildPrompt(ctx);
-            String rawResponse = callBedrock(prompt);
+            String rawResponse = deepSeekClient.complete(prompt);
             fillAiResult(row, rawResponse, ctx);
         } catch (Exception e) {
-            log.warn("[DecisionComparison] Bedrock call failed for field {}: {}", field.getId(), e.getMessage());
+            log.warn("[DecisionComparison] DeepSeek call failed for field {}: {}", field.getId(), e.getMessage());
             row.setAiDecision("ERROR");
-            row.setAiReason("Bedrock error: " + e.getMessage());
+            row.setAiReason("DeepSeek error: " + e.getMessage());
             row.setAligned(false);
             return row;
         }
@@ -178,21 +192,6 @@ public class DecisionComparisonService {
                 "}";
     }
 
-    private String callBedrock(String prompt) {
-        Message msg = Message.builder()
-                .role(ConversationRole.USER)
-                .content(ContentBlock.fromText(prompt))
-                .build();
-        ConverseRequest req = ConverseRequest.builder()
-                .modelId(bedrockProperties.getModelId())
-                .messages(msg)
-                .inferenceConfig(InferenceConfiguration.builder()
-                        .maxTokens(512).temperature(0.0f).build())
-                .build();
-        ConverseResponse resp = bedrockRuntimeClient.converse(req);
-        return resp.output().message().content().get(0).text();
-    }
-
     private DecisionComparisonVO noDeviceRow(FieldDO field) {
         DecisionComparisonVO row = new DecisionComparisonVO();
         row.setFieldId(field.getId());
@@ -202,7 +201,64 @@ public class DecisionComparisonService {
         row.setAiDecision("NO_DATA");
         row.setAiReason("No irrigation devices configured.");
         row.setAligned(true);
-        row.setAiAvailable(bedrockRuntimeClient != null);
+        row.setAiAvailable(isAiAvailable());
+        return row;
+    }
+
+    private void persistResults(List<DecisionComparisonVO> results) {
+        LocalDateTime evaluatedAt = LocalDateTime.now();
+        for (DecisionComparisonVO row : results) {
+            DecisionEvaluationRecordDO record = toRecord(row, evaluatedAt);
+            decisionEvaluationRecordMapper.insert(record);
+            row.setId(record.getId());
+            row.setEvaluatedAt(record.getEvaluatedAt());
+            row.setCreateTime(record.getCreateTime());
+        }
+    }
+
+    private DecisionEvaluationRecordDO toRecord(DecisionComparisonVO row, LocalDateTime evaluatedAt) {
+        DecisionEvaluationRecordDO record = new DecisionEvaluationRecordDO();
+        record.setFieldId(row.getFieldId());
+        record.setFieldName(row.getFieldName());
+        record.setCropName(row.getCropName());
+        record.setStageName(row.getStageName());
+        record.setCurrentMoisture(row.getCurrentMoisture());
+        record.setMoistureMin(row.getMoistureMin());
+        record.setMoistureOptimal(row.getMoistureOptimal());
+        record.setTomorrowRainfall(row.getTomorrowRainfall());
+        record.setRuleDecision(row.getRuleDecision());
+        record.setRuleReason(row.getRuleReason());
+        record.setRuleDurationMinutes(row.getRuleDurationMinutes());
+        record.setAiDecision(row.getAiDecision());
+        record.setAiReason(row.getAiReason());
+        record.setAiDurationMinutes(row.getAiDurationMinutes());
+        record.setAligned(row.getAligned());
+        record.setAiAvailable(row.getAiAvailable());
+        record.setEvaluatedAt(evaluatedAt);
+        return record;
+    }
+
+    private DecisionComparisonVO toVO(DecisionEvaluationRecordDO record) {
+        DecisionComparisonVO row = new DecisionComparisonVO();
+        row.setId(record.getId());
+        row.setFieldId(record.getFieldId());
+        row.setFieldName(record.getFieldName());
+        row.setCropName(record.getCropName());
+        row.setStageName(record.getStageName());
+        row.setCurrentMoisture(record.getCurrentMoisture());
+        row.setMoistureMin(record.getMoistureMin());
+        row.setMoistureOptimal(record.getMoistureOptimal());
+        row.setTomorrowRainfall(record.getTomorrowRainfall());
+        row.setRuleDecision(record.getRuleDecision());
+        row.setRuleReason(record.getRuleReason());
+        row.setRuleDurationMinutes(record.getRuleDurationMinutes());
+        row.setAiDecision(record.getAiDecision());
+        row.setAiReason(record.getAiReason());
+        row.setAiDurationMinutes(record.getAiDurationMinutes());
+        row.setAligned(record.getAligned());
+        row.setAiAvailable(record.getAiAvailable());
+        row.setEvaluatedAt(record.getEvaluatedAt());
+        row.setCreateTime(record.getCreateTime());
         return row;
     }
 
@@ -231,4 +287,8 @@ public class DecisionComparisonService {
 
     private static String fmt(BigDecimal v) { return v != null ? String.format("%.1f", v) : "N/A"; }
     private static String nvl(String s)      { return s != null ? s : "Unknown"; }
+
+    private boolean isAiAvailable() {
+        return deepSeekClient != null && deepSeekClient.isConfigured();
+    }
 }
