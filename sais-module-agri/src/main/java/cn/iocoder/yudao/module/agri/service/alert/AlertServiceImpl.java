@@ -29,18 +29,24 @@ import static cn.iocoder.yudao.module.agri.enums.ErrorCodeConstants.ALERT_NOT_EX
 public class AlertServiceImpl implements AlertService {
 
     // ── Integer codes ─────────────────────────────────────────────────────────
-    // alert_type: 1=SENSOR_ABNORMAL  2=EXTREME_WEATHER  3=IRRIGATION_ABNORMAL
+    // alert_type: 1=SENSOR_ABNORMAL  2=EXTREME_WEATHER  3=IRRIGATION_ABNORMAL  4=CROP_WATER_RISK
     // level:      1=INFO  2=WARN  3=CRITICAL
     // status:     0=UNHANDLED  1=HANDLING  2=RESOLVED  3=IGNORED
 
     private static final Map<String, Integer> TYPE_CODE = Map.of(
-            "SENSOR_ABNORMAL", 1, "EXTREME_WEATHER", 2, "IRRIGATION_ABNORMAL", 3);
+            "SENSOR_ABNORMAL", 1,
+            "EXTREME_WEATHER", 2,
+            "IRRIGATION_ABNORMAL", 3,
+            "CROP_WATER_RISK", 4);
 
     private static final Map<String, Integer> LEVEL_CODE = Map.of(
             "INFO", 1, "WARN", 2, "CRITICAL", 3);
 
     private static final Map<Integer, String> TYPE_LABEL = Map.of(
-            1, "Sensor Abnormal", 2, "Extreme Weather", 3, "Irrigation Abnormal");
+            1, "Sensor Abnormal",
+            2, "Extreme Weather",
+            3, "Irrigation Abnormal",
+            4, "Crop Water Risk");
 
     private static final Map<Integer, String> LEVEL_LABEL = Map.of(
             1, "INFO", 2, "WARN", 3, "CRITICAL");

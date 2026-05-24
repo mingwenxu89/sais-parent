@@ -7,6 +7,8 @@ import cn.iocoder.yudao.module.agri.controller.admin.alert.vo.AlertPageReqVO;
 import cn.iocoder.yudao.module.agri.dal.dataobject.alert.AlertDO;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
@@ -22,11 +24,15 @@ public interface AlertMapper extends BaseMapperX<AlertDO> {
                 .orderByDesc(AlertDO::getId));
     }
 
-    // status 0=UNHANDLED 1=HANDLING are considered "active"
+    // status 0=UNHANDLED 1=HANDLING 3=IGNORED are considered unresolved for same-day dedup.
     default boolean existsActiveAlert(Integer alertType, Long farmId, Long fieldId) {
-        LambdaQueryWrapperX<AlertDO> wrapper = new LambdaQueryWrapperX<AlertDO>()
-                .eq(AlertDO::getAlertType, alertType)
-                .in(AlertDO::getStatus, List.of(0, 1));
+        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
+        LocalDateTime startOfNextDay = startOfDay.plusDays(1);
+        LambdaQueryWrapperX<AlertDO> wrapper = new LambdaQueryWrapperX<>();
+        wrapper.eq(AlertDO::getAlertType, alertType);
+        wrapper.in(AlertDO::getStatus, List.of(0, 1, 3));
+        wrapper.ge(AlertDO::getTriggeredAt, startOfDay);
+        wrapper.lt(AlertDO::getTriggeredAt, startOfNextDay);
         if (farmId != null) {
             wrapper.eq(AlertDO::getFarmId, farmId);
         }

@@ -13,6 +13,7 @@ import cn.iocoder.yudao.module.agri.dal.mysql.farm.FarmMapper;
 import cn.iocoder.yudao.module.agri.dal.mysql.field.FieldMapper;
 import cn.iocoder.yudao.module.agri.dal.mysql.irrigation.IrrigationDeviceMapper;
 import cn.iocoder.yudao.module.agri.dal.mysql.sensor.SensorMapper;
+import cn.hutool.core.util.StrUtil;
 import com.google.common.annotations.VisibleForTesting;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
+import static cn.iocoder.yudao.module.agri.enums.ErrorCodeConstants.FIELD_NOT_EXISTS;
 import static cn.iocoder.yudao.module.agri.enums.ErrorCodeConstants.SENSOR_NOT_EXISTS;
 
 @Service
@@ -48,7 +50,10 @@ public class SensorServiceImpl implements SensorService {
     @Transactional(rollbackFor = Exception.class)
     public Long createSensor(SensorSaveReqVO createReqVO) {
         SensorDO sensor = SensorConvert.INSTANCE.convert(createReqVO);
-        sensor.setSensorCode(String.format("SNS-%03d", sensorMapper.nextVal()));
+        applyFieldFarm(sensor);
+        if (StrUtil.isBlank(sensor.getSensorCode())) {
+            sensor.setSensorCode(String.format("SNS-%03d", sensorMapper.nextVal()));
+        }
         sensorMapper.insert(sensor);
         return sensor.getId();
     }
@@ -58,6 +63,7 @@ public class SensorServiceImpl implements SensorService {
     public void updateSensor(SensorSaveReqVO updateReqVO) {
         validateSensorExists(updateReqVO.getId());
         SensorDO updateObj = SensorConvert.INSTANCE.convert(updateReqVO);
+        applyFieldFarm(updateObj);
         sensorMapper.updateById(updateObj);
     }
 
@@ -107,6 +113,17 @@ public class SensorServiceImpl implements SensorService {
             resp.setFieldName(field.getFieldName());
         }
         return resp;
+    }
+
+    private void applyFieldFarm(SensorDO sensor) {
+        if (sensor.getFieldId() == null) {
+            return;
+        }
+        FieldDO field = fieldMapper.selectById(sensor.getFieldId());
+        if (field == null) {
+            throw exception(FIELD_NOT_EXISTS);
+        }
+        sensor.setFarmId(field.getFarmId());
     }
 
     @VisibleForTesting

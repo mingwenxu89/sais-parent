@@ -1,13 +1,17 @@
 package cn.iocoder.yudao.module.agri.service.alert;
 
 import cn.iocoder.yudao.module.agri.dal.dataobject.crop.CropGrowthStageDO;
+import cn.iocoder.yudao.module.agri.dal.dataobject.crop.CropDO;
 import cn.iocoder.yudao.module.agri.dal.dataobject.crop.CropPlanDO;
+import cn.iocoder.yudao.module.agri.dal.dataobject.field.FieldDO;
 import cn.iocoder.yudao.module.agri.dal.dataobject.irrigation.IrrigationDeviceDO;
 import cn.iocoder.yudao.module.agri.dal.dataobject.irrigation.IrrigationPlanDO;
 import cn.iocoder.yudao.module.agri.dal.dataobject.sensordata.SensorDataDO;
 import cn.iocoder.yudao.module.agri.dal.dataobject.weather.WeatherDataDO;
 import cn.iocoder.yudao.module.agri.dal.mysql.crop.CropGrowthStageMapper;
+import cn.iocoder.yudao.module.agri.dal.mysql.crop.CropMapper;
 import cn.iocoder.yudao.module.agri.dal.mysql.crop.CropPlanMapper;
+import cn.iocoder.yudao.module.agri.dal.mysql.field.FieldMapper;
 import cn.iocoder.yudao.module.agri.dal.mysql.irrigation.IrrigationDeviceMapper;
 import cn.iocoder.yudao.module.agri.dal.mysql.weather.WeatherDataMapper;
 import cn.iocoder.yudao.module.agri.service.irrigation.IrrigationEvaluationHelper;
@@ -39,6 +43,8 @@ class AlertCheckServiceTest {
     @Mock AlertService alertService;
     @Mock CropPlanMapper cropPlanMapper;
     @Mock CropGrowthStageMapper cropGrowthStageMapper;
+    @Mock CropMapper cropMapper;
+    @Mock FieldMapper fieldMapper;
     @Mock WeatherDataMapper weatherDataMapper;
     @Mock IrrigationEvaluationHelper irrigationEvaluationHelper;
     @Mock IrrigationDeviceMapper irrigationDeviceMapper;
@@ -90,61 +96,29 @@ class AlertCheckServiceTest {
         }
     }
 
-    // ── TEMPERATURE ───────────────────────────────────────────────────────────
-
-    static Stream<Arguments> temperatureCases() {
-        return Stream.of(
-            // description,            temp,   expectedLevel (null = no alert)
-            Arguments.of("below 0°C",   "-1.0", "CRITICAL"),
-            Arguments.of("exactly 0°C", "0.0",  "WARN"),      // 0 < 0 is false → falls to < 5 → WARN
-            Arguments.of("0–5°C",       "3.0",  "WARN"),
-            Arguments.of("exactly 5°C", "5.0",  null),         // 5 < 5 is false → no frost alert
-            Arguments.of("normal",      "20.0", null),
-            Arguments.of("exactly 35°C","35.0", null),         // 35 > 35 is false → no heat alert
-            Arguments.of("35.1°C",      "35.1", "WARN"),
-            Arguments.of("above 38°C",  "39.0", "CRITICAL"),
-            Arguments.of("exactly 38°C","38.0", "WARN")        // 38 > 38 is false, but 38 > 35 → WARN
-        );
-    }
-
-    @ParameterizedTest(name = "{0}")
-    @MethodSource("temperatureCases")
-    @DisplayName("checkSensorData — TEMPERATURE thresholds")
-    void temperature_thresholds(String desc, String temp, String expectedLevel) {
-        SensorDataDO data = sensorData("TEMPERATURE", temp, 1L, null, 100L);
-
-        service.checkSensorData(data);
-
-        if (expectedLevel == null) {
-            verify(alertService, never()).raiseAlert(any(), any(), any(), any(), any(), any());
-        } else {
-            ArgumentCaptor<String> levelCaptor = ArgumentCaptor.forClass(String.class);
-            verify(alertService).raiseAlert(eq("SENSOR_ABNORMAL"), levelCaptor.capture(), any(), any(), any(), any());
-            assertEquals(expectedLevel, levelCaptor.getValue(), "Wrong level for: " + desc);
-        }
-    }
-
     // ── WEATHER FORECAST ──────────────────────────────────────────────────────
 
     @Test
-    @DisplayName("checkWeatherForecast — heavy rain CRITICAL (>=50mm)")
-    void weatherForecast_rainCritical() {
+    @DisplayName("checkWeatherForecast — heavy rain creates crop water risk for weak waterlogging tolerance")
+    void weatherForecast_rainCropWaterRisk() {
         mockForecast(100L, "55.0", null, null);
+        mockCurrentCrop(100L, 10L, 42L, 2, 1);
 
         service.checkWeatherForecast(100L);
 
-        verify(alertService).raiseAlert(eq("EXTREME_WEATHER"), eq("CRITICAL"), eq(100L), isNull(), isNull(),
-                argThat(ctx -> ctx.contains("flooding")));
+        verify(alertService).raiseAlert(eq("CROP_WATER_RISK"), eq("CRITICAL"), eq(100L), eq(10L), isNull(),
+                argThat(ctx -> ctx.contains("excessive soil moisture")));
     }
 
     @Test
-    @DisplayName("checkWeatherForecast — heavy rain WARN (25–49.9mm)")
-    void weatherForecast_rainWarn() {
+    @DisplayName("checkWeatherForecast — no extreme weather alert for rain alone")
+    void weatherForecast_rainNoExtremeWeather() {
         mockForecast(100L, "30.0", null, null);
+        when(cropPlanMapper.selectCurrentList()).thenReturn(List.of());
 
         service.checkWeatherForecast(100L);
 
-        verify(alertService).raiseAlert(eq("EXTREME_WEATHER"), eq("WARN"), eq(100L), isNull(), isNull(), any());
+        verify(alertService, never()).raiseAlert(eq("EXTREME_WEATHER"), any(), any(), any(), any(), any());
     }
 
     @Test
@@ -159,24 +133,38 @@ class AlertCheckServiceTest {
     }
 
     @Test
-    @DisplayName("checkWeatherForecast — heat WARN (tempMax > 35°C)")
-    void weatherForecast_heatWarn() {
+    @DisplayName("checkWeatherForecast — heat CRITICAL (tempMax >= 32°C)")
+    void weatherForecast_heatCritical() {
         mockForecast(100L, null, "10.0", "36.0");
+        when(cropPlanMapper.selectCurrentList()).thenReturn(List.of());
 
         service.checkWeatherForecast(100L);
 
-        verify(alertService).raiseAlert(eq("EXTREME_WEATHER"), eq("WARN"), eq(100L), isNull(), isNull(),
-                argThat(ctx -> ctx.contains("Heat stress")));
+        verify(alertService).raiseAlert(eq("EXTREME_WEATHER"), eq("CRITICAL"), eq(100L), isNull(), isNull(),
+                argThat(ctx -> ctx.contains("Extreme heat")));
     }
 
     @Test
     @DisplayName("checkWeatherForecast — normal conditions produce no alert")
     void weatherForecast_noAlert() {
         mockForecast(100L, "10.0", "10.0", "25.0");
+        when(cropPlanMapper.selectCurrentList()).thenReturn(List.of());
 
         service.checkWeatherForecast(100L);
 
         verify(alertService, never()).raiseAlert(any(), any(), any(), any(), any(), any());
+    }
+
+    @Test
+    @DisplayName("checkWeatherForecast — low 3-day rain creates crop drought risk for weak drought resistance")
+    void weatherForecast_droughtCropWaterRisk() {
+        mockForecast(100L, "1.0", null, null);
+        mockCurrentCrop(100L, 10L, 42L, 1, 3);
+
+        service.checkWeatherForecast(100L);
+
+        verify(alertService).raiseAlert(eq("CROP_WATER_RISK"), eq("WARN"), eq(100L), eq(10L), isNull(),
+                argThat(ctx -> ctx.contains("weak drought resistance")));
     }
 
     // ── IRRIGATION ABNORMAL ───────────────────────────────────────────────────
@@ -261,9 +249,9 @@ class AlertCheckServiceTest {
     }
 
     @Test
-    @DisplayName("checkSensorData — unknown sensor type produces no alert")
-    void checkSensorData_unknownType() {
-        SensorDataDO data = sensorData("HUMIDITY", "60.0", 1L, 10L, 100L);
+    @DisplayName("checkSensorData — non-soil-moisture readings produce no alert")
+    void checkSensorData_nonSoilMoisture() {
+        SensorDataDO data = sensorData("TEMPERATURE", "36.0", 1L, 10L, 100L);
 
         service.checkSensorData(data);
 
@@ -307,5 +295,23 @@ class AlertCheckServiceTest {
         if (tempMax  != null) forecast.setTempMax(new BigDecimal(tempMax));
         // Only stub day+1; days +2 and +3 return null (no forecast) so only 1 alert fires
         when(weatherDataMapper.selectByFarmIdAndDate(eq(farmId), eq(tomorrow))).thenReturn(forecast);
+    }
+
+    private void mockCurrentCrop(Long farmId, Long fieldId, Long cropId,
+                                 Integer droughtResistance, Integer waterloggingTolerance) {
+        CropPlanDO plan = cropPlan(fieldId, cropId);
+        FieldDO field = new FieldDO();
+        field.setId(fieldId);
+        field.setFarmId(farmId);
+        field.setFieldName("Field A");
+        CropDO crop = new CropDO();
+        crop.setId(cropId);
+        crop.setCropName("Tomato");
+        crop.setDroughtResistance(droughtResistance);
+        crop.setWaterloggingTolerance(waterloggingTolerance);
+
+        when(cropPlanMapper.selectCurrentList()).thenReturn(List.of(plan));
+        when(fieldMapper.selectById(fieldId)).thenReturn(field);
+        when(cropMapper.selectById(cropId)).thenReturn(crop);
     }
 }

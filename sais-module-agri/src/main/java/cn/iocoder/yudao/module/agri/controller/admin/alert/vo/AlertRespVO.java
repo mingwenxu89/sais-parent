@@ -30,7 +30,7 @@ public class AlertRespVO {
     @Schema(description = "Related irrigation plan ID", example = "5")
     private Long irrigationPlanId;
 
-    @Schema(description = "Alert type (1=SENSOR_ABNORMAL 2=EXTREME_WEATHER 3=IRRIGATION_ABNORMAL)",
+    @Schema(description = "Alert type (1=SENSOR_ABNORMAL 2=EXTREME_WEATHER 3=IRRIGATION_ABNORMAL 4=CROP_WATER_RISK)",
             requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
     @ExcelProperty("Alert type")
     private Integer alertType;

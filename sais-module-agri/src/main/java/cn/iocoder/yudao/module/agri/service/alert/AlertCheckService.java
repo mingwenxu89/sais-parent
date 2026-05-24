@@ -1,13 +1,17 @@
 package cn.iocoder.yudao.module.agri.service.alert;
 
 import cn.iocoder.yudao.module.agri.dal.dataobject.crop.CropGrowthStageDO;
+import cn.iocoder.yudao.module.agri.dal.dataobject.crop.CropDO;
 import cn.iocoder.yudao.module.agri.dal.dataobject.crop.CropPlanDO;
+import cn.iocoder.yudao.module.agri.dal.dataobject.field.FieldDO;
 import cn.iocoder.yudao.module.agri.dal.dataobject.irrigation.IrrigationDeviceDO;
 import cn.iocoder.yudao.module.agri.dal.dataobject.irrigation.IrrigationPlanDO;
 import cn.iocoder.yudao.module.agri.dal.dataobject.sensordata.SensorDataDO;
 import cn.iocoder.yudao.module.agri.dal.dataobject.weather.WeatherDataDO;
 import cn.iocoder.yudao.module.agri.dal.mysql.crop.CropGrowthStageMapper;
+import cn.iocoder.yudao.module.agri.dal.mysql.crop.CropMapper;
 import cn.iocoder.yudao.module.agri.dal.mysql.crop.CropPlanMapper;
+import cn.iocoder.yudao.module.agri.dal.mysql.field.FieldMapper;
 import cn.iocoder.yudao.module.agri.dal.mysql.irrigation.IrrigationDeviceMapper;
 import cn.iocoder.yudao.module.agri.dal.mysql.weather.WeatherDataMapper;
 import cn.iocoder.yudao.module.agri.service.irrigation.IrrigationEvaluationHelper;
@@ -19,6 +23,7 @@ import org.springframework.stereotype.Component;
 import jakarta.annotation.Resource;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,11 +37,10 @@ import java.util.Map;
 public class AlertCheckService {
 
     private static final BigDecimal TEMP_FROST_CRITICAL = new BigDecimal("0");
-    private static final BigDecimal TEMP_FROST_WARN     = new BigDecimal("5");
-    private static final BigDecimal TEMP_HEAT_WARN      = new BigDecimal("35");
-    private static final BigDecimal TEMP_HEAT_CRITICAL  = new BigDecimal("38");
+    private static final BigDecimal WEATHER_HEAT_CRITICAL = new BigDecimal("32");
     private static final BigDecimal RAIN_HEAVY_WARN     = new BigDecimal("25");
     private static final BigDecimal RAIN_HEAVY_CRITICAL = new BigDecimal("50");
+    private static final BigDecimal RAIN_DROUGHT_THREE_DAY = new BigDecimal("5");
     // How far below moistureMin triggers CRITICAL instead of WARN
     private static final BigDecimal MOISTURE_CRITICAL_MARGIN = new BigDecimal("15");
 
@@ -51,6 +55,10 @@ public class AlertCheckService {
     private CropPlanMapper cropPlanMapper;
     @Resource
     private CropGrowthStageMapper cropGrowthStageMapper;
+    @Resource
+    private CropMapper cropMapper;
+    @Resource
+    private FieldMapper fieldMapper;
     @Resource
     private WeatherDataMapper weatherDataMapper;
     @Resource
@@ -68,9 +76,6 @@ public class AlertCheckService {
             switch (data.getDataType()) {
                 case "SOIL_MOISTURE":
                     checkSoilMoisture(data);
-                    break;
-                case "TEMPERATURE":
-                    checkTemperature(data);
                     break;
                 default:
                     break;
@@ -126,38 +131,6 @@ public class AlertCheckService {
         }
     }
 
-    private void checkTemperature(SensorDataDO data) {
-        BigDecimal temp = data.getValue();
-        String level = null;
-        String context = null;
-
-        if (temp.compareTo(TEMP_FROST_CRITICAL) < 0) {
-            level = "CRITICAL";
-            context = String.format(
-                    "Temperature sensor %d reads %.1f°C — frost conditions detected. Crops may be severely damaged.",
-                    data.getSensorId(), temp);
-        } else if (temp.compareTo(TEMP_FROST_WARN) < 0) {
-            level = "WARN";
-            context = String.format(
-                    "Temperature sensor %d reads %.1f°C — cold stress conditions for sensitive crops.",
-                    data.getSensorId(), temp);
-        } else if (temp.compareTo(TEMP_HEAT_CRITICAL) > 0) {
-            level = "CRITICAL";
-            context = String.format(
-                    "Temperature sensor %d reads %.1f°C — extreme heat detected. Crops at high risk.",
-                    data.getSensorId(), temp);
-        } else if (temp.compareTo(TEMP_HEAT_WARN) > 0) {
-            level = "WARN";
-            context = String.format(
-                    "Temperature sensor %d reads %.1f°C — heat stress conditions detected.",
-                    data.getSensorId(), temp);
-        }
-
-        if (level != null) {
-            raiseIfNew("SENSOR_ABNORMAL", level, data.getFarmId(), data.getFieldId(), context);
-        }
-    }
-
     // ── Weather forecast checks ────────────────────────────────────────────────
 
     public void checkWeatherForecast(Long farmId) {
@@ -166,12 +139,15 @@ public class AlertCheckService {
         }
         try {
             LocalDate today = LocalDate.now();
+            List<WeatherDataDO> forecasts = new ArrayList<>();
             for (int i = 1; i <= 3; i++) {
                 WeatherDataDO forecast = weatherDataMapper.selectByFarmIdAndDate(farmId, today.plusDays(i));
                 if (forecast != null) {
+                    forecasts.add(forecast);
                     checkForecastDay(farmId, forecast);
                 }
             }
+            checkCropWaterRisk(farmId, forecasts);
         } catch (Exception e) {
             log.warn("[AlertCheck] Weather forecast check failed for farm {}: {}", farmId, e.getMessage());
         }
@@ -180,38 +156,100 @@ public class AlertCheckService {
     private void checkForecastDay(Long farmId, WeatherDataDO forecast) {
         LocalDate date = forecast.getForecastDate();
 
-        if (forecast.getRainfall() != null) {
-            BigDecimal rain = forecast.getRainfall();
-            if (rain.compareTo(RAIN_HEAVY_CRITICAL) >= 0) {
-                alertService.raiseAlert("EXTREME_WEATHER", "CRITICAL", farmId, null, null,
-                        String.format("Extreme rainfall of %.1fmm forecast for %s. High risk of flooding and crop waterlogging.", rain, date));
-            } else if (rain.compareTo(RAIN_HEAVY_WARN) >= 0) {
-                alertService.raiseAlert("EXTREME_WEATHER", "WARN", farmId, null, null,
-                        String.format("Heavy rainfall of %.1fmm forecast for %s. Review irrigation schedule to avoid over-watering.", rain, date));
-            }
-        }
-
         if (forecast.getTempMin() != null) {
             BigDecimal tempMin = forecast.getTempMin();
             if (tempMin.compareTo(TEMP_FROST_CRITICAL) < 0) {
-                alertService.raiseAlert("EXTREME_WEATHER", "CRITICAL", farmId, null, null,
+                raiseIfNew("EXTREME_WEATHER", "CRITICAL", farmId, null,
                         String.format("Frost risk on %s: minimum temperature forecast %.1f°C. Protect crops immediately.", date, tempMin));
-            } else if (tempMin.compareTo(TEMP_FROST_WARN) < 0) {
-                alertService.raiseAlert("EXTREME_WEATHER", "WARN", farmId, null, null,
-                        String.format("Cold risk on %s: minimum temperature forecast %.1f°C. Monitor sensitive crops.", date, tempMin));
             }
         }
 
         if (forecast.getTempMax() != null) {
             BigDecimal tempMax = forecast.getTempMax();
-            if (tempMax.compareTo(TEMP_HEAT_CRITICAL) >= 0) {
-                alertService.raiseAlert("EXTREME_WEATHER", "CRITICAL", farmId, null, null,
+            if (tempMax.compareTo(WEATHER_HEAT_CRITICAL) >= 0) {
+                raiseIfNew("EXTREME_WEATHER", "CRITICAL", farmId, null,
                         String.format("Extreme heat on %s: maximum temperature forecast %.1f°C. Crops at high risk of heat stress.", date, tempMax));
-            } else if (tempMax.compareTo(TEMP_HEAT_WARN) >= 0) {
-                alertService.raiseAlert("EXTREME_WEATHER", "WARN", farmId, null, null,
-                        String.format("Heat stress on %s: maximum temperature forecast %.1f°C. Consider increasing irrigation frequency.", date, tempMax));
             }
         }
+    }
+
+    private void checkCropWaterRisk(Long farmId, List<WeatherDataDO> forecasts) {
+        if (forecasts.isEmpty()) {
+            return;
+        }
+        BigDecimal totalRain = BigDecimal.ZERO;
+        BigDecimal maxDailyRain = BigDecimal.ZERO;
+        for (WeatherDataDO forecast : forecasts) {
+            if (forecast.getRainfall() == null) {
+                continue;
+            }
+            totalRain = totalRain.add(forecast.getRainfall());
+            if (forecast.getRainfall().compareTo(maxDailyRain) > 0) {
+                maxDailyRain = forecast.getRainfall();
+            }
+        }
+
+        List<CropPlanDO> currentPlans = cropPlanMapper.selectCurrentList();
+        if (currentPlans == null || currentPlans.isEmpty()) {
+            return;
+        }
+        for (CropPlanDO plan : currentPlans) {
+            FieldDO field = fieldMapper.selectById(plan.getFieldId());
+            if (field == null || !farmId.equals(field.getFarmId())) {
+                continue;
+            }
+            CropDO crop = cropMapper.selectById(plan.getCropId());
+            if (crop == null) {
+                continue;
+            }
+            checkCropDroughtRisk(farmId, field, crop, totalRain);
+            checkCropWaterloggingRisk(farmId, field, crop, totalRain, maxDailyRain);
+        }
+    }
+
+    private void checkCropDroughtRisk(Long farmId, FieldDO field, CropDO crop, BigDecimal totalRain) {
+        if (!Integer.valueOf(1).equals(crop.getDroughtResistance())) {
+            return;
+        }
+        if (totalRain.compareTo(RAIN_DROUGHT_THREE_DAY) >= 0) {
+            return;
+        }
+        String context = String.format(
+                "Field %d (%s) is growing %s, which has weak drought resistance. Only %.1fmm rain is forecast over the next 3 days, so soil moisture may become insufficient.",
+                field.getId(), field.getFieldName(), crop.getCropName(), totalRain);
+        raiseIfNew("CROP_WATER_RISK", "WARN", farmId, field.getId(), context);
+    }
+
+    private void checkCropWaterloggingRisk(Long farmId, FieldDO field, CropDO crop,
+                                           BigDecimal totalRain, BigDecimal maxDailyRain) {
+        if (Integer.valueOf(3).equals(crop.getWaterloggingTolerance())) {
+            return;
+        }
+        boolean heavyDailyRain = maxDailyRain.compareTo(RAIN_HEAVY_WARN) >= 0;
+        boolean extremeThreeDayRain = totalRain.compareTo(RAIN_HEAVY_CRITICAL) >= 0;
+        if (!heavyDailyRain && !extremeThreeDayRain) {
+            return;
+        }
+        boolean weakTolerance = Integer.valueOf(1).equals(crop.getWaterloggingTolerance());
+        String level = weakTolerance || extremeThreeDayRain ? "CRITICAL" : "WARN";
+        String context = String.format(
+                "Field %d (%s) is growing %s, whose waterlogging tolerance is %s. Forecast rainfall is %.1fmm over 3 days with a maximum daily rainfall of %.1fmm, increasing the risk of excessive soil moisture.",
+                field.getId(), field.getFieldName(), crop.getCropName(),
+                toleranceLabel(crop.getWaterloggingTolerance()), totalRain, maxDailyRain);
+        raiseIfNew("CROP_WATER_RISK", level, farmId, field.getId(), context);
+    }
+
+    private String toleranceLabel(Integer value) {
+        if (Integer.valueOf(1).equals(value)) {
+            return "weak";
+        }
+        if (Integer.valueOf(2).equals(value)) {
+            return "medium";
+        }
+        if (Integer.valueOf(3).equals(value)) {
+            return "strong";
+        }
+        return "unknown";
     }
 
     private void sendWeatherNotification(String level, String context) {

@@ -39,6 +39,15 @@ public interface CropPlanMapper extends BaseMapperX<CropPlanDO> {
                 .collect(Collectors.toList());
     }
 
+    /** Get all currently ongoing crop plans. */
+    default List<CropPlanDO> selectCurrentList() {
+        LocalDate today = LocalDate.now();
+        return selectList(new LambdaQueryWrapperX<CropPlanDO>()
+                .le(CropPlanDO::getStartDate, today)
+                .ge(CropPlanDO::getEndDate, today)
+                .orderByDesc(CropPlanDO::getId));
+    }
+
     default PageResult<CropPlanDO> selectPage(CropPlanPageReqVO reqVO) {
         return selectPage(reqVO, new LambdaQueryWrapperX<CropPlanDO>()
                 .eqIfPresent(CropPlanDO::getCropId, reqVO.getCropId())

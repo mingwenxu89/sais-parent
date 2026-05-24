@@ -14,7 +14,7 @@ public class AlertPageReqVO extends PageParam {
     @Schema(description = "Field ID", example = "1")
     private Long fieldId;
 
-    @Schema(description = "Alert type (1=SENSOR_ABNORMAL 2=EXTREME_WEATHER 3=IRRIGATION_ABNORMAL)", example = "1")
+    @Schema(description = "Alert type (1=SENSOR_ABNORMAL 2=EXTREME_WEATHER 3=IRRIGATION_ABNORMAL 4=CROP_WATER_RISK)", example = "1")
     private Integer alertType;
 
     @Schema(description = "Alert level (1=INFO 2=WARN 3=CRITICAL)", example = "2")

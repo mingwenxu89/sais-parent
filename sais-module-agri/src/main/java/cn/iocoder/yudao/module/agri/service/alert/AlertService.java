@@ -34,7 +34,7 @@ public interface AlertService {
     void handleAlert(Long id, Integer status);
 
     /**
-     * Returns true if an unresolved alert of the given type already exists for the farm/field.
+     * Returns true if an unresolved alert of the given type already exists today for the farm/field.
      */
     boolean hasActiveAlert(String alertType, Long farmId, Long fieldId);
 

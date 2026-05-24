@@ -12,6 +12,9 @@ public class SensorSaveReqVO {
 
     private Long id;
 
+    @Schema(description = "Sensor code")
+    private String sensorCode;
+
     @Schema(description = "Sensor type: 1=Soil Moisture, 2=Humidity, 3=Temperature", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = "Sensor type cannot be empty")
     private Integer sensorType;
