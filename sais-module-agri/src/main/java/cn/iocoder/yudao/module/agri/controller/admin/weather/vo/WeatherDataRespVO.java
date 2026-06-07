@@ -23,7 +23,7 @@ public class WeatherDataRespVO {
     @Schema(description = "Weather Description")
     private String weatherDesc;
 
-    @Schema(description = "Temperature (℃)")
+    @Schema(description = "Temperature (°C)")
     private BigDecimal temperature;
 
     @Schema(description = "Humidity (%)")
@@ -50,10 +50,10 @@ public class WeatherDataRespVO {
         @Schema(description = "Weather Description")
         private String weatherDesc;
         
-        @Schema(description = "Min Temperature (℃)")
+        @Schema(description = "Min Temperature (°C)")
         private BigDecimal tempMin;
         
-        @Schema(description = "Max Temperature (℃)")
+        @Schema(description = "Max Temperature (°C)")
         private BigDecimal tempMax;
         
         @Schema(description = "Humidity (%)")

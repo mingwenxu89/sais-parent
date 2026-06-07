@@ -21,7 +21,7 @@ import java.util.List;
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 
 /**
- * Decision evaluation endpoints — shadow-mode comparisons of rule-based vs AI irrigation
+ * Decision evaluation endpoints - shadow-mode comparisons of rule-based vs AI irrigation
  * decisions on fields with current crop plans. Persists comparison records; never creates irrigation plans.
  */
 @Tag(name = "Admin - Decision Evaluation")

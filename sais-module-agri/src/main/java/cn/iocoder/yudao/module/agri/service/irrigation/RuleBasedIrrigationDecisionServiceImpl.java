@@ -45,7 +45,7 @@ public class RuleBasedIrrigationDecisionServiceImpl implements IrrigationDecisio
             try {
                 AiDecisionResultVO result = evaluateField(field);
                 results.add(result);
-                log.info("[RuleBasedDecision] Field {} ({}): {} — {}",
+                log.info("[RuleBasedDecision] Field {} ({}): {} - {}",
                         field.getId(), field.getFieldName(), result.getDecision(), result.getReason());
             } catch (Exception e) {
                 log.error("[RuleBasedDecision] Error evaluating field {}", field.getId(), e);

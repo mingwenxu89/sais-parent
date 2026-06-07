@@ -24,8 +24,8 @@ import java.util.Map;
  * Simulates irrigation device ACK messages for mock/demo environments.
  *
  * Runs every minute. For each EXECUTING plan that has not yet received an ACK:
- *   - If the device has simulateFault=true → skip (no ACK sent, fault detection will trigger after 5 min)
- *   - Otherwise → publish a mock ACK to {topicPrefix}/{deviceCode}/ack
+ *   - If the device has simulateFault=true -> skip (no ACK sent, fault detection will trigger after 5 min)
+ *   - Otherwise -> publish a mock ACK to {topicPrefix}/{deviceCode}/ack
  *
  * This mirrors the behaviour of a real irrigation controller that sends an ACK
  * on the /ack topic after receiving and acting on the START command.
@@ -58,7 +58,7 @@ public class MockDeviceAckJob {
                     continue;
                 }
                 if (Boolean.TRUE.equals(device.getSimulateFault())) {
-                    log.info("[MockDeviceAckJob] Device {} has simulateFault=true — withholding ACK for plan {}",
+                    log.info("[MockDeviceAckJob] Device {} has simulateFault=true - withholding ACK for plan {}",
                             device.getDeviceCode(), plan.getId());
                     continue;
                 }

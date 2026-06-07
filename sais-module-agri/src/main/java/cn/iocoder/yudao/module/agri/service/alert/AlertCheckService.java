@@ -111,7 +111,7 @@ public class AlertCheckService {
             if (moisture.compareTo(min.subtract(MOISTURE_CRITICAL_MARGIN)) < 0) {
                 level = "CRITICAL";
                 context = String.format(
-                        "Field %d soil moisture %.1f%% is critically low — more than %.0f%% below the minimum threshold %.1f%% for growth stage '%s'.",
+                        "Field %d soil moisture %.1f%% is critically low - more than %.0f%% below the minimum threshold %.1f%% for growth stage '%s'.",
                         data.getFieldId(), moisture, MOISTURE_CRITICAL_MARGIN, min, stageName);
             } else {
                 level = "WARN";
@@ -263,7 +263,7 @@ public class AlertCheckService {
             req.setTemplateCode(NOTIFY_TEMPLATE_CODE);
             req.setTemplateParams(params);
             notifyMessageSendApi.sendSingleMessageToAdmin(req);
-            log.info("[AlertCheck] Weather notification sent: {} — {}", level, context);
+            log.info("[AlertCheck] Weather notification sent: {} - {}", level, context);
         } catch (Exception e) {
             log.warn("[AlertCheck] Failed to send weather notification: {}", e.getMessage());
         }

@@ -72,7 +72,7 @@ class IrrigationPredictionTest {
 
     @BeforeEach
     void setUp() {
-        // Real helper instance with mocked mappers — required so the AI path also runs the gather logic.
+        // Real helper instance with mocked mappers - required so the AI path also runs the gather logic.
         helper = new IrrigationEvaluationHelper();
         ReflectionTestUtils.setField(helper, "cropPlanMapper", cropPlanMapper);
         ReflectionTestUtils.setField(helper, "cropMapper", cropMapper);
@@ -107,14 +107,14 @@ class IrrigationPredictionTest {
 
     static Stream<Arguments> predictionCases() {
         return Stream.of(
-                Arguments.of("adequate moisture, no rain → NO_ACTION",                  "55.0", "0.0",  "NO_ACTION"),
-                Arguments.of("adequate moisture, heavy rain → NO_ACTION",               "55.0", "20.0", "NO_ACTION"),
-                Arguments.of("moisture exactly at min → NO_ACTION",                     "40.0", "0.0",  "NO_ACTION"),
-                Arguments.of("below min, rain at threshold (5mm) → SKIP",               "30.0", "5.0",  "SKIP"),
-                Arguments.of("below min, heavy rain → SKIP",                            "25.0", "15.0", "SKIP"),
-                Arguments.of("below min, no rain → IRRIGATE",                           "30.0", "0.0",  "IRRIGATE"),
-                Arguments.of("below min, rain just below threshold (4.9mm) → IRRIGATE", "35.0", "4.9",  "IRRIGATE"),
-                Arguments.of("zero moisture, no rain → IRRIGATE",                       "0.0",  "0.0",  "IRRIGATE")
+                Arguments.of("adequate moisture, no rain -> NO_ACTION",                  "55.0", "0.0",  "NO_ACTION"),
+                Arguments.of("adequate moisture, heavy rain -> NO_ACTION",               "55.0", "20.0", "NO_ACTION"),
+                Arguments.of("moisture exactly at min -> NO_ACTION",                     "40.0", "0.0",  "NO_ACTION"),
+                Arguments.of("below min, rain at threshold (5mm) -> SKIP",               "30.0", "5.0",  "SKIP"),
+                Arguments.of("below min, heavy rain -> SKIP",                            "25.0", "15.0", "SKIP"),
+                Arguments.of("below min, no rain -> IRRIGATE",                           "30.0", "0.0",  "IRRIGATE"),
+                Arguments.of("below min, rain just below threshold (4.9mm) -> IRRIGATE", "35.0", "4.9",  "IRRIGATE"),
+                Arguments.of("zero moisture, no rain -> IRRIGATE",                       "0.0",  "0.0",  "IRRIGATE")
         );
     }
 

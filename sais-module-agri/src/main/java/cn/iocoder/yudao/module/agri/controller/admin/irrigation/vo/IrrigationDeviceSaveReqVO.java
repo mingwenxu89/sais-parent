@@ -26,7 +26,7 @@ public class IrrigationDeviceSaveReqVO {
     @Schema(description = "Associated sensor ID (optional)")
     private Long sensorId;
 
-    @Schema(description = "Simulate device fault for demo — MockDeviceAckJob withholds ACK when true")
+    @Schema(description = "Simulate device fault for demo - MockDeviceAckJob withholds ACK when true")
     private Boolean simulateFault;
 
 }

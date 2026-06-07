@@ -34,7 +34,7 @@ import static org.mockito.Mockito.when;
  *
  * Strategy:
  *   1. Build input context for each scenario.
- *   2. Determine expected decision using rule-based logic (applyRules) — this is the ground truth.
+ *   2. Determine expected decision using rule-based logic (applyRules) - this is the ground truth.
  *   3. Mock DeepSeek to return the JSON the model is expected to produce for the same inputs.
  *   4. Assert AI decision == rule decision (alignment).
  *
@@ -95,57 +95,57 @@ class AiDecisionAlignmentTest {
     static Stream<Arguments> alignmentCases() {
         return Stream.of(
             // ── NO_ACTION branch ──────────────────────────────────────────────────────
-            Arguments.of("Adequate moisture, no rain → NO_ACTION",
+            Arguments.of("Adequate moisture, no rain -> NO_ACTION",
                 "55.0", "40.0", "60.0", "0.0",  "NO_ACTION",
                 "{\"decision\":\"NO_ACTION\",\"reason\":\"Soil moisture 55.0% exceeds minimum 40.0%.\"}"),
 
-            Arguments.of("Adequate moisture, heavy rain → NO_ACTION",
+            Arguments.of("Adequate moisture, heavy rain -> NO_ACTION",
                 "50.0", "40.0", "60.0", "15.0", "NO_ACTION",
                 "{\"decision\":\"NO_ACTION\",\"reason\":\"Moisture adequate at 50.0%; irrigation unnecessary.\"}"),
 
-            Arguments.of("Moisture exactly at min → NO_ACTION",
+            Arguments.of("Moisture exactly at min -> NO_ACTION",
                 "40.0", "40.0", "60.0", "2.0",  "NO_ACTION",
                 "{\"decision\":\"NO_ACTION\",\"reason\":\"Soil moisture 40.0% meets the minimum threshold 40.0%.\"}"),
 
-            Arguments.of("High moisture, no rain → NO_ACTION",
+            Arguments.of("High moisture, no rain -> NO_ACTION",
                 "75.0", "40.0", "80.0", "0.0",  "NO_ACTION",
                 "{\"decision\":\"NO_ACTION\",\"reason\":\"Soil is well-saturated at 75.0%.\"}"),
 
             // ── SKIP branch ───────────────────────────────────────────────────────────
-            Arguments.of("Below min, rain exactly at threshold (5mm) → SKIP",
+            Arguments.of("Below min, rain exactly at threshold (5mm) -> SKIP",
                 "30.0", "40.0", "60.0", "5.0",  "SKIP",
                 "{\"decision\":\"SKIP\",\"reason\":\"Moisture 30.0% below minimum but 5.0mm rain expected tomorrow.\"}"),
 
-            Arguments.of("Below min, heavy rain → SKIP",
+            Arguments.of("Below min, heavy rain -> SKIP",
                 "20.0", "40.0", "60.0", "20.0", "SKIP",
-                "{\"decision\":\"SKIP\",\"reason\":\"Despite low moisture, 20.0mm forecast — skip to avoid overwatering.\"}"),
+                "{\"decision\":\"SKIP\",\"reason\":\"Despite low moisture, 20.0mm forecast - skip to avoid overwatering.\"}"),
 
-            Arguments.of("Severely dry, but torrential rain → SKIP",
+            Arguments.of("Severely dry, but torrential rain -> SKIP",
                 "10.0", "40.0", "60.0", "50.0", "SKIP",
                 "{\"decision\":\"SKIP\",\"reason\":\"50.0mm rain forecast will replenish moisture naturally.\"}"),
 
-            Arguments.of("Just below min, rain just above threshold → SKIP",
+            Arguments.of("Just below min, rain just above threshold -> SKIP",
                 "39.0", "40.0", "60.0", "6.0",  "SKIP",
-                "{\"decision\":\"SKIP\",\"reason\":\"6.0mm rain expected, exceeds 5mm threshold — defer irrigation.\"}"),
+                "{\"decision\":\"SKIP\",\"reason\":\"6.0mm rain expected, exceeds 5mm threshold - defer irrigation.\"}"),
 
             // ── IRRIGATE branch ───────────────────────────────────────────────────────
-            Arguments.of("Below min, no rain → IRRIGATE",
+            Arguments.of("Below min, no rain -> IRRIGATE",
                 "30.0", "40.0", "60.0", "0.0",  "IRRIGATE",
                 "{\"decision\":\"IRRIGATE\",\"reason\":\"Moisture 30.0% below min 40.0%, no rain expected.\",\"durationMinutes\":60}"),
 
-            Arguments.of("Below min, trace rain below threshold → IRRIGATE",
+            Arguments.of("Below min, trace rain below threshold -> IRRIGATE",
                 "35.0", "40.0", "60.0", "4.9",  "IRRIGATE",
                 "{\"decision\":\"IRRIGATE\",\"reason\":\"4.9mm rain insufficient; moisture 35.0% < 40.0%.\",\"durationMinutes\":30}"),
 
-            Arguments.of("Zero moisture, no rain → IRRIGATE",
+            Arguments.of("Zero moisture, no rain -> IRRIGATE",
                 "0.0",  "40.0", "70.0", "0.0",  "IRRIGATE",
                 "{\"decision\":\"IRRIGATE\",\"reason\":\"Critically dry at 0.0%; immediate irrigation required.\",\"durationMinutes\":120}"),
 
-            Arguments.of("Moisture just below min, no rain → IRRIGATE",
+            Arguments.of("Moisture just below min, no rain -> IRRIGATE",
                 "39.9", "40.0", "60.0", "0.0",  "IRRIGATE",
                 "{\"decision\":\"IRRIGATE\",\"reason\":\"Moisture 39.9% just below minimum 40.0%.\",\"durationMinutes\":15}"),
 
-            Arguments.of("Below min, 1mm rain (below skip threshold) → IRRIGATE",
+            Arguments.of("Below min, 1mm rain (below skip threshold) -> IRRIGATE",
                 "25.0", "40.0", "60.0", "1.0",  "IRRIGATE",
                 "{\"decision\":\"IRRIGATE\",\"reason\":\"1.0mm rain will not be sufficient; irrigate now.\",\"durationMinutes\":70}")
         );

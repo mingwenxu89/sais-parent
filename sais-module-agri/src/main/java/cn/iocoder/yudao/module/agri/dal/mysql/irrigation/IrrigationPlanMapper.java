@@ -13,7 +13,7 @@ import java.util.List;
 @Mapper
 public interface IrrigationPlanMapper extends BaseMapperX<IrrigationPlanDO> {
 
-    /** PENDING plans whose planned start time has arrived — ready to be dispatched via MQTT */
+    /** PENDING plans whose planned start time has arrived - ready to be dispatched via MQTT */
     default List<IrrigationPlanDO> selectPendingDuePlans(LocalDateTime now) {
         return selectList(new LambdaQueryWrapperX<IrrigationPlanDO>()
                 .eq(IrrigationPlanDO::getStatus, "PENDING")
@@ -29,7 +29,7 @@ public interface IrrigationPlanMapper extends BaseMapperX<IrrigationPlanDO> {
                 .last("LIMIT 1"));
     }
 
-    /** EXECUTING plans whose planned duration has elapsed — ready to be marked COMPLETED */
+    /** EXECUTING plans whose planned duration has elapsed - ready to be marked COMPLETED */
     default List<IrrigationPlanDO> selectExecutingTimedOutPlans(LocalDateTime now) {
         return selectList(new LambdaQueryWrapperX<IrrigationPlanDO>()
                 .eq(IrrigationPlanDO::getStatus, "EXECUTING")

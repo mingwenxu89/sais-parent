@@ -25,8 +25,8 @@ import java.util.Map;
  * Scans pending irrigation plans every minute and dispatches MQTT commands to devices.
  *
  * Two phases per tick:
- *   1. START  — PENDING plans whose planned_start_time ≤ now → EXECUTING + MQTT START
- *   2. FINISH — EXECUTING plans whose planned duration has elapsed → COMPLETED + MQTT STOP
+ *   1. START  - PENDING plans whose planned_start_time <= now -> EXECUTING + MQTT START
+ *   2. FINISH - EXECUTING plans whose planned duration has elapsed -> COMPLETED + MQTT STOP
  */
 @Component
 @Slf4j
@@ -39,7 +39,7 @@ public class IrrigationPlanExecutionJob {
     @Resource
     private IrrigationDeviceMapper irrigationDeviceMapper;
 
-    /** Optional — only present when AWS IoT Core is configured */
+    /** Optional - only present when AWS IoT Core is configured */
     @Autowired(required = false)
     private AwsIotMqttClient mqttClient;
 
@@ -74,7 +74,7 @@ public class IrrigationPlanExecutionJob {
             }
         }
 
-        // Phase 3: detect device faults — EXECUTING plans with no ACK after timeout
+        // Phase 3: detect device faults - EXECUTING plans with no ACK after timeout
         List<IrrigationPlanDO> ackTimeoutPlans = irrigationPlanMapper
                 .selectExecutingAckTimeoutPlans(now.minusMinutes(ACK_TIMEOUT_MINUTES));
         for (IrrigationPlanDO plan : ackTimeoutPlans) {
@@ -153,7 +153,7 @@ public class IrrigationPlanExecutionJob {
 
     private void publishCommand(IrrigationDeviceDO device, IrrigationPlanDO plan, String action) {
         if (mqttClient == null) {
-            log.debug("[IrrigationPlanJob] MQTT not configured — skipping {} command for plan {}", action, plan.getId());
+            log.debug("[IrrigationPlanJob] MQTT not configured - skipping {} command for plan {}", action, plan.getId());
             return;
         }
         try {

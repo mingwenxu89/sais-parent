@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 /**
  * Irrigation Plan DO
  *
- * Status flow: PENDING → EXECUTING → COMPLETED / CANCELLED
+ * Status flow: PENDING -> EXECUTING -> COMPLETED / CANCELLED
  */
 @TableName("sais_irrigation_plan")
 @KeySequence("sais_irrigation_plan_id_seq")

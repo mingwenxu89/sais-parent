@@ -66,7 +66,7 @@ class AlertCheckServiceTest {
             Arguments.of("exactly at min",     "30.0",  "30.0", "70.0", null),
             Arguments.of("just below min",     "29.9",  "30.0", "70.0", "WARN"),
             Arguments.of("15% below min=WARN", "15.1",  "30.0", "70.0", "WARN"),
-            Arguments.of("exactly 15% below",  "15.0",  "30.0", "70.0", "WARN"),    // 15.0 < 15.0 is false → WARN
+            Arguments.of("exactly 15% below",  "15.0",  "30.0", "70.0", "WARN"),    // 15.0 < 15.0 is false -> WARN
             Arguments.of("critically low",     "5.0",   "30.0", "70.0", "CRITICAL"),
             Arguments.of("above max",          "75.0",  "30.0", "70.0", "WARN"),
             Arguments.of("exactly at max",     "70.0",  "30.0", "70.0", null)
@@ -75,7 +75,7 @@ class AlertCheckServiceTest {
 
     @ParameterizedTest(name = "{0}")
     @MethodSource("soilMoistureCases")
-    @DisplayName("checkSensorData — SOIL_MOISTURE thresholds")
+    @DisplayName("checkSensorData - SOIL_MOISTURE thresholds")
     void soilMoisture_thresholds(String desc, String moisture, String min, String max, String expectedLevel) {
         SensorDataDO data = sensorData("SOIL_MOISTURE", moisture, 1L, 10L, 100L);
         CropPlanDO plan = cropPlan(1L, 42L);
@@ -99,7 +99,7 @@ class AlertCheckServiceTest {
     // ── WEATHER FORECAST ──────────────────────────────────────────────────────
 
     @Test
-    @DisplayName("checkWeatherForecast — heavy rain creates crop water risk for weak waterlogging tolerance")
+    @DisplayName("checkWeatherForecast - heavy rain creates crop water risk for weak waterlogging tolerance")
     void weatherForecast_rainCropWaterRisk() {
         mockForecast(100L, "55.0", null, null);
         mockCurrentCrop(100L, 10L, 42L, 2, 1);
@@ -111,7 +111,7 @@ class AlertCheckServiceTest {
     }
 
     @Test
-    @DisplayName("checkWeatherForecast — no extreme weather alert for rain alone")
+    @DisplayName("checkWeatherForecast - no extreme weather alert for rain alone")
     void weatherForecast_rainNoExtremeWeather() {
         mockForecast(100L, "30.0", null, null);
         when(cropPlanMapper.selectCurrentList()).thenReturn(List.of());
@@ -122,7 +122,7 @@ class AlertCheckServiceTest {
     }
 
     @Test
-    @DisplayName("checkWeatherForecast — frost CRITICAL (tempMin < 0°C)")
+    @DisplayName("checkWeatherForecast - frost CRITICAL (tempMin < 0°C)")
     void weatherForecast_frostCritical() {
         mockForecast(100L, null, "-2.0", "25.0");
 
@@ -133,7 +133,7 @@ class AlertCheckServiceTest {
     }
 
     @Test
-    @DisplayName("checkWeatherForecast — heat CRITICAL (tempMax >= 32°C)")
+    @DisplayName("checkWeatherForecast - heat CRITICAL (tempMax >= 32°C)")
     void weatherForecast_heatCritical() {
         mockForecast(100L, null, "10.0", "36.0");
         when(cropPlanMapper.selectCurrentList()).thenReturn(List.of());
@@ -145,7 +145,7 @@ class AlertCheckServiceTest {
     }
 
     @Test
-    @DisplayName("checkWeatherForecast — normal conditions produce no alert")
+    @DisplayName("checkWeatherForecast - normal conditions produce no alert")
     void weatherForecast_noAlert() {
         mockForecast(100L, "10.0", "10.0", "25.0");
         when(cropPlanMapper.selectCurrentList()).thenReturn(List.of());
@@ -156,7 +156,7 @@ class AlertCheckServiceTest {
     }
 
     @Test
-    @DisplayName("checkWeatherForecast — low 3-day rain creates crop drought risk for weak drought resistance")
+    @DisplayName("checkWeatherForecast - low 3-day rain creates crop drought risk for weak drought resistance")
     void weatherForecast_droughtCropWaterRisk() {
         mockForecast(100L, "1.0", null, null);
         mockCurrentCrop(100L, 10L, 42L, 1, 3);
@@ -170,7 +170,7 @@ class AlertCheckServiceTest {
     // ── IRRIGATION ABNORMAL ───────────────────────────────────────────────────
 
     @Test
-    @DisplayName("checkIrrigationDeviceFault — raises CRITICAL and marks device FAULT")
+    @DisplayName("checkIrrigationDeviceFault - raises CRITICAL and marks device FAULT")
     void irrigationFault_raisesAlertAndMarksDeviceFault() {
         IrrigationDeviceDO device = new IrrigationDeviceDO();
         device.setId(5L);
@@ -199,7 +199,7 @@ class AlertCheckServiceTest {
     }
 
     @Test
-    @DisplayName("checkIrrigationDeviceFault — dedup: skips if active alert already exists")
+    @DisplayName("checkIrrigationDeviceFault - dedup: skips if active alert already exists")
     void irrigationFault_skipsDuplicate() {
         when(alertService.hasActiveAlert("IRRIGATION_ABNORMAL", 1L, 10L)).thenReturn(true);
 
@@ -216,7 +216,7 @@ class AlertCheckServiceTest {
     }
 
     @Test
-    @DisplayName("checkIrrigationDeviceFault — device already FAULT: no redundant update")
+    @DisplayName("checkIrrigationDeviceFault - device already FAULT: no redundant update")
     void irrigationFault_deviceAlreadyFault_noRedundantUpdate() {
         IrrigationDeviceDO device = new IrrigationDeviceDO();
         device.setId(5L);
@@ -242,14 +242,14 @@ class AlertCheckServiceTest {
     // ── null / unknown sensor type guards ─────────────────────────────────────
 
     @Test
-    @DisplayName("checkSensorData — null data is silently ignored")
+    @DisplayName("checkSensorData - null data is silently ignored")
     void checkSensorData_nullData() {
         assertDoesNotThrow(() -> service.checkSensorData(null));
         verifyNoInteractions(alertService);
     }
 
     @Test
-    @DisplayName("checkSensorData — non-soil-moisture readings produce no alert")
+    @DisplayName("checkSensorData - non-soil-moisture readings produce no alert")
     void checkSensorData_nonSoilMoisture() {
         SensorDataDO data = sensorData("TEMPERATURE", "36.0", 1L, 10L, 100L);
 

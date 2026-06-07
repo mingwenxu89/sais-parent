@@ -47,7 +47,7 @@ public class IrrigationEvaluationHelper {
     private IrrigationPlanService irrigationPlanService;
 
     /**
-     * Steps 1–5: load crop plan, crop, current growth stage, soil moisture reading, and tomorrow's weather.
+     * Steps 1-5: load crop plan, crop, current growth stage, soil moisture reading, and tomorrow's weather.
      * Uses device's associated sensor if configured; falls back to field-level sensor data otherwise.
      * Returns a partially populated VO. If any required data is missing, sets decision=NO_DATA and returns early.
      */
@@ -124,7 +124,7 @@ public class IrrigationEvaluationHelper {
         if (tomorrowRainfall.compareTo(RAIN_SKIP_THRESHOLD) >= 0) {
             ctx.setDecision("SKIP");
             ctx.setReason(String.format(
-                    "Soil moisture (%.1f%%) is below minimum (%.1f%%) for stage '%s', but %.1fmm of rain is forecast tomorrow — skipping irrigation to avoid over-watering.",
+                    "Soil moisture (%.1f%%) is below minimum (%.1f%%) for stage '%s', but %.1fmm of rain is forecast tomorrow - skipping irrigation to avoid over-watering.",
                     soilMoisture, moistureMin, ctx.getStageName(), tomorrowRainfall));
             return ctx;
         }
@@ -156,7 +156,7 @@ public class IrrigationEvaluationHelper {
             return;
         }
         if (device.getStatus() == null || device.getStatus() != 1) {
-            result.setReason(result.getReason() + " Device " + device.getDeviceCode() + " is offline or inactive — plan not created.");
+            result.setReason(result.getReason() + " Device " + device.getDeviceCode() + " is offline or inactive - plan not created.");
             return;
         }
         int duration = estimateDuration(result.getCurrentMoisture(), result.getMoistureOptimal());

@@ -108,7 +108,7 @@ public class AlertServiceImpl implements AlertService {
         alert.setStatus(0); // UNHANDLED
         alert.setTriggeredAt(LocalDateTime.now());
         alertMapper.insert(alert);
-        log.info("[Alert] {} {} raised — farm={} field={}: {}", level, alertType, farmId, fieldId, context);
+        log.info("[Alert] {} {} raised - farm={} field={}: {}", level, alertType, farmId, fieldId, context);
         sendAlertNotification(alert);
     }
 
