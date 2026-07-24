@@ -2,7 +2,6 @@
 
 The backend service for **SAIS**, a full-stack platform that combines **IoT** and **AI** to automate farm irrigation. This Spring Boot service collects soil-moisture readings from field sensors over MQTT, pulls live weather forecasts, and uses an LLM-driven decision engine (with a rule-based fallback) to decide **when** and **how long** to irrigate each field.
 
-🌐 **Live demo:** https://smartagricultureirrigation.app
 🎨 **Frontend repo:** [`../sais-ui-vue3`](../sais-ui-vue3)
 
 ---
